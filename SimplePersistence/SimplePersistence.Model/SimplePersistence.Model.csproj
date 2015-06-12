@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C2796674-2F28-4261-9AD6-535D12779D5D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SimplePersistence.Model</RootNamespace>
+    <AssemblyName>SimplePersistence.Model</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\SimplePersistence.Model.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\SimplePersistence\Properties\ProductAssemblyInfo.cs">
+      <Link>Properties\ProductAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="Entity.cs" />
+    <Compile Include="EntityWithAllMetaAndVersionAsLong.cs" />
+    <Compile Include="EntityWithAllMetaAndVersionAsByteArray.cs" />
+    <Compile Include="EntityWithAllMeta.cs" />
+    <Compile Include="EntityWithCreatedAndUpdatedMeta.cs" />
+    <Compile Include="EntityWithCreatedAndUpdatedMetaAndVersionAsByteArray.cs" />
+    <Compile Include="EntityWithCreatedMeta.cs" />
+    <Compile Include="EntityWithCreatedMetaAndVersionAsByteArray.cs" />
+    <Compile Include="EntityWithCreatedMetaAndVersionAsLong.cs" />
+    <Compile Include="EntityWithDeletedMeta.cs" />
+    <Compile Include="EntityWithSoftDelete.cs" />
+    <Compile Include="EntityWithSoftDeleteAndVersionAsByteArray.cs" />
+    <Compile Include="EntityWithSoftDeleteAndVersionAsLong.cs" />
+    <Compile Include="EntityWithUpdatedMeta.cs" />
+    <Compile Include="EntityWithUpdatedMetaAndVersionAsByteArray.cs" />
+    <Compile Include="EntityWithUpdatedMetaAndVersionAsLong.cs" />
+    <Compile Include="IEntity.cs" />
+    <Compile Include="IHaveCreatedMeta.cs" />
+    <Compile Include="IHaveDeletedMeta.cs" />
+    <Compile Include="IHaveSoftDelete.cs" />
+    <Compile Include="IHaveUpdatedMeta.cs" />
+    <Compile Include="IHaveVersion.cs" />
+    <Compile Include="IHaveVersionAsByteArray.cs" />
+    <Compile Include="IHaveVersionAsLong.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="EntityWithCreatedAndUpdatedMetaAndVersionAsLong.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
