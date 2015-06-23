@@ -157,7 +157,7 @@ namespace SimplePersistence.UoW.EF
     /// An implementation compatible with Entity Framework for the Unit of Work pattern.
     /// Underline, it also uses work scopes (see: <see cref="ScopeEnabledUnitOfWork"/>).
     /// </summary>
-    public abstract class EFUnitOfWork : EFUnitOfWork<DbContext>
+    public abstract class EFUnitOfWork : EFUnitOfWork<DbContext>, IEFUnitOfWork
     {
         /// <summary>
         /// Creates a new object associated with the given database context
