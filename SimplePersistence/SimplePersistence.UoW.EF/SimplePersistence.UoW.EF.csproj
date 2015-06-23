@@ -57,7 +57,9 @@
     <Compile Include="EFRepository.cs" />
     <Compile Include="EFSyncRepository.cs" />
     <Compile Include="EFUnitOfWork.cs" />
+    <Compile Include="EFWorkArea.cs" />
     <Compile Include="IEFUnitOfWork.cs" />
+    <Compile Include="IEFWorkArea.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
