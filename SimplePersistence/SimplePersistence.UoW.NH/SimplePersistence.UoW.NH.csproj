@@ -28,6 +28,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\SimplePersistence.UoW.NH.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Iesi.Collections">
@@ -44,10 +45,12 @@
       <Link>Properties\ProductAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="INHibernateUnitOfWork.cs" />
+    <Compile Include="INHWorkArea.cs" />
     <Compile Include="NHibernateAsyncRepository.cs" />
     <Compile Include="NHibernateRepository.cs" />
     <Compile Include="NHibernateSyncRepository.cs" />
     <Compile Include="NHibernateUnitOfWork.cs" />
+    <Compile Include="NHWorkArea.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
