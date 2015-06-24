@@ -20,6 +20,11 @@ namespace SimplePersistence.UoW.EF.Helper
     /// </summary>
     public static class CodeFirstMappingExtensions
     {
+        /// <summary>
+        /// The default max length used in metadata fields
+        /// </summary>
+        public const int DefaultMaxLength = 128;
+
         #region Entity
 
         /// <summary>
@@ -77,11 +82,11 @@ namespace SimplePersistence.UoW.EF.Helper
         /// </summary>
         /// <param name="cfg">The entity configuration</param>
         /// <param name="maxLength">
-        /// The max length for the <see cref="IHaveCreatedMeta{TCreatedBy}.CreatedBy"/> property. By default 128 will be used.
+        /// The max length for the <see cref="IHaveCreatedMeta{TCreatedBy}.CreatedBy"/> property. By default <see cref="DefaultMaxLength"/> will be used.
         /// </param>
         /// <typeparam name="T">The entity type</typeparam>
         /// <returns>The entity configuration after changes</returns>
-        public static EntityTypeConfiguration<T> MapCreatedMeta<T>(this EntityTypeConfiguration<T> cfg, int maxLength = 128) 
+        public static EntityTypeConfiguration<T> MapCreatedMeta<T>(this EntityTypeConfiguration<T> cfg, int maxLength = DefaultMaxLength) 
             where T : class, IHaveCreatedMeta<string>
         {
             cfg.Property(e => e.CreatedOn).IsRequired();
@@ -95,11 +100,11 @@ namespace SimplePersistence.UoW.EF.Helper
         /// </summary>
         /// <param name="cfg">The entity configuration</param>
         /// <param name="maxLength">
-        /// The max length for the <see cref="IHaveUpdatedMeta{TUpdatedBy}.UpdatedBy"/> property. By default 128 will be used.
+        /// The max length for the <see cref="IHaveUpdatedMeta{TUpdatedBy}.UpdatedBy"/> property. By default <see cref="DefaultMaxLength"/> will be used.
         /// </param>
         /// <typeparam name="T">The entity type</typeparam>
         /// <returns>The entity configuration after changes</returns>
-        public static EntityTypeConfiguration<T> MapUpdatedMeta<T>(this EntityTypeConfiguration<T> cfg, int maxLength = 128) 
+        public static EntityTypeConfiguration<T> MapUpdatedMeta<T>(this EntityTypeConfiguration<T> cfg, int maxLength = DefaultMaxLength) 
             where T : class, IHaveUpdatedMeta<string>
         {
             cfg.Property(e => e.UpdatedOn).IsRequired();
@@ -113,11 +118,11 @@ namespace SimplePersistence.UoW.EF.Helper
         /// </summary>
         /// <param name="cfg">The entity configuration</param>
         /// <param name="maxLength">
-        /// The max length for the <see cref="IHaveDeletedMeta{TDeletedBy}.DeletedBy"/> property. By default 128 will be used.
+        /// The max length for the <see cref="IHaveDeletedMeta{TDeletedBy}.DeletedBy"/> property. By default <see cref="DefaultMaxLength"/> will be used.
         /// </param>
         /// <typeparam name="T">The entity type</typeparam>
         /// <returns>The entity configuration after changes</returns>
-        public static EntityTypeConfiguration<T> MapDeletedMeta<T>(this EntityTypeConfiguration<T> cfg, int maxLength = 128) 
+        public static EntityTypeConfiguration<T> MapDeletedMeta<T>(this EntityTypeConfiguration<T> cfg, int maxLength = DefaultMaxLength) 
             where T : class, IHaveDeletedMeta<string>
         {
             cfg.Property(e => e.DeletedOn).IsOptional();
