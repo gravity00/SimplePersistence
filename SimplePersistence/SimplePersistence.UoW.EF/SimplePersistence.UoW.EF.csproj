@@ -58,11 +58,16 @@
     <Compile Include="EFSyncRepository.cs" />
     <Compile Include="EFUnitOfWork.cs" />
     <Compile Include="EFWorkArea.cs" />
+    <Compile Include="Helper\CodeFirstMappingExtensions.cs" />
     <Compile Include="IEFUnitOfWork.cs" />
     <Compile Include="IEFWorkArea.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SimplePersistence.Model\SimplePersistence.Model.csproj">
+      <Project>{C2796674-2F28-4261-9AD6-535D12779D5D}</Project>
+      <Name>SimplePersistence.Model</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SimplePersistence.UoW\SimplePersistence.UoW.csproj">
       <Project>{35c665e5-39d3-4026-ad2c-df7cef80ea2d}</Project>
       <Name>SimplePersistence.UoW</Name>
