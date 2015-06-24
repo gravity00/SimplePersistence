@@ -12,7 +12,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("SimplePersistence.Model")]
-[assembly: AssemblyDescription("Library that offers model classes")]
+[assembly: AssemblyDescription("Library that provides consistente model classes guaranteeing ORM compatibility.")]
 [assembly: Guid("26bf2ceb-dec6-43c8-a94d-6d993ea9ffe6")]
 
-[assembly: AssemblyVersion("1.0.1")]
+[assembly: AssemblyVersion("1.0.2")]
