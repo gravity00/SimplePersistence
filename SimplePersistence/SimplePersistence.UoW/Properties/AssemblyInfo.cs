@@ -15,4 +15,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("Library that offers unit of work classes")]
 [assembly: Guid("6c633c6b-b379-48c7-92bd-1e006a0ab01e")]
 
-[assembly: AssemblyVersion("1.0.2")]
+[assembly: AssemblyVersion("1.0.3")]
