@@ -91,7 +91,7 @@ namespace SimplePersistence.Model
     /// </summary>
     /// <typeparam name="TIdentity">The identifier type</typeparam>
     public abstract class EntityWithAllMeta<TIdentity>
-        : EntityWithAllMeta<TIdentity, string, string, string>
+        : EntityWithAllMeta<TIdentity, string, string, string>, IHaveCreatedMeta, IHaveUpdatedMeta, IHaveDeletedMeta
     {
 
     }

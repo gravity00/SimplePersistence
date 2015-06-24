@@ -88,7 +88,7 @@ namespace SimplePersistence.Model
     /// </summary>
     /// <typeparam name="TIdentity">The identifier type</typeparam>
     public abstract class EntityWithCreatedAndUpdatedMetaAndVersionAsLong<TIdentity>
-        : EntityWithCreatedAndUpdatedMetaAndVersionAsLong<TIdentity, string, string>
+        : EntityWithCreatedAndUpdatedMetaAndVersionAsLong<TIdentity, string, string>, IHaveCreatedMeta, IHaveUpdatedMeta
     {
 
     }
