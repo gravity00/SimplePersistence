@@ -30,12 +30,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SimplePersistence.Model, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SimplePersistence.Model.1.0.1\lib\SimplePersistence.Model.dll</HintPath>
+    <Reference Include="SimplePersistence.Model, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimplePersistence.Model.1.0.2\lib\SimplePersistence.Model.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="SimplePersistence.UoW, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SimplePersistence.UoW.1.0.2\lib\SimplePersistence.UoW.dll</HintPath>
+    <Reference Include="SimplePersistence.UoW, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimplePersistence.UoW.1.0.3\lib\SimplePersistence.UoW.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
