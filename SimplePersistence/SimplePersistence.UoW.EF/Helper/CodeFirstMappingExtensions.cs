@@ -13,6 +13,7 @@ namespace SimplePersistence.UoW.EF.Helper
     using System;
     using System.Data.Entity;
     using System.Data.Entity.ModelConfiguration;
+    using System.Data.Entity.ModelConfiguration.Configuration;
     using Model;
 
     /// <summary>
@@ -77,6 +78,8 @@ namespace SimplePersistence.UoW.EF.Helper
 
         #region Mappings
 
+        #region Created Meta
+
         /// <summary>
         /// Maps the created metadata for an entity implementing the <see cref="IHaveCreatedMeta{TCreatedBy}"/>
         /// </summary>
@@ -96,7 +99,35 @@ namespace SimplePersistence.UoW.EF.Helper
         }
 
         /// <summary>
-        /// Maps the updated metadata for an entity implementing the <see cref="IHaveUpdatedMeta{TCreatedBy}"/>
+        /// Maps the created metadata for an entity implementing the <see cref="IHaveCreatedMeta{TCreatedBy}"/>
+        /// </summary>
+        /// <param name="cfg">The entity configuration</param>
+        /// <param name="mapping">
+        /// Optional extra mapping for the <see cref="IHaveCreatedMeta{TCreatedBy}.CreatedBy"/> property.
+        /// May be used to map the inverse relation.
+        /// </param>
+        /// <typeparam name="T">The entity type</typeparam>
+        /// <typeparam name="TCreatedBy">The type of the <see cref="IHaveCreatedMeta{TCreatedBy}.CreatedBy"/> property</typeparam>
+        /// <returns>The entity configuration after changes</returns>
+        public static EntityTypeConfiguration<T> MapCreatedMeta<T,TCreatedBy>(
+            this EntityTypeConfiguration<T> cfg, Action<RequiredNavigationPropertyConfiguration<T, TCreatedBy>> mapping = null)
+            where T : class, IHaveCreatedMeta<TCreatedBy>
+            where TCreatedBy : class 
+        {
+            cfg.Property(e => e.CreatedOn).IsRequired();
+            var propertyConfiguration = cfg.HasRequired(e => e.CreatedBy);
+            if (mapping != null)
+                mapping(propertyConfiguration);
+
+            return cfg;
+        }
+
+        #endregion
+
+        #region Updated Meta
+
+        /// <summary>
+        /// Maps the updated metadata for an entity implementing the <see cref="IHaveUpdatedMeta{TUpdatedBy}"/>
         /// </summary>
         /// <param name="cfg">The entity configuration</param>
         /// <param name="maxLength">
@@ -114,7 +145,35 @@ namespace SimplePersistence.UoW.EF.Helper
         }
 
         /// <summary>
-        /// Maps the deleted metadata for an entity implementing the <see cref="IHaveDeletedMeta{TCreatedBy}"/>
+        /// Maps the updated metadata for an entity implementing the <see cref="IHaveUpdatedMeta{TUpdatedBy}"/>
+        /// </summary>
+        /// <param name="cfg">The entity configuration</param>
+        /// <param name="mapping">
+        /// Optional extra mapping for the <see cref="IHaveUpdatedMeta{TUpdatedBy}.UpdatedBy"/> property. 
+        /// May be used to map the inverse relation.
+        /// </param>
+        /// <typeparam name="T">The entity type</typeparam>
+        /// <typeparam name="TUpdatedBy">The type for the <see cref="IHaveUpdatedMeta{TUpdatedBy}.UpdatedBy"/> property.</typeparam>
+        /// <returns>The entity configuration after changes</returns>
+        public static EntityTypeConfiguration<T> MapUpdatedMeta<T, TUpdatedBy>(
+            this EntityTypeConfiguration<T> cfg, Action<RequiredNavigationPropertyConfiguration<T, TUpdatedBy>> mapping = null)
+            where T : class, IHaveUpdatedMeta<TUpdatedBy>
+            where TUpdatedBy : class
+        {
+            cfg.Property(e => e.UpdatedOn).IsRequired();
+            var propertyConfiguration = cfg.HasRequired(e => e.UpdatedBy);
+            if (mapping != null)
+                mapping(propertyConfiguration);
+
+            return cfg;
+        }
+
+        #endregion
+
+        #region Deleted Meta
+
+        /// <summary>
+        /// Maps the deleted metadata for an entity implementing the <see cref="IHaveDeletedMeta{TDeletedBy}"/>
         /// </summary>
         /// <param name="cfg">The entity configuration</param>
         /// <param name="maxLength">
@@ -132,6 +191,30 @@ namespace SimplePersistence.UoW.EF.Helper
         }
 
         /// <summary>
+        /// Maps the deleted metadata for an entity implementing the <see cref="IHaveDeletedMeta{TDeletedBy}"/>
+        /// </summary>
+        /// <param name="cfg">The entity configuration</param>
+        /// <param name="mapping">
+        /// Optional extra mapping for the <see cref="IHaveDeletedMeta{TDeletedBy}.DeletedBy"/> property. 
+        /// May be used to map the inverse relation.
+        /// </param>
+        /// <typeparam name="T">The entity type</typeparam>
+        /// <typeparam name="TDeletedBy">The type for the <see cref="IHaveDeletedMeta{TDeletedBy}.DeletedBy"/> property.</typeparam>
+        /// <returns>The entity configuration after changes</returns>
+        public static EntityTypeConfiguration<T> MapDeletedMeta<T, TDeletedBy>(
+            this EntityTypeConfiguration<T> cfg, Action<OptionalNavigationPropertyConfiguration<T, TDeletedBy>> mapping = null)
+            where T : class, IHaveDeletedMeta<TDeletedBy>
+            where TDeletedBy : class
+        {
+            cfg.Property(e => e.DeletedOn).IsOptional();
+            var propertyConfiguration = cfg.HasOptional(e => e.DeletedBy);
+            if (mapping != null)
+                mapping(propertyConfiguration);
+
+            return cfg;
+        }
+
+        /// <summary>
         /// Maps the deleted metadata for an entity implementing the <see cref="IHaveSoftDelete"/>
         /// </summary>
         /// <param name="cfg">The entity configuration</param>
@@ -144,6 +227,8 @@ namespace SimplePersistence.UoW.EF.Helper
 
             return cfg;
         }
+
+        #endregion
 
         /// <summary>
         /// Maps the deleted metadata for an entity implementing the <see cref="IHaveVersionAsByteArray"/>
