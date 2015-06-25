@@ -42,7 +42,14 @@
     <Compile Include="..\SimplePersistence\Properties\ProductAssemblyInfo.cs">
       <Link>Properties\ProductAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="IClaimType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SimplePersistence.Model\SimplePersistence.Model.csproj">
+      <Project>{c2796674-2f28-4261-9ad6-535d12779d5d}</Project>
+      <Name>SimplePersistence.Model</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
