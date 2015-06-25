@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimplePersistence.UoW.EF", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimplePersistence.UoW.IoC.Castle", "SimplePersistence.UoW.IoC.Castle\SimplePersistence.UoW.IoC.Castle.csproj", "{33C512F9-6821-480F-8A33-0E2D842D2C20}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimplePersistence.Model.Security", "SimplePersistence.Model.Security\SimplePersistence.Model.Security.csproj", "{09641648-4657-4892-945B-780B2B8ABEDA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{33C512F9-6821-480F-8A33-0E2D842D2C20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33C512F9-6821-480F-8A33-0E2D842D2C20}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33C512F9-6821-480F-8A33-0E2D842D2C20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09641648-4657-4892-945B-780B2B8ABEDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09641648-4657-4892-945B-780B2B8ABEDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09641648-4657-4892-945B-780B2B8ABEDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09641648-4657-4892-945B-780B2B8ABEDA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
