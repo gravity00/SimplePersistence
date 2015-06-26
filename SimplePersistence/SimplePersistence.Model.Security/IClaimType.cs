@@ -12,6 +12,6 @@ namespace SimplePersistence.Model.Security
 {
     public interface IClaimType : IEntity<string>
     {
-
+        string Description { get; set; }
     }
 }
