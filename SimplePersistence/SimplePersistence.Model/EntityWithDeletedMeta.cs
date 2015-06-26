@@ -18,7 +18,8 @@ namespace SimplePersistence.Model
     /// <typeparam name="TIdentity">The identifier type</typeparam>
     /// <typeparam name="TDeletedBy">The deleted by type</typeparam>
     public abstract class EntityWithDeletedMeta<TIdentity, TDeletedBy>
-        : Entity<TIdentity>, IHaveDeletedMeta<TDeletedBy>
+        : Entity<TIdentity>, IHaveDeletedMeta<TDeletedBy> 
+        where TIdentity : IEquatable<TIdentity>
     {
         /// <summary>
         /// The <see cref="DateTimeOffset"/> when it was soft deleted
@@ -37,7 +38,8 @@ namespace SimplePersistence.Model
     /// </summary>
     /// <typeparam name="TIdentity">The identifier type</typeparam>
     public abstract class EntityWithDeletedMeta<TIdentity>
-        : EntityWithDeletedMeta<TIdentity, string>, IHaveDeletedMeta
+        : EntityWithDeletedMeta<TIdentity, string>, IHaveDeletedMeta 
+        where TIdentity : IEquatable<TIdentity>
     {
 
     }

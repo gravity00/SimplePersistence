@@ -21,6 +21,7 @@ namespace SimplePersistence.Model
     /// <typeparam name="TUpdatedBy">The updated by type</typeparam>
     public abstract class EntityWithCreatedAndUpdatedMetaAndVersionAsLong<TIdentity, TCreatedBy, TUpdatedBy>
         : Entity<TIdentity>, IHaveCreatedMeta<TCreatedBy>, IHaveUpdatedMeta<TUpdatedBy>, IHaveVersionAsLong
+        where TIdentity : IEquatable<TIdentity>
     {
         private DateTimeOffset _createdOn;
         private DateTimeOffset _updatedOn;
@@ -76,6 +77,7 @@ namespace SimplePersistence.Model
     /// <typeparam name="TCreatedAndUpdated">The created and updated by type</typeparam>
     public abstract class EntityWithCreatedAndUpdatedMetaAndVersionAsLong<TIdentity, TCreatedAndUpdated>
         : EntityWithCreatedAndUpdatedMetaAndVersionAsLong<TIdentity, TCreatedAndUpdated, TCreatedAndUpdated>
+        where TIdentity : IEquatable<TIdentity>
     {
 
     }
@@ -89,6 +91,7 @@ namespace SimplePersistence.Model
     /// <typeparam name="TIdentity">The identifier type</typeparam>
     public abstract class EntityWithCreatedAndUpdatedMetaAndVersionAsLong<TIdentity>
         : EntityWithCreatedAndUpdatedMetaAndVersionAsLong<TIdentity, string, string>, IHaveCreatedMeta, IHaveUpdatedMeta
+        where TIdentity : IEquatable<TIdentity>
     {
 
     }

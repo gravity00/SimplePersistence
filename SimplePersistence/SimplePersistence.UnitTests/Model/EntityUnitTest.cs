@@ -10,6 +10,8 @@
 #endregion
 namespace SimplePersistence.UnitTests.Model
 {
+    using System;
+
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using SimplePersistence.Model;
 
@@ -46,7 +48,11 @@ namespace SimplePersistence.UnitTests.Model
 
         #region Mock
 
-        private class MockEntity<TIdentity> : Entity<TIdentity> { }
+        private class MockEntity<TIdentity> : Entity<TIdentity>
+            where TIdentity : IEquatable<TIdentity>
+        {
+            
+        }
 
         #endregion
     }

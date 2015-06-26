@@ -21,8 +21,8 @@ namespace SimplePersistence.Model
     /// <typeparam name="TUpdatedBy">The updated by type</typeparam>
     /// <typeparam name="TDeletedBy">The deleted by type</typeparam>
     public abstract class EntityWithAllMetaAndVersionAsByteArray<TIdentity, TCreatedBy, TUpdatedBy, TDeletedBy>
-        : Entity<TIdentity>, IHaveCreatedMeta<TCreatedBy>, IHaveUpdatedMeta<TUpdatedBy>, 
-        IHaveDeletedMeta<TDeletedBy>, IHaveVersionAsByteArray
+        : Entity<TIdentity>, IHaveCreatedMeta<TCreatedBy>, IHaveUpdatedMeta<TUpdatedBy>, IHaveDeletedMeta<TDeletedBy>, IHaveVersionAsByteArray
+        where TIdentity : IEquatable<TIdentity>
     {
         private DateTimeOffset _createdOn;
         private DateTimeOffset _updatedOn;
@@ -88,6 +88,7 @@ namespace SimplePersistence.Model
     /// <typeparam name="TCreatedUpdatedAndDeleted">The created, updated and deleted by type</typeparam>
     public abstract class EntityWithAllMetaAndVersionAsByteArray<TIdentity, TCreatedUpdatedAndDeleted>
         : EntityWithAllMetaAndVersionAsByteArray<TIdentity, TCreatedUpdatedAndDeleted, TCreatedUpdatedAndDeleted, TCreatedUpdatedAndDeleted>
+        where TIdentity : IEquatable<TIdentity>
     {
         
     }
@@ -101,6 +102,7 @@ namespace SimplePersistence.Model
     /// <typeparam name="TIdentity">The identifier type</typeparam>
     public abstract class EntityWithAllMetaAndVersionAsByteArray<TIdentity>
         : EntityWithAllMetaAndVersionAsByteArray<TIdentity, string, string, string>, IHaveCreatedMeta, IHaveUpdatedMeta, IHaveDeletedMeta
+        where TIdentity : IEquatable<TIdentity>
     {
 
     }

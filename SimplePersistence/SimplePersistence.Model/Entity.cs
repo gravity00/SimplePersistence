@@ -10,11 +10,14 @@
 #endregion
 namespace SimplePersistence.Model
 {
+    using System;
+
     /// <summary>
     /// Represents an entity with a unique identifier
     /// </summary>
     /// <typeparam name="TIdentity">The unique identifier type</typeparam>
-    public abstract class Entity<TIdentity> : IEntity<TIdentity>
+    public abstract class Entity<TIdentity> : IEntity<TIdentity> 
+        where TIdentity : IEquatable<TIdentity>
     {
         /// <summary>
         /// Unique identifier

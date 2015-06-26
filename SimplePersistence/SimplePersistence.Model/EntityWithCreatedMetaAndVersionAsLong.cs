@@ -19,7 +19,8 @@ namespace SimplePersistence.Model
     /// <typeparam name="TIdentity">The identifier type</typeparam>
     /// <typeparam name="TCreatedBy">The created by type</typeparam>
     public abstract class EntityWithCreatedMetaAndVersionAsLong<TIdentity, TCreatedBy>
-        : Entity<TIdentity>, IHaveCreatedMeta<TCreatedBy>, IHaveVersionAsLong
+        : Entity<TIdentity>, IHaveCreatedMeta<TCreatedBy>, IHaveVersionAsLong 
+        where TIdentity : IEquatable<TIdentity>
     {
         private DateTimeOffset _createdOn;
 
@@ -59,7 +60,8 @@ namespace SimplePersistence.Model
     /// </summary>
     /// <typeparam name="TIdentity">The identifier type</typeparam>
     public abstract class EntityWithCreatedMetaAndVersionAsLong<TIdentity>
-        : EntityWithCreatedMetaAndVersionAsLong<TIdentity, string>, IHaveCreatedMeta
+        : EntityWithCreatedMetaAndVersionAsLong<TIdentity, string>, IHaveCreatedMeta 
+        where TIdentity : IEquatable<TIdentity>
     {
 
     }

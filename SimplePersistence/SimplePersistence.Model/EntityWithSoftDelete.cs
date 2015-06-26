@@ -10,11 +10,14 @@
 #endregion
 namespace SimplePersistence.Model
 {
+    using System;
+
     /// <summary>
     /// Represents an entity that has an unique identifier and soft delete
     /// </summary>
     /// <typeparam name="TIdentity">The identifier type</typeparam>
-    public abstract class EntityWithSoftDelete<TIdentity> : Entity<TIdentity>, IHaveSoftDelete
+    public abstract class EntityWithSoftDelete<TIdentity> : Entity<TIdentity>, IHaveSoftDelete 
+        where TIdentity : IEquatable<TIdentity>
     {
         /// <summary>
         /// Is the entity deleted?

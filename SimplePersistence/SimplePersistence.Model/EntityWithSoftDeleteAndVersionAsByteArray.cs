@@ -10,6 +10,8 @@
 #endregion
 namespace SimplePersistence.Model
 {
+    using System;
+
     /// <summary>
     /// Represents an entity that has an unique identifier and soft delete,
     /// using a byte[] for the <see cref="IHaveVersion{T}.Version"/>.
@@ -17,6 +19,7 @@ namespace SimplePersistence.Model
     /// <typeparam name="TIdentity">The identifier type</typeparam>
     public abstract class EntityWithSoftDeleteAndVersionAsByteArray<TIdentity>
         : Entity<TIdentity>, IHaveSoftDelete, IHaveVersionAsByteArray
+        where TIdentity : IEquatable<TIdentity>
     {
         /// <summary>
         /// Is the entity deleted?

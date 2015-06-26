@@ -21,6 +21,7 @@ namespace SimplePersistence.Model
     /// <typeparam name="TDeletedBy">The deleted by type</typeparam>
     public abstract class EntityWithAllMeta<TIdentity, TCreatedBy, TUpdatedBy, TDeletedBy>
         : Entity<TIdentity>, IHaveCreatedMeta<TCreatedBy>, IHaveUpdatedMeta<TUpdatedBy>, IHaveDeletedMeta<TDeletedBy>
+        where TIdentity : IEquatable<TIdentity>
     {
         private DateTimeOffset _createdOn;
         private DateTimeOffset _updatedOn;
@@ -80,6 +81,7 @@ namespace SimplePersistence.Model
     /// <typeparam name="TCreatedUpdatedAndDeleted">The created, updated and deleted by type</typeparam>
     public abstract class EntityWithAllMeta<TIdentity, TCreatedUpdatedAndDeleted>
         : EntityWithAllMeta<TIdentity, TCreatedUpdatedAndDeleted, TCreatedUpdatedAndDeleted, TCreatedUpdatedAndDeleted>
+        where TIdentity : IEquatable<TIdentity>
     {
         
     }
@@ -92,6 +94,7 @@ namespace SimplePersistence.Model
     /// <typeparam name="TIdentity">The identifier type</typeparam>
     public abstract class EntityWithAllMeta<TIdentity>
         : EntityWithAllMeta<TIdentity, string, string, string>, IHaveCreatedMeta, IHaveUpdatedMeta, IHaveDeletedMeta
+        where TIdentity : IEquatable<TIdentity>
     {
 
     }

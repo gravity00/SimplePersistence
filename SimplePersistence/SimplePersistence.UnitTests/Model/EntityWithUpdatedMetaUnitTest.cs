@@ -70,9 +70,15 @@ namespace SimplePersistence.UnitTests.Model
 
         #region Mock
 
-        private class MockEntity<TIdentity> : EntityWithUpdatedMeta<TIdentity> { }
+        private class MockEntity<TIdentity> : EntityWithUpdatedMeta<TIdentity> 
+            where TIdentity : IEquatable<TIdentity>
+        {
+            
+        }
 
-        private class MockEntity<TIdentity, TUpdatedBy> : EntityWithUpdatedMeta<TIdentity, TUpdatedBy> { }
+        private class MockEntity<TIdentity, TUpdatedBy> : EntityWithUpdatedMeta<TIdentity, TUpdatedBy> 
+            where TIdentity : IEquatable<TIdentity>
+        { }
 
         #endregion
 
