@@ -10,10 +10,19 @@
 #endregion
 namespace SimplePersistence.Model.Security
 {
+    /// <summary>
+    /// Represents an user role
+    /// </summary>
     public interface IRole : IEntity<string>
     {
+        /// <summary>
+        /// The role name
+        /// </summary>
         string Name { get; set; }
 
+        /// <summary>
+        /// The role description
+        /// </summary>
         string Description { get; set; }
     }
 }

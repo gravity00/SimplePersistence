@@ -51,6 +51,7 @@
     <Compile Include="IUserClaim.cs" />
     <Compile Include="LoginProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Role.cs" />
     <Compile Include="UserClaim.cs" />
   </ItemGroup>
   <ItemGroup>
