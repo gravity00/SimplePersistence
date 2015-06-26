@@ -13,8 +13,14 @@ namespace SimplePersistence.UoW.NH
     using System;
     using NHibernate;
 
+    /// <summary>
+    /// Interface representing an unit of work specialized for the NHibernate
+    /// </summary>
     public interface INHibernateUnitOfWork : IUnitOfWork, IDisposable
     {
+        /// <summary>
+        /// The database session
+        /// </summary>
         ISession Session { get; }
     }
 }
