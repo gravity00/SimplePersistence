@@ -10,8 +10,14 @@
 #endregion
 namespace SimplePersistence.Model.Security
 {
+    /// <summary>
+    /// Represents a claim
+    /// </summary>
     public interface IClaimType : IEntity<string>
     {
+        /// <summary>
+        /// The claim description
+        /// </summary>
         string Description { get; set; }
     }
 }

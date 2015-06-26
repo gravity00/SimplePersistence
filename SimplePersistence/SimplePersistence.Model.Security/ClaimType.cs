@@ -10,8 +10,14 @@
 #endregion
 namespace SimplePersistence.Model.Security
 {
+    /// <summary>
+    /// Represents a claim
+    /// </summary>
     public class ClaimType : Entity<string>, IClaimType
     {
+        /// <summary>
+        /// The claim description
+        /// </summary>
         public virtual string Description { get; set; }
     }
 }
