@@ -13,16 +13,16 @@ namespace SimplePersistence.Model.Security
     /// <summary>
     /// Represents an external login provider
     /// </summary>
-    public interface ILoginProvider : IEntity<string>
+    public class LoginProvider : Entity<string>, ILoginProvider
     {
         /// <summary>
         /// The login provider name
         /// </summary>
-        string Name { get; set; }
+        public virtual string Name { get; set; }
 
         /// <summary>
         /// A more detailed description fo the login provider
         /// </summary>
-        string Description { get; set; }
+        public virtual string Description { get; set; }
     }
 }
