@@ -15,8 +15,10 @@ namespace SimplePersistence.Model.Security
     /// <summary>
     ///     EntityType that represents one specific user claim
     /// </summary>
-    /// <typeparam name="TUserKey"></typeparam>
-    public class UserClaim<TUserKey> : Entity<int>, IUserClaim<TUserKey> 
+    /// <typeparam name="TUserKey">The user key type</typeparam>
+    /// <typeparam name="TClaimType">The claim type</typeparam>
+    public class UserClaim<TUserKey, TClaimType> : Entity<int>
+        where TClaimType : IClaimType
         where TUserKey : IEquatable<TUserKey>
     {
         /// <summary>
@@ -27,7 +29,7 @@ namespace SimplePersistence.Model.Security
         /// <summary>
         ///     Claim type
         /// </summary>
-        public virtual string ClaimTypeId { get; set; }
+        public virtual TClaimType ClaimType { get; set; }
 
         /// <summary>
         ///     Claim value
@@ -35,5 +37,5 @@ namespace SimplePersistence.Model.Security
         public virtual string ClaimValue { get; set; }
     }
 
-    public class UserClaim : UserClaim<string> { }
+    public class UserClaim : UserClaim<string, ClaimType> { }
 }

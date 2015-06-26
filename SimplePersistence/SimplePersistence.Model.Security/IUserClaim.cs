@@ -12,17 +12,19 @@ namespace SimplePersistence.Model.Security
 {
     using System;
 
-    public interface IUserClaim<TKey> : IEntity<int> where TKey : IEquatable<TKey>
+    public interface IUserClaim<TUserKey, TClaimType> : IEntity<int> 
+        where TClaimType : IClaimType
+        where TUserKey : IEquatable<TUserKey>
     {
         /// <summary>
         ///     User Id for the user who owns this claim
         /// </summary>
-        TKey UserId { get; set; }
+        TUserKey UserId { get; set; }
 
         /// <summary>
-        ///     Claim type id
+        ///     Claim type
         /// </summary>
-        string ClaimTypeId { get; set; }
+        TClaimType ClaimType { get; set; }
 
         /// <summary>
         ///     Claim value
