@@ -11,7 +11,9 @@
 namespace SimplePersistence.UoW.EF.Helper
 {
     using System;
+    using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity;
+    using System.Data.Entity.Infrastructure.Annotations;
     using System.Data.Entity.ModelConfiguration;
     using System.Data.Entity.ModelConfiguration.Configuration;
     using Model;
@@ -22,9 +24,14 @@ namespace SimplePersistence.UoW.EF.Helper
     public static class CodeFirstMappingExtensions
     {
         /// <summary>
-        /// The default max length used in metadata fields
+        /// The default (128) max length used in metadata fields
         /// </summary>
         public const int DefaultMaxLength = 128;
+
+        /// <summary>
+        /// The default value when a property can have an index. By default is false.
+        /// </summary>
+        public const bool DefaultPropertyNeedsIndex = false;
 
         #region Entity
 
@@ -87,12 +94,18 @@ namespace SimplePersistence.UoW.EF.Helper
         /// <param name="maxLength">
         /// The max length for the <see cref="IHaveCreatedMeta{TCreatedBy}.CreatedBy"/> property. By default <see cref="DefaultMaxLength"/> will be used.
         /// </param>
+        /// <param name="propertyCreatedOnNeedsIndex">
+        /// Does <see cref="IHaveCreatedMeta{TCreatedBy}.CreatedOn"/> needs an index? By default <see cref="DefaultPropertyNeedsIndex"/> will be used.
+        /// </param>
         /// <typeparam name="T">The entity type</typeparam>
         /// <returns>The entity configuration after changes</returns>
-        public static EntityTypeConfiguration<T> MapCreatedMeta<T>(this EntityTypeConfiguration<T> cfg, int maxLength = DefaultMaxLength) 
+        public static EntityTypeConfiguration<T> MapCreatedMeta<T>(
+            this EntityTypeConfiguration<T> cfg, int maxLength = DefaultMaxLength, bool propertyCreatedOnNeedsIndex = DefaultPropertyNeedsIndex) 
             where T : class, IHaveCreatedMeta<string>
         {
-            cfg.Property(e => e.CreatedOn).IsRequired();
+            var propertyConfiguration = cfg.Property(e => e.CreatedOn).IsRequired();
+            if (propertyCreatedOnNeedsIndex)
+                propertyConfiguration.AddIndex();
             cfg.Property(e => e.CreatedBy).IsRequired().HasMaxLength(maxLength);
 
             return cfg;
@@ -106,15 +119,20 @@ namespace SimplePersistence.UoW.EF.Helper
         /// Optional extra mapping for the <see cref="IHaveCreatedMeta{TCreatedBy}.CreatedBy"/> property.
         /// May be used to map the inverse relation.
         /// </param>
+        /// <param name="propertyCreatedOnNeedsIndex">
+        /// Does <see cref="IHaveCreatedMeta{TCreatedBy}.CreatedOn"/> needs an index? By default <see cref="DefaultPropertyNeedsIndex"/> will be used.
+        /// </param>
         /// <typeparam name="T">The entity type</typeparam>
         /// <typeparam name="TCreatedBy">The type of the <see cref="IHaveCreatedMeta{TCreatedBy}.CreatedBy"/> property</typeparam>
         /// <returns>The entity configuration after changes</returns>
         public static EntityTypeConfiguration<T> MapCreatedMeta<T,TCreatedBy>(
-            this EntityTypeConfiguration<T> cfg, Action<RequiredNavigationPropertyConfiguration<T, TCreatedBy>> mapping = null)
+            this EntityTypeConfiguration<T> cfg, Action<RequiredNavigationPropertyConfiguration<T, TCreatedBy>> mapping = null, bool propertyCreatedOnNeedsIndex = DefaultPropertyNeedsIndex)
             where T : class, IHaveCreatedMeta<TCreatedBy>
             where TCreatedBy : class 
         {
-            cfg.Property(e => e.CreatedOn).IsRequired();
+            var propertyCreatedOnConfiguration = cfg.Property(e => e.CreatedOn).IsRequired();
+            if (propertyCreatedOnNeedsIndex)
+                propertyCreatedOnConfiguration.AddIndex();
             var propertyConfiguration = cfg.HasRequired(e => e.CreatedBy);
             if (mapping != null)
                 mapping(propertyConfiguration);
@@ -133,12 +151,18 @@ namespace SimplePersistence.UoW.EF.Helper
         /// <param name="maxLength">
         /// The max length for the <see cref="IHaveUpdatedMeta{TUpdatedBy}.UpdatedBy"/> property. By default <see cref="DefaultMaxLength"/> will be used.
         /// </param>
+        /// <param name="propertyUpdatedOnNeedsIndex">
+        /// Does <see cref="IHaveUpdatedMeta{TUpdatedBy}.UpdatedOn"/> needs an index? By default <see cref="DefaultPropertyNeedsIndex"/> will be used.
+        /// </param>
         /// <typeparam name="T">The entity type</typeparam>
         /// <returns>The entity configuration after changes</returns>
-        public static EntityTypeConfiguration<T> MapUpdatedMeta<T>(this EntityTypeConfiguration<T> cfg, int maxLength = DefaultMaxLength) 
+        public static EntityTypeConfiguration<T> MapUpdatedMeta<T>(
+            this EntityTypeConfiguration<T> cfg, int maxLength = DefaultMaxLength, bool propertyUpdatedOnNeedsIndex = DefaultPropertyNeedsIndex) 
             where T : class, IHaveUpdatedMeta<string>
         {
-            cfg.Property(e => e.UpdatedOn).IsRequired();
+            var propertyConfiguration = cfg.Property(e => e.UpdatedOn).IsRequired();
+            if (propertyUpdatedOnNeedsIndex)
+                propertyConfiguration.AddIndex();
             cfg.Property(e => e.UpdatedBy).IsRequired().HasMaxLength(maxLength);
 
             return cfg;
@@ -152,15 +176,20 @@ namespace SimplePersistence.UoW.EF.Helper
         /// Optional extra mapping for the <see cref="IHaveUpdatedMeta{TUpdatedBy}.UpdatedBy"/> property. 
         /// May be used to map the inverse relation.
         /// </param>
+        /// <param name="propertyUpdatedOnNeedsIndex">
+        /// Does <see cref="IHaveUpdatedMeta{TUpdatedBy}.UpdatedOn"/> needs an index? By default <see cref="DefaultPropertyNeedsIndex"/> will be used.
+        /// </param>
         /// <typeparam name="T">The entity type</typeparam>
         /// <typeparam name="TUpdatedBy">The type for the <see cref="IHaveUpdatedMeta{TUpdatedBy}.UpdatedBy"/> property.</typeparam>
         /// <returns>The entity configuration after changes</returns>
         public static EntityTypeConfiguration<T> MapUpdatedMeta<T, TUpdatedBy>(
-            this EntityTypeConfiguration<T> cfg, Action<RequiredNavigationPropertyConfiguration<T, TUpdatedBy>> mapping = null)
+            this EntityTypeConfiguration<T> cfg, Action<RequiredNavigationPropertyConfiguration<T, TUpdatedBy>> mapping = null, bool propertyUpdatedOnNeedsIndex = DefaultPropertyNeedsIndex)
             where T : class, IHaveUpdatedMeta<TUpdatedBy>
             where TUpdatedBy : class
         {
-            cfg.Property(e => e.UpdatedOn).IsRequired();
+            var propertyUpdatedOnConfiguration = cfg.Property(e => e.UpdatedOn).IsRequired();
+            if (propertyUpdatedOnNeedsIndex)
+                propertyUpdatedOnConfiguration.AddIndex();
             var propertyConfiguration = cfg.HasRequired(e => e.UpdatedBy);
             if (mapping != null)
                 mapping(propertyConfiguration);
@@ -179,12 +208,18 @@ namespace SimplePersistence.UoW.EF.Helper
         /// <param name="maxLength">
         /// The max length for the <see cref="IHaveDeletedMeta{TDeletedBy}.DeletedBy"/> property. By default <see cref="DefaultMaxLength"/> will be used.
         /// </param>
+        /// <param name="propertyDeletedOnNeedsIndex">
+        /// Does <see cref="IHaveDeletedMeta{TDeletedBy}.DeletedOn"/> needs an index? By default <see cref="DefaultPropertyNeedsIndex"/> will be used.
+        /// </param>
         /// <typeparam name="T">The entity type</typeparam>
         /// <returns>The entity configuration after changes</returns>
-        public static EntityTypeConfiguration<T> MapDeletedMeta<T>(this EntityTypeConfiguration<T> cfg, int maxLength = DefaultMaxLength) 
+        public static EntityTypeConfiguration<T> MapDeletedMeta<T>(
+            this EntityTypeConfiguration<T> cfg, int maxLength = DefaultMaxLength, bool propertyDeletedOnNeedsIndex = DefaultPropertyNeedsIndex) 
             where T : class, IHaveDeletedMeta<string>
         {
-            cfg.Property(e => e.DeletedOn).IsOptional();
+            var propertyConfiguration = cfg.Property(e => e.DeletedOn).IsOptional();
+            if (propertyDeletedOnNeedsIndex)
+                propertyConfiguration.AddIndex();
             cfg.Property(e => e.DeletedBy).IsOptional().HasMaxLength(maxLength);
 
             return cfg;
@@ -198,15 +233,20 @@ namespace SimplePersistence.UoW.EF.Helper
         /// Optional extra mapping for the <see cref="IHaveDeletedMeta{TDeletedBy}.DeletedBy"/> property. 
         /// May be used to map the inverse relation.
         /// </param>
+        /// <param name="propertyDeletedOnNeedsIndex">
+        /// Does <see cref="IHaveDeletedMeta{TDeletedBy}.DeletedOn"/> needs an index? By default <see cref="DefaultPropertyNeedsIndex"/> will be used.
+        /// </param>
         /// <typeparam name="T">The entity type</typeparam>
         /// <typeparam name="TDeletedBy">The type for the <see cref="IHaveDeletedMeta{TDeletedBy}.DeletedBy"/> property.</typeparam>
         /// <returns>The entity configuration after changes</returns>
         public static EntityTypeConfiguration<T> MapDeletedMeta<T, TDeletedBy>(
-            this EntityTypeConfiguration<T> cfg, Action<OptionalNavigationPropertyConfiguration<T, TDeletedBy>> mapping = null)
+            this EntityTypeConfiguration<T> cfg, Action<OptionalNavigationPropertyConfiguration<T, TDeletedBy>> mapping = null, bool propertyDeletedOnNeedsIndex = DefaultPropertyNeedsIndex)
             where T : class, IHaveDeletedMeta<TDeletedBy>
             where TDeletedBy : class
         {
-            cfg.Property(e => e.DeletedOn).IsOptional();
+            var propertyDeletedOnConfiguration = cfg.Property(e => e.DeletedOn).IsOptional();
+            if (propertyDeletedOnNeedsIndex)
+                propertyDeletedOnConfiguration.AddIndex();
             var propertyConfiguration = cfg.HasOptional(e => e.DeletedBy);
             if (mapping != null)
                 mapping(propertyConfiguration);
@@ -218,12 +258,17 @@ namespace SimplePersistence.UoW.EF.Helper
         /// Maps the deleted metadata for an entity implementing the <see cref="IHaveSoftDelete"/>
         /// </summary>
         /// <param name="cfg">The entity configuration</param>
+        /// <param name="propertyDeletedOnNeedsIndex">
+        /// Does <see cref="IHaveSoftDelete.Deleted"/> needs an index? By default <see cref="DefaultPropertyNeedsIndex"/> will be used.
+        /// </param>
         /// <typeparam name="T">The entity type</typeparam>
         /// <returns>The entity configuration after changes</returns>
-        public static EntityTypeConfiguration<T> MapSoftDeleteMeta<T>(this EntityTypeConfiguration<T> cfg)
+        public static EntityTypeConfiguration<T> MapSoftDeleteMeta<T>(this EntityTypeConfiguration<T> cfg, bool propertyDeletedOnNeedsIndex = DefaultPropertyNeedsIndex)
             where T : class, IHaveSoftDelete
         {
-            cfg.Property(e => e.Deleted).IsRequired();
+            var propertyConfiguration = cfg.Property(e => e.Deleted).IsRequired();
+            if (propertyDeletedOnNeedsIndex)
+                propertyConfiguration.AddIndex();
 
             return cfg;
         }
@@ -242,6 +287,50 @@ namespace SimplePersistence.UoW.EF.Helper
             cfg.Property(e => e.Version).IsRequired().IsRowVersion();
 
             return cfg;
+        }
+
+        #endregion
+
+        #region Indexes
+
+        /// <summary>
+        /// Adds an index to the given <see cref="DateTimePropertyConfiguration"/>
+        /// </summary>
+        /// <param name="cfg">The property configuration</param>
+        /// <param name="name">The name of the index if needed</param>
+        /// <param name="order">The index order</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static DateTimePropertyConfiguration AddIndex(this DateTimePropertyConfiguration cfg, string name = null, int? order = null)
+        {
+            if (cfg == null) throw new ArgumentNullException("cfg");
+
+            var ia = name == null
+                ? new IndexAttribute()
+                : (order == null
+                    ? new IndexAttribute(name)
+                    : new IndexAttribute(name, order.Value));
+            return cfg.HasColumnAnnotation(IndexAnnotation.AnnotationName, new IndexAnnotation(ia));
+        }
+
+        /// <summary>
+        /// Adds an index to the given <see cref="PrimitivePropertyConfiguration"/>
+        /// </summary>
+        /// <param name="cfg">The property configuration</param>
+        /// <param name="name">The name of the index if needed</param>
+        /// <param name="order">The index order</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static PrimitivePropertyConfiguration AddIndex(this PrimitivePropertyConfiguration cfg, string name = null, int? order = null)
+        {
+            if (cfg == null) throw new ArgumentNullException("cfg");
+
+            var ia = name == null
+                ? new IndexAttribute()
+                : (order == null
+                    ? new IndexAttribute(name)
+                    : new IndexAttribute(name, order.Value));
+            return cfg.HasColumnAnnotation(IndexAnnotation.AnnotationName, new IndexAnnotation(ia));
         }
 
         #endregion
