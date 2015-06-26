@@ -13,7 +13,7 @@ namespace SimplePersistence.Model.Security
     using System;
 
     /// <summary>
-    ///     EntityType that represents one specific user claim
+    /// EntityType that represents one specific user claim
     /// </summary>
     /// <typeparam name="TUserKey">The user key type</typeparam>
     /// <typeparam name="TClaimType">The claim type</typeparam>
@@ -22,20 +22,35 @@ namespace SimplePersistence.Model.Security
         where TUserKey : IEquatable<TUserKey>
     {
         /// <summary>
-        ///     User Id for the user who owns this claim
+        /// User Id for the user who owns this claim
         /// </summary>
         public virtual TUserKey UserId { get; set; }
 
         /// <summary>
-        ///     Claim type
+        /// Claim type
         /// </summary>
         public virtual TClaimType ClaimType { get; set; }
 
         /// <summary>
-        ///     Claim value
+        /// Claim value
         /// </summary>
         public virtual string ClaimValue { get; set; }
     }
 
-    public class UserClaim : UserClaim<string, ClaimType> { }
+    /// <summary>
+    /// EntityType that represents one specific user claim
+    /// </summary>
+    public class UserClaim<TUserKey> : UserClaim<TUserKey, ClaimType>
+        where TUserKey : IEquatable<TUserKey>
+    {
+
+    }
+
+    /// <summary>
+    /// EntityType that represents one specific user claim
+    /// </summary>
+    public class UserClaim : UserClaim<string, ClaimType>
+    {
+        
+    }
 }
