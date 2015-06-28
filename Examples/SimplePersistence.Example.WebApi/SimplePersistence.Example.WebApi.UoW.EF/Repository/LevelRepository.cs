@@ -7,7 +7,8 @@ namespace SimplePersistence.Example.WebApi.UoW.EF.Repository
 {
     public class LevelRepository : EFRepository<Level, string>, ILevelRepository
     {
-        public LevelRepository(DbContext dbContext) : base(dbContext)
+        public LevelRepository(DbContext dbContext) 
+            : base(dbContext)
         {
 
         }
