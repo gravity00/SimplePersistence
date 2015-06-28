@@ -67,6 +67,10 @@
     <Compile Include="Area\LoggingWorkArea.cs" />
     <Compile Include="Mapping\ApiDbContext.cs" />
     <Compile Include="Mapping\Seed\LoggingSeed.cs" />
+    <Compile Include="Migrations\201506281732495_Initial.cs" />
+    <Compile Include="Migrations\201506281732495_Initial.Designer.cs">
+      <DependentUpon>201506281732495_Initial.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\ApplicationRepository.cs" />
@@ -87,7 +91,11 @@
       <Name>SimplePersistence.Example.WebApi.UoW</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201506281732495_Initial.resx">
+      <DependentUpon>201506281732495_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
