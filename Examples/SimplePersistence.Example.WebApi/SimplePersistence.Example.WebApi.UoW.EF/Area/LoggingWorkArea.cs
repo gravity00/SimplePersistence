@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Data.Entity;
 using SimplePersistence.Example.WebApi.UoW.Area;
+using SimplePersistence.Example.WebApi.UoW.EF.Mapping;
 using SimplePersistence.Example.WebApi.UoW.EF.Repository;
 using SimplePersistence.Example.WebApi.UoW.Repository;
 using SimplePersistence.UoW.EF;
 
 namespace SimplePersistence.Example.WebApi.UoW.EF.Area
 {
-    public class LoggingWorkArea : EFWorkArea, ILoggingWorkArea
+    public class LoggingWorkArea : EFWorkArea<ApiDbContext>, ILoggingWorkArea
     {
         private readonly Lazy<IApplicationRepository> _lazyApplicationRepository;
         private readonly Lazy<ILevelRepository> _lazyLevelRepository;
         private readonly Lazy<ILogRepository> _lazyLogRepository;
 
-        public LoggingWorkArea(DbContext context) : base(context)
+        public LoggingWorkArea(ApiDbContext context)
+            : base(context)
         {
             _lazyApplicationRepository = new Lazy<IApplicationRepository>(() => new ApplicationRepository(context));
             _lazyLevelRepository = new Lazy<ILevelRepository>(() => new LevelRepository(context));
