@@ -50,7 +50,12 @@
     <Compile Include="..\SimplePersistence.Example.WebApi\Properties\ProductAssemblyInfo.cs">
       <Link>Properties\ProductAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Repository\IApplicationRepository.cs" />
+    <Compile Include="Area\ILoggingWorkArea.cs" />
+    <Compile Include="IApiUnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\ILevelRepository.cs" />
+    <Compile Include="Repository\ILogRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -61,6 +66,7 @@
       <Name>SimplePersistence.Example.WebApi.Models</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
