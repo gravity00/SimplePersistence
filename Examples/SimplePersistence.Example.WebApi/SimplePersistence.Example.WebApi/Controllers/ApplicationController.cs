@@ -8,11 +8,14 @@ using SimplePersistence.Example.WebApi.Helpers;
 using SimplePersistence.Example.WebApi.Models.Logging;
 using SimplePersistence.Example.WebApi.UoW;
 using SimplePersistence.UoW;
+using SimplePersistence.UoW.Exceptions;
 
 namespace SimplePersistence.Example.WebApi.Controllers
 {
-    public class ApplicationController : ODataController, ODataGet<Application>.WithKey<string>,
-        ODataPost<Application>
+    public class ApplicationController : ODataController, 
+        ODataGet<Application>.WithKey<string>,
+        ODataPost<Application>,
+        ODataPut<Application>.WithKey<string>
     {
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         private readonly IApiUnitOfWork _uow;
@@ -55,6 +58,32 @@ namespace SimplePersistence.Example.WebApi.Controllers
                 entity.CreatedBy = entity.UpdatedBy = User.Identity.Name;
                 return await _uow.Logging.Applications.AddAsync(entity, ct);
             }, ct));
+        }
+
+        #endregion
+
+        #region ODataPut
+
+        public async Task<IHttpActionResult> Put([FromODataUri] string key, Application update, CancellationToken ct)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            if (key != update.Id)
+                return BadRequest();
+
+            Application result;
+            try
+            {
+                result =
+                    await _uow.ExecuteAsync(async () => await _uow.Logging.Applications.UpdateAsync(update, ct), ct);
+            }
+            catch (ConcurrencyException)
+            {
+                if (_uow.Logging.Applications.Query().Any(e => e.Id == key))
+                    throw;
+                return NotFound();
+            }
+            return Updated(result);
         }
 
         #endregion
