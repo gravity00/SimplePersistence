@@ -3,7 +3,7 @@ using SimplePersistence.Model;
 
 namespace SimplePersistence.Example.WebApi.Models.Logging
 {
-    public class Level : EntityWithAllMetaAndVersionAsLong<string>
+    public class Level : EntityWithAllMetaAndVersionAsByteArray<string>
     {
         private ICollection<Log> _logs;
 
