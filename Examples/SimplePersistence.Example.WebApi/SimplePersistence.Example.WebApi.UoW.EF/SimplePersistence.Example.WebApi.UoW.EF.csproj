@@ -63,6 +63,7 @@
     <Compile Include="..\SimplePersistence.Example.WebApi\Properties\ProductAssemblyInfo.cs">
       <Link>Properties\ProductAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="ApiUnitOfWork.cs" />
     <Compile Include="Area\LoggingWorkArea.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\ApplicationRepository.cs" />
