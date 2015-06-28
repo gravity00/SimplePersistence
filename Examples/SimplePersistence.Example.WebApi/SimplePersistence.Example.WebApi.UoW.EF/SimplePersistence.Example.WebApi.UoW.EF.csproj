@@ -64,6 +64,9 @@
       <Link>Properties\ProductAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\ApplicationRepository.cs" />
+    <Compile Include="Repository\LevelRepository.cs" />
+    <Compile Include="Repository\LogRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -79,6 +82,7 @@
       <Name>SimplePersistence.Example.WebApi.UoW</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
