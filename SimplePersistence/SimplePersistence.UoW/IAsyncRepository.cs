@@ -10,6 +10,7 @@
 #endregion
 namespace SimplePersistence.UoW
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
@@ -20,7 +21,9 @@ namespace SimplePersistence.UoW
     /// </summary>
     /// <typeparam name="TEntity">The entity type</typeparam>
     /// <typeparam name="TId">The entity id type</typeparam>
-    public interface IAsyncRepository<TEntity, in TId> : IExposeQueryable<TEntity> where TEntity : class
+    public interface IAsyncRepository<TEntity, in TId> : IExposeQueryable<TEntity, TId> 
+        where TEntity : class 
+        where TId : IEquatable<TId>
     {
         #region GetById
 
@@ -157,6 +160,25 @@ namespace SimplePersistence.UoW
         /// <param name="ct">The <see cref="CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="Task{TResult}"/> containing the total</returns>
         Task<long> TotalAsync(CancellationToken ct);
+
+        #endregion
+
+        #region Exists
+
+        /// <summary>
+        /// Checks if an entity with the given key exists
+        /// </summary>
+        /// <param name="id">The entity unique identifier</param>
+        /// <returns>True if entity exists</returns>
+        Task<bool> ExistsAsync(TId id);
+
+        /// <summary>
+        /// Checks if an entity with the given key exists
+        /// </summary>
+        /// <param name="id">The entity unique identifier</param>
+        /// <param name="ct">The <see cref="CancellationToken"/> for the returned task</param>
+        /// <returns>True if entity exists</returns>
+        Task<bool> ExistsAsync(TId id, CancellationToken ct);
 
         #endregion
     }

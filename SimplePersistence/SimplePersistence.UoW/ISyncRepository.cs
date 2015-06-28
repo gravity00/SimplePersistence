@@ -10,6 +10,7 @@
 #endregion
 namespace SimplePersistence.UoW
 {
+    using System;
     using System.Collections.Generic;
 
     /// <summary>
@@ -18,7 +19,9 @@ namespace SimplePersistence.UoW
     /// </summary>
     /// <typeparam name="TEntity">The entity type</typeparam>
     /// <typeparam name="TId">The entity id type</typeparam>
-    public interface ISyncRepository<TEntity, in TId> : IExposeQueryable<TEntity> where TEntity : class
+    public interface ISyncRepository<TEntity, in TId> : IExposeQueryable<TEntity, TId>
+        where TEntity : class
+        where TId : IEquatable<TId>
     {
         #region GetById
 
@@ -92,6 +95,17 @@ namespace SimplePersistence.UoW
         /// </summary>
         /// <returns>The total</returns>
         long Total();
+
+        #endregion
+
+        #region Exists
+
+        /// <summary>
+        /// Checks if an entity with the given key exists
+        /// </summary>
+        /// <param name="id">The entity unique identifier</param>
+        /// <returns>True if entity exists</returns>
+        bool Exists(TId id);
 
         #endregion
     }

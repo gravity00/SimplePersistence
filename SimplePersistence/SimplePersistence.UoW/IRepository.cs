@@ -10,6 +10,8 @@
 #endregion
 namespace SimplePersistence.UoW
 {
+    using System;
+
     /// <summary>
     /// Repository interface that will be used to query and manipulate
     /// persisted entities
@@ -17,7 +19,8 @@ namespace SimplePersistence.UoW
     /// <typeparam name="TEntity">The entity type</typeparam>
     /// <typeparam name="TId">The entity id type</typeparam>
     public interface IRepository<TEntity, in TId> : IAsyncRepository<TEntity, TId>, ISyncRepository<TEntity, TId> 
-        where TEntity : class
+        where TEntity : class 
+        where TId : IEquatable<TId>
     {
 
     }

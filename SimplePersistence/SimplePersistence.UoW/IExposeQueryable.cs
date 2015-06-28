@@ -18,7 +18,10 @@ namespace SimplePersistence.UoW
     /// Can be exported as a <see cref="IQueryable{TEntity}"/>
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
-    public interface IExposeQueryable<TEntity> where TEntity : class
+    /// <typeparam name="TId"></typeparam>
+    public interface IExposeQueryable<TEntity, in TId> 
+        where TEntity : class
+        where TId : IEquatable<TId>
     {
         #region Query
 
@@ -27,6 +30,12 @@ namespace SimplePersistence.UoW
         /// </summary>
         /// <returns>The <see cref="IQueryable{TEntity}"/> object</returns>
         IQueryable<TEntity> Query();
+
+        /// <summary>
+        /// Gets an <see cref="IQueryable{TEntity}"/> for this repository entities
+        /// </summary>
+        /// <returns>The <see cref="IQueryable{TEntity}"/> object</returns>
+        IQueryable<TEntity> QueryById(TId id);
 
         /// <summary>
         /// Gets an <see cref="IQueryable{TEntity}"/> for this repository entities
