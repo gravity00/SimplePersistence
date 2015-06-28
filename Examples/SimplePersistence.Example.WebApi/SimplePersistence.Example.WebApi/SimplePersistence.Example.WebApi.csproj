@@ -122,7 +122,9 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\ODataInterfaces.cs" />
+    <Compile Include="Helpers\UnitOfWorkExtensions.cs" />
     <Compile Include="Helpers\ModelBuilderExtensions.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Global.asax.cs">
@@ -160,6 +162,10 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SimplePersistence.Example.WebApi.Models\SimplePersistence.Example.WebApi.Models.csproj">
+      <Project>{4d2b131c-1597-438f-afc9-e060bea8285b}</Project>
+      <Name>SimplePersistence.Example.WebApi.Models</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SimplePersistence.Example.WebApi.UoW.EF\SimplePersistence.Example.WebApi.UoW.EF.csproj">
       <Project>{A0DB1E4D-9A1E-4AAD-9B3B-B621C66357FB}</Project>
       <Name>SimplePersistence.Example.WebApi.UoW.EF</Name>

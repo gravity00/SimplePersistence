@@ -1,6 +1,8 @@
 ﻿using System.Web.Http;
 using System.Web.OData.Builder;
 using System.Web.OData.Extensions;
+using SimplePersistence.Example.WebApi.Helpers;
+using SimplePersistence.Example.WebApi.Models.Logging;
 
 namespace SimplePersistence.Example.WebApi
 {
@@ -13,6 +15,8 @@ namespace SimplePersistence.Example.WebApi
             #region OData Registration
 
             var builder = new ODataConventionModelBuilder();
+
+            builder.EntitySet<Application>();
 
             config.MapODataServiceRoute("ODataRoute", "odata", builder.GetEdmModel());
 
