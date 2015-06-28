@@ -1,18 +1,16 @@
+using System.Data.Entity.Migrations;
+using SimplePersistence.Example.WebApi.UoW.EF.Mapping;
+
 namespace SimplePersistence.Example.WebApi.UoW.EF.Migrations
 {
-    using System;
-    using System.Data.Entity;
-    using System.Data.Entity.Migrations;
-    using System.Linq;
-
-    internal sealed class Configuration : DbMigrationsConfiguration<SimplePersistence.Example.WebApi.UoW.EF.Mapping.ApiDbContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<ApiDbContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
         }
 
-        protected override void Seed(SimplePersistence.Example.WebApi.UoW.EF.Mapping.ApiDbContext context)
+        protected override void Seed(ApiDbContext context)
         {
             //  This method will be called after migrating to the latest version.
 
