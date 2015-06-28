@@ -20,29 +20,39 @@ namespace SimplePersistence.UoW.NH
     using NHibernate.Linq;
 
     /// <summary>
-    /// Represents a repository that only exposes asynchronous operations 
-    /// to manipulate persisted entities using NHibernate
+    /// Implementation of an <see cref="IAsyncRepository{TEntity,TId}"/> for the NHibernate,
+    /// exposing only async operations
     /// </summary>
     /// <typeparam name="TEntity">The entity type</typeparam>
     /// <typeparam name="TKey">The entity id type</typeparam>
     public abstract class NHibernateAsyncRepository<TEntity, TKey> : IAsyncRepository<TEntity, TKey>
-        where TEntity : class
+        where TEntity : class 
+        where TKey : IEquatable<TKey>
     {
+        private readonly Func<TEntity, TKey, bool> _filterById;
+        private readonly ISession _session;
+
         /// <summary>
         /// The database session
         /// </summary>
-        protected ISession Session { get; private set; }
+        protected ISession Session
+        {
+            get { return _session; }
+        }
 
         /// <summary>
-        /// Creates a new async repository
+        /// Creates a new repository
         /// </summary>
         /// <param name="session">The database session</param>
+        /// <param name="filterById">The filter by the entity if expression</param>
         /// <exception cref="ArgumentNullException"></exception>
-        protected NHibernateAsyncRepository(ISession session)
+        protected NHibernateAsyncRepository(ISession session, Func<TEntity, TKey, bool> filterById)
         {
             if (session == null) throw new ArgumentNullException("session");
+            if (filterById == null) throw new ArgumentNullException("filterById");
 
-            Session = session;
+            _session = session;
+            _filterById = filterById;
         }
 
         #region Query
@@ -54,6 +64,16 @@ namespace SimplePersistence.UoW.NH
         public virtual IQueryable<TEntity> Query()
         {
             return Session.Query<TEntity>();
+        }
+
+        /// <summary>
+        /// Gets an <see cref="IQueryable{TEntity}"/> for this repository entities
+        /// </summary>
+        /// <param name="id">The entity unique identifier</param>
+        /// <returns>The <see cref="IQueryable{TEntity}"/> object</returns>
+        public IQueryable<TEntity> QueryById(TKey id)
+        {
+            return Query().Where(e => _filterById(e, id));
         }
 
         /// <summary>
@@ -255,6 +275,31 @@ namespace SimplePersistence.UoW.NH
 
         #endregion
 
+        #region Exists
+
+        /// <summary>
+        /// Checks if an entity with the given key exists
+        /// </summary>
+        /// <param name="id">The entity unique identifier</param>
+        /// <returns>True if entity exists</returns>
+        public Task<bool> ExistsAsync(TKey id)
+        {
+            return ExistsAsync(id, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Checks if an entity with the given key exists
+        /// </summary>
+        /// <param name="id">The entity unique identifier</param>
+        /// <param name="ct">The <see cref="CancellationToken"/> for the returned task</param>
+        /// <returns>True if entity exists</returns>
+        public Task<bool> ExistsAsync(TKey id, CancellationToken ct)
+        {
+            return Task.Factory.StartNew(() => Exists(id), ct);
+        }
+
+        #endregion
+
         #region Private
 
         private TEntity GetById(TKey id)
@@ -304,6 +349,11 @@ namespace SimplePersistence.UoW.NH
         private long Total()
         {
             return Session.QueryOver<TEntity>().RowCountInt64();
+        }
+
+        private bool Exists(TKey id)
+        {
+            return QueryById(id).Any();
         }
 
         #endregion
