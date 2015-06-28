@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimplePersistence.Example.W
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimplePersistence.Example.WebApi.UoW", "SimplePersistence.Example.WebApi.UoW\SimplePersistence.Example.WebApi.UoW.csproj", "{419D9ED5-A1BA-40B7-A497-1E96C727BB8A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimplePersistence.Example.WebApi.UoW.EF", "SimplePersistence.Example.WebApi.UoW.EF\SimplePersistence.Example.WebApi.UoW.EF.csproj", "{A0DB1E4D-9A1E-4AAD-9B3B-B621C66357FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{419D9ED5-A1BA-40B7-A497-1E96C727BB8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{419D9ED5-A1BA-40B7-A497-1E96C727BB8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{419D9ED5-A1BA-40B7-A497-1E96C727BB8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0DB1E4D-9A1E-4AAD-9B3B-B621C66357FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0DB1E4D-9A1E-4AAD-9B3B-B621C66357FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0DB1E4D-9A1E-4AAD-9B3B-B621C66357FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0DB1E4D-9A1E-4AAD-9B3B-B621C66357FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
