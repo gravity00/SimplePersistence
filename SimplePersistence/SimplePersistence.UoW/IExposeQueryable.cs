@@ -34,6 +34,7 @@ namespace SimplePersistence.UoW
         /// <summary>
         /// Gets an <see cref="IQueryable{TEntity}"/> for this repository entities
         /// </summary>
+        /// <param name="id">The entity unique identifier</param>
         /// <returns>The <see cref="IQueryable{TEntity}"/> object</returns>
         IQueryable<TEntity> QueryById(TId id);
 

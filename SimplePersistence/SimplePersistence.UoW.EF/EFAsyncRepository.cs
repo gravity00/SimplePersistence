@@ -25,29 +25,43 @@ namespace SimplePersistence.UoW.EF
     /// <typeparam name="TEntity">The entity type</typeparam>
     /// <typeparam name="TKey">The key type</typeparam>
     public class EFAsyncRepository<TEntity, TKey> : IAsyncRepository<TEntity, TKey>
-        where TEntity : class
+        where TEntity : class 
+        where TKey : IEquatable<TKey>
     {
+        private readonly Func<TEntity, TKey, bool> _filterById;
+        private readonly DbSet<TEntity> _dbSet;
+        private readonly DbContext _dbContext;
+
         /// <summary>
         /// The Entity Framework database context
         /// </summary>
-        protected DbContext DbContext { get; private set; }
+        protected DbContext DbContext
+        {
+            get { return _dbContext; }
+        }
 
         /// <summary>
         /// The <see cref="IDbSet{TEntity}"/> of this repository entity
         /// </summary>
-        protected DbSet<TEntity> DbSet { get; private set; }
+        protected DbSet<TEntity> DbSet
+        {
+            get { return _dbSet; }
+        }
 
         /// <summary>
         /// Creates a new async repository
         /// </summary>
         /// <param name="dbContext">The database context</param>
+        /// <param name="filterById">The filter by the entity if expression</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public EFAsyncRepository(DbContext dbContext)
+        public EFAsyncRepository(DbContext dbContext, Func<TEntity, TKey, bool> filterById)
         {
             if (dbContext == null) throw new ArgumentNullException("dbContext");
+            if (filterById == null) throw new ArgumentNullException("filterById");
 
-            DbContext = dbContext;
-            DbSet = dbContext.Set<TEntity>();
+            _filterById = filterById;
+            _dbContext = dbContext;
+            _dbSet = dbContext.Set<TEntity>();
         }
 
         #region Query
@@ -59,6 +73,16 @@ namespace SimplePersistence.UoW.EF
         public IQueryable<TEntity> Query()
         {
             return DbSet;
+        }
+
+        /// <summary>
+        /// Gets an <see cref="IQueryable{TEntity}"/> for this repository entities
+        /// </summary>
+        /// <param name="id">The entity unique identifier</param>
+        /// <returns>The <see cref="IQueryable{TEntity}"/> object</returns>
+        public IQueryable<TEntity> QueryById(TKey id)
+        {
+            return Query().Where(e => _filterById(e, id));
         }
 
         /// <summary>
@@ -267,6 +291,41 @@ namespace SimplePersistence.UoW.EF
         public async Task<long> TotalAsync(CancellationToken ct)
         {
             return await DbSet.LongCountAsync(ct);
+        }
+
+        #endregion
+
+        #region Exists
+
+        /// <summary>
+        /// Checks if an entity with the given key exists
+        /// </summary>
+        /// <param name="id">The entity unique identifier</param>
+        /// <returns>True if entity exists</returns>
+        public bool Exists(TKey id)
+        {
+            return QueryById(id).Any();
+        }
+
+        /// <summary>
+        /// Checks if an entity with the given key exists
+        /// </summary>
+        /// <param name="id">The entity unique identifier</param>
+        /// <returns>True if entity exists</returns>
+        public async Task<bool> ExistsAsync(TKey id)
+        {
+            return await QueryById(id).AnyAsync();
+        }
+
+        /// <summary>
+        /// Checks if an entity with the given key exists
+        /// </summary>
+        /// <param name="id">The entity unique identifier</param>
+        /// <param name="ct">The <see cref="CancellationToken"/> for the returned task</param>
+        /// <returns>True if entity exists</returns>
+        public async Task<bool> ExistsAsync(TKey id, CancellationToken ct)
+        {
+            return await QueryById(id).AnyAsync(ct);
         }
 
         #endregion

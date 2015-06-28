@@ -24,28 +24,42 @@ namespace SimplePersistence.UoW.EF
     /// <typeparam name="TKey">The key type</typeparam>
     public class EFSyncRepository<TEntity, TKey> : ISyncRepository<TEntity, TKey>
         where TEntity : class
+        where TKey : IEquatable<TKey>
     {
+        private readonly Func<TEntity, TKey, bool> _filterById;
+        private readonly DbSet<TEntity> _dbSet;
+        private readonly DbContext _dbContext;
+
         /// <summary>
         /// The Entity Framework database context
         /// </summary>
-        protected DbContext DbContext { get; private set; }
+        protected DbContext DbContext
+        {
+            get { return _dbContext; }
+        }
 
         /// <summary>
         /// The <see cref="IDbSet{TEntity}"/> of this repository entity
         /// </summary>
-        protected DbSet<TEntity> DbSet { get; private set; }
+        protected DbSet<TEntity> DbSet
+        {
+            get { return _dbSet; }
+        }
 
         /// <summary>
         /// Creates a new sync repository
         /// </summary>
         /// <param name="dbContext">The database context</param>
+        /// <param name="filterById">The filter by the entity if expression</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public EFSyncRepository(DbContext dbContext)
+        public EFSyncRepository(DbContext dbContext, Func<TEntity, TKey, bool> filterById)
         {
             if (dbContext == null) throw new ArgumentNullException("dbContext");
+            if (filterById == null) throw new ArgumentNullException("filterById");
 
-            DbContext = dbContext;
-            DbSet = dbContext.Set<TEntity>();
+            _filterById = filterById;
+            _dbContext = dbContext;
+            _dbSet = dbContext.Set<TEntity>();
         }
 
         #region Query
@@ -57,6 +71,16 @@ namespace SimplePersistence.UoW.EF
         public IQueryable<TEntity> Query()
         {
             return DbSet;
+        }
+
+        /// <summary>
+        /// Gets an <see cref="IQueryable{TEntity}"/> for this repository entities
+        /// </summary>
+        /// <param name="id">The entity unique identifier</param>
+        /// <returns>The <see cref="IQueryable{TEntity}"/> object</returns>
+        public IQueryable<TEntity> QueryById(TKey id)
+        {
+            return Query().Where(e => _filterById(e, id));
         }
 
         /// <summary>
@@ -199,6 +223,20 @@ namespace SimplePersistence.UoW.EF
         public long Total()
         {
             return DbSet.LongCount();
+        }
+
+        #endregion
+
+        #region Exists
+
+        /// <summary>
+        /// Checks if an entity with the given key exists
+        /// </summary>
+        /// <param name="id">The entity unique identifier</param>
+        /// <returns>True if entity exists</returns>
+        public bool Exists(TKey id)
+        {
+            return QueryById(id).Any();
         }
 
         #endregion
