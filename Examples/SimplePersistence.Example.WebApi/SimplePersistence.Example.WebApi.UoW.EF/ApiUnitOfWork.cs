@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SimplePersistence.Example.WebApi.UoW.Area;
 using SimplePersistence.Example.WebApi.UoW.EF.Area;
 using SimplePersistence.UoW.EF;
