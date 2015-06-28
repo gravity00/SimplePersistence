@@ -66,6 +66,7 @@
     <Compile Include="ApiUnitOfWork.cs" />
     <Compile Include="Area\LoggingWorkArea.cs" />
     <Compile Include="Mapping\ApiDbContext.cs" />
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\ApplicationRepository.cs" />
     <Compile Include="Repository\LevelRepository.cs" />
