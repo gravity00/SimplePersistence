@@ -1,4 +1,6 @@
 ﻿using System.Web.Http;
+using System.Web.OData.Builder;
+using System.Web.OData.Extensions;
 
 namespace SimplePersistence.Example.WebApi
 {
@@ -6,13 +8,15 @@ namespace SimplePersistence.Example.WebApi
     {
         public static void Register(HttpConfiguration config)
         {
-            // Web API configuration and services
-
-            // Web API routes
             config.MapHttpAttributeRoutes();
 
-            config.Routes.MapHttpRoute(
-                "DefaultApi", "api/{controller}/{id}", new {id = RouteParameter.Optional});
+            #region OData Registration
+
+            var builder = new ODataConventionModelBuilder();
+
+            config.MapODataServiceRoute("ODataRoute", "odata", builder.GetEdmModel());
+
+            #endregion
         }
     }
 }

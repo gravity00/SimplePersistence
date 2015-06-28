@@ -58,15 +58,14 @@
     <Compile Include="Repository\ILogRepository.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\SimplePersistence.Example.WebApi.Models\SimplePersistence.Example.WebApi.Models.csproj">
       <Project>{4d2b131c-1597-438f-afc9-e060bea8285b}</Project>
       <Name>SimplePersistence.Example.WebApi.Models</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
