@@ -50,6 +50,14 @@ namespace SimplePersistence.Example.WebApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
+            entity.Level = await _uow.Logging.Levels.GetByIdAsync(entity.Level.Id, ct);
+            if (entity.Level == null)
+                return Conflict();
+
+            entity.Application = await _uow.Logging.Applications.GetByIdAsync(entity.Application.Id, ct);
+            if (entity.Application == null)
+                return Conflict();
+
             return Created(await _uow.ExecuteAsync(async () =>
             {
                 entity.CreatedOn = DateTimeOffset.Now;
