@@ -79,6 +79,15 @@ namespace SimplePersistence.UoW.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The task was in faulted state, but no exception was provided..
+        /// </summary>
+        internal static string TaskInFaultedStateExceptionMessage {
+            get {
+                return ResourceManager.GetString("TaskInFaultedStateExceptionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The parameter must be of type IUnitOfWork.
         /// </summary>
         internal static string TransactionalAttributeInvalidUoWType {
