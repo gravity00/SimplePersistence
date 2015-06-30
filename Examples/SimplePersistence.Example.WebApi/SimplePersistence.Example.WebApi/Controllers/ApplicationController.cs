@@ -15,7 +15,8 @@ namespace SimplePersistence.Example.WebApi.Controllers
     public class ApplicationController : ODataController, 
         ODataGet<Application>.WithKey<string>,
         ODataPost<Application>,
-        ODataPut<Application>.WithKey<string>
+        ODataPut<Application>.WithKey<string>,
+        ODataPatch<Application>.WithKey<string>
     {
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
         private readonly IApiUnitOfWork _uow;
@@ -76,6 +77,35 @@ namespace SimplePersistence.Example.WebApi.Controllers
             {
                 result =
                     await _uow.ExecuteAsync(async () => await _uow.Logging.Applications.UpdateAsync(update, ct), ct);
+            }
+            catch (ConcurrencyException)
+            {
+                if (_uow.Logging.Applications.Query().Any(e => e.Id == key))
+                    throw;
+                return NotFound();
+            }
+            return Updated(result);
+        }
+
+        #endregion
+
+        #region ODataPatch
+
+        public async Task<IHttpActionResult> Patch([FromODataUri] string key, Delta<Application> entity, CancellationToken ct)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var dbEntity = await _uow.Logging.Applications.GetByIdAsync(key, ct);
+            if (dbEntity == null)
+                return NotFound();
+
+            Application result;
+            try
+            {
+                entity.Patch(dbEntity);
+                result =
+                    await _uow.ExecuteAsync(async () => await _uow.Logging.Applications.UpdateAsync(dbEntity, ct), ct);
             }
             catch (ConcurrencyException)
             {

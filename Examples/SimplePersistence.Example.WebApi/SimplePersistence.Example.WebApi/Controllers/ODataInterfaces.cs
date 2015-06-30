@@ -117,7 +117,7 @@ namespace SimplePersistence.Example.WebApi.Controllers
     }
 
     /// <summary>
-    /// HTTP Put OData interfaces
+    /// HTTP Delete OData interfaces
     /// </summary>
     // ReSharper disable once InconsistentNaming
     public static class ODataDelete
