@@ -9,16 +9,66 @@ namespace SimplePersistence.UoW.Helper
     /// </summary>
     public static class UnitOfWorkExtensions
     {
+        #region ExecuteAndCommitAsync
+
         /// <summary>
-        /// 
+        /// Executes the given asynchronous function inside an <see cref="IUnitOfWork.BeginAsync"/> 
+        /// and <see cref="IUnitOfWork.CommitAsync"/> scope
         /// </summary>
-        /// <param name="uow"></param>
-        /// <param name="toExecute"></param>
-        /// <param name="ct"></param>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
+        /// <param name="uow">The <see cref="IUnitOfWork"/> to be used</param>
+        /// <param name="toExecute">The code to be executed inside the scope</param>
+        /// <typeparam name="T">The return type</typeparam>
+        /// <returns>A task to be awaited</returns>
+        /// <exception cref="ArgumentNullException"/>
+        public static Task<T> ExecuteAndCommitAsync<T>(this IUnitOfWork uow, Func<Task<T>> toExecute)
+        {
+            return uow.ExecuteAndCommitAsync(toExecute, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Executes the given asynchronous function inside an <see cref="IUnitOfWork.BeginAsync"/> 
+        /// and <see cref="IUnitOfWork.CommitAsync"/> scope
+        /// </summary>
+        /// <param name="uow">The <see cref="IUnitOfWork"/> to be used</param>
+        /// <param name="toExecute">The code to be executed inside the scope</param>
+        /// <param name="ct">The cancellation token</param>
+        /// <typeparam name="T">The return type</typeparam>
+        /// <returns>A task to be awaited</returns>
+        /// <exception cref="ArgumentNullException"/>
         public static Task<T> ExecuteAndCommitAsync<T>(this IUnitOfWork uow, Func<Task<T>> toExecute, CancellationToken ct)
         {
+            return uow.ExecuteAndCommitAsync((w, c) => toExecute(), ct);
+        }
+
+        /// <summary>
+        /// Executes the given asynchronous function inside an <see cref="IUnitOfWork.BeginAsync"/> 
+        /// and <see cref="IUnitOfWork.CommitAsync"/> scope
+        /// </summary>
+        /// <param name="uow">The <see cref="IUnitOfWork"/> to be used</param>
+        /// <param name="toExecute">The code to be executed inside the scope</param>
+        /// <typeparam name="T">The return type</typeparam>
+        /// <returns>A task to be awaited</returns>
+        /// <exception cref="ArgumentNullException"/>
+        public static Task<T> ExecuteAndCommitAsync<T>(this IUnitOfWork uow, Func<IUnitOfWork, CancellationToken, Task<T>> toExecute)
+        {
+            return uow.ExecuteAndCommitAsync(toExecute, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Executes the given asynchronous function inside an <see cref="IUnitOfWork.BeginAsync"/> 
+        /// and <see cref="IUnitOfWork.CommitAsync"/> scope
+        /// </summary>
+        /// <param name="uow">The <see cref="IUnitOfWork"/> to be used</param>
+        /// <param name="toExecute">The code to be executed inside the scope</param>
+        /// <param name="ct">The cancellation token</param>
+        /// <typeparam name="T">The return type</typeparam>
+        /// <returns>A task to be awaited</returns>
+        /// <exception cref="ArgumentNullException"/>
+        public static Task<T> ExecuteAndCommitAsync<T>(this IUnitOfWork uow, Func<IUnitOfWork, CancellationToken, Task<T>> toExecute, CancellationToken ct)
+        {
+            if (uow == null) throw new ArgumentNullException("uow");
+            if (toExecute == null) throw new ArgumentNullException("toExecute");
+
             var tcs = new TaskCompletionSource<T>();
             uow.BeginAsync(ct).ContinueWith(t01 =>
             {
@@ -28,7 +78,7 @@ namespace SimplePersistence.UoW.Helper
                 }
                 else if (t01.IsCompleted)
                 {
-                    toExecute().ContinueWith(t02 =>
+                    toExecute(uow, ct).ContinueWith(t02 =>
                     {
                         if (t02.IsFaulted)
                         {
@@ -66,5 +116,76 @@ namespace SimplePersistence.UoW.Helper
 
             return tcs.Task;
         }
+
+        #endregion
+
+        #region ExecuteAndCommit
+
+        /// <summary>
+        /// Executes the given lambda inside an <see cref="IUnitOfWork.Begin"/> 
+        /// and <see cref="IUnitOfWork.Commit"/> scope
+        /// </summary>
+        /// <param name="uow">The <see cref="IUnitOfWork"/> to be used</param>
+        /// <param name="toExecute">The code to be executed inside the scope</param>
+        /// <typeparam name="T">The return type</typeparam>
+        /// <returns>A task to be awaited</returns>
+        /// <exception cref="ArgumentNullException"/>
+        public static T ExecuteAndCommit<T>(this IUnitOfWork uow, Func<T> toExecute)
+        {
+            return uow.ExecuteAndCommit(u => toExecute());
+        }
+
+        /// <summary>
+        /// Executes the given lambda inside an <see cref="IUnitOfWork.Begin"/> 
+        /// and <see cref="IUnitOfWork.Commit"/> scope
+        /// </summary>
+        /// <param name="uow">The <see cref="IUnitOfWork"/> to be used</param>
+        /// <param name="toExecute">The code to be executed inside the scope</param>
+        public static void ExecuteAndCommit(this IUnitOfWork uow, Action toExecute)
+        {
+            uow.ExecuteAndCommit(u => toExecute());
+        }
+
+        /// <summary>
+        /// Executes the given lambda inside an <see cref="IUnitOfWork.Begin"/> 
+        /// and <see cref="IUnitOfWork.Commit"/> scope
+        /// </summary>
+        /// <param name="uow">The <see cref="IUnitOfWork"/> to be used</param>
+        /// <param name="toExecute">The code to be executed inside the scope</param>
+        /// <typeparam name="T">The return type</typeparam>
+        /// <returns>A task to be awaited</returns>
+        /// <exception cref="ArgumentNullException"/>
+        public static T ExecuteAndCommit<T>(this IUnitOfWork uow, Func<IUnitOfWork, T> toExecute)
+        {
+            if (uow == null) throw new ArgumentNullException("uow");
+            if (toExecute == null) throw new ArgumentNullException("toExecute");
+
+            uow.Begin();
+
+            var result = toExecute(uow);
+
+            uow.Commit();
+            return result;
+        }
+
+        /// <summary>
+        /// Executes the given lambda inside an <see cref="IUnitOfWork.Begin"/> 
+        /// and <see cref="IUnitOfWork.Commit"/> scope
+        /// </summary>
+        /// <param name="uow">The <see cref="IUnitOfWork"/> to be used</param>
+        /// <param name="toExecute">The code to be executed inside the scope</param>
+        public static void ExecuteAndCommit(this IUnitOfWork uow, Action<IUnitOfWork> toExecute)
+        {
+            if (uow == null) throw new ArgumentNullException("uow");
+            if (toExecute == null) throw new ArgumentNullException("toExecute");
+
+            uow.Begin();
+
+            toExecute(uow);
+
+            uow.Commit();
+        }
+
+        #endregion
     }
 }
