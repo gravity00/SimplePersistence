@@ -122,6 +122,7 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\LevelController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\ODataInterfaces.cs" />
     <Compile Include="Helpers\UnitOfWorkExtensions.cs" />

@@ -18,5 +18,13 @@ namespace SimplePersistence.Example.WebApi.Helpers
         {
             return builder.EntitySet<T>(typeof(T).Name);
         }
+
+        public static EntityTypeConfiguration<T> EntityType<T>(this EntitySetConfiguration<T> cfg, Action<EntityTypeConfiguration<T>> action)
+            where T : class
+        {
+            var entityType = cfg.EntityType;
+            action(entityType);
+            return entityType;
+        }
     }
 }
