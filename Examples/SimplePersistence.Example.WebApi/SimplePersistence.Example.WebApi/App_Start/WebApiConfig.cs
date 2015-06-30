@@ -35,6 +35,7 @@ namespace SimplePersistence.Example.WebApi
             {
                 cfg.Property(e => e.Version).IsConcurrencyToken().IsRequired();
             });
+            builder.EntitySet<Log>();
 
             config.MapODataServiceRoute("ODataRoute", "odata", builder.GetEdmModel());
 
