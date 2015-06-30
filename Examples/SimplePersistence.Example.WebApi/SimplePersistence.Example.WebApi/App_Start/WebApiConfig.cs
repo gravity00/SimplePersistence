@@ -14,7 +14,18 @@ namespace SimplePersistence.Example.WebApi
 
             #region OData Registration
 
-            var builder = new ODataConventionModelBuilder();
+            var builder = new ODataConventionModelBuilder
+            {
+                OnModelCreating = modelBuilder =>
+                {
+                    //  Because we are using convention builder but not
+                    //  using anotations, it will duplicate all the Version properties
+                    foreach (var st in modelBuilder.StructuralTypes)
+                    {
+                        st.ExcludeDuplicatedVersionPropertiesNotSetAsConcurrencyToken();
+                    }
+                }
+            };
 
             builder.EntitySet<Application>().EntityType(cfg =>
             {

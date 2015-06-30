@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Web.OData.Builder;
 
 namespace SimplePersistence.Example.WebApi.Helpers
@@ -25,6 +26,19 @@ namespace SimplePersistence.Example.WebApi.Helpers
             var entityType = cfg.EntityType;
             action(entityType);
             return entityType;
+        }
+
+        public static void ExcludeDuplicatedVersionPropertiesNotSetAsConcurrencyToken(this StructuralTypeConfiguration structuralType)
+        {
+            var properties = structuralType.Properties.ToArray();
+            foreach (var ppc in
+                properties
+                    .Where(e => e.Name == "Version")
+                    .OfType<PrimitivePropertyConfiguration>()
+                    .Where(e => !e.ConcurrencyToken))
+            {
+                structuralType.RemoveProperty(ppc.PropertyInfo);
+            }
         }
     }
 }
