@@ -98,7 +98,7 @@ namespace SimplePersistence.Model.Helper
         #region Updated After
 
         /// <summary>
-        /// Filters a given collection of <see cref="IHaveCreatedMeta{TCreatedBy}"/> that where
+        /// Filters a given collection of <see cref="IHaveUpdatedMeta{TUpdatedBy}"/> that where
         /// updated after a given date
         /// </summary>
         /// <param name="entities">The collection to be filtered</param>
@@ -115,7 +115,7 @@ namespace SimplePersistence.Model.Helper
         }
 
         /// <summary>
-        /// Filters a given collection of <see cref="IHaveCreatedMeta{TCreatedBy}"/> that where
+        /// Filters a given collection of <see cref="IHaveUpdatedMeta{TUpdatedBy}"/> that where
         /// updated after a given date
         /// </summary>
         /// <param name="entities">The collection to be filtered</param>
@@ -129,6 +129,41 @@ namespace SimplePersistence.Model.Helper
         {
             if (entities == null) throw new ArgumentNullException("entities");
             return entities.Where(e => e.UpdatedOn > updatedAfter);
+        }
+
+        #endregion
+
+        #region Deleted
+
+        /// <summary>
+        /// Filters a given collection of <see cref="IHaveDeletedMeta{TDeletedBy}"/> by their deleted state
+        /// </summary>
+        /// <param name="entities">The collection to be filtered</param>
+        /// <param name="deleted">If the entities must be deleted. By default it is false.</param>
+        /// <typeparam name="TEntity">The entity type</typeparam>
+        /// <typeparam name="TDeletedBy">The deleted by type</typeparam>
+        /// <returns>The filtered collection</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IQueryable<TEntity> Deleted<TEntity, TDeletedBy>(this IQueryable<TEntity> entities, bool deleted = false)
+            where TEntity : IHaveDeletedMeta<TDeletedBy>
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            return deleted ? entities.Where(e => e.DeletedOn != null) : entities.Where(e => e.DeletedOn == null);
+        }
+
+        /// <summary>
+        /// Filters a given collection of <see cref="IHaveSoftDelete"/> by their deleted state
+        /// </summary>
+        /// <param name="entities">The collection to be filtered</param>
+        /// <param name="deleted">If the entities must be deleted. By default it is false.</param>
+        /// <typeparam name="TEntity">The entity type</typeparam>
+        /// <returns>The filtered collection</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IQueryable<TEntity> Deleted<TEntity>(this IQueryable<TEntity> entities, bool deleted = false)
+            where TEntity : IHaveSoftDelete
+        {
+            if (entities == null) throw new ArgumentNullException("entities");
+            return entities.Where(e => e.Deleted == deleted);
         }
 
         #endregion
