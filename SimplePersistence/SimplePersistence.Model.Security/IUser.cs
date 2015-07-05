@@ -12,6 +12,10 @@ namespace SimplePersistence.Model.Security
 {
     using System;
 
+    /// <summary>
+    /// Represents a user
+    /// </summary>
+    /// <typeparam name="TUserKey"></typeparam>
     public interface IUser<TUserKey> : IEntity<TUserKey> where TUserKey : IEquatable<TUserKey>
     {
         
