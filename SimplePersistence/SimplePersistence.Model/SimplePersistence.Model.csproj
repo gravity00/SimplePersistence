@@ -55,6 +55,7 @@
     <Compile Include="EntityWithUpdatedMetaAndVersionAsByteArray.cs" />
     <Compile Include="EntityWithUpdatedMetaAndVersionAsLong.cs" />
     <Compile Include="Helper\ModelsExtensions.cs" />
+    <Compile Include="Helper\ModelsFilterExtensions.cs" />
     <Compile Include="IEntity.cs" />
     <Compile Include="IHaveCreatedMeta.cs" />
     <Compile Include="IHaveDeletedMeta.cs" />
