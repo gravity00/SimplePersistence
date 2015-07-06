@@ -21,14 +21,17 @@ namespace SimplePersistence.Model.Helper
         /// Fills all metadata of a given <see cref="IHaveCreatedMeta{TCreatedBy}"/> and <see cref="IHaveUpdatedMeta{TUpdatedBy}"/>
         /// </summary>
         /// <param name="entity">The entity to fill</param>
-        /// <param name="by">The by of whom created the entity</param>
+        /// <param name="by">Who created the entity</param>
         /// <param name="on">The <see cref="DateTimeOffset"/> when it was created. If null <see cref="DateTimeOffset.Now"/> will be used</param>
         /// <typeparam name="T">The entity type</typeparam>
-        /// <typeparam name="TBy"></typeparam>
+        /// <typeparam name="TBy">The created by type</typeparam>
         /// <returns>The received entity after changes</returns>
+        /// <exception cref="ArgumentNullException"/>
         public static T InitializedBy<T, TBy>(this T entity, TBy @by = default(TBy), DateTimeOffset? @on = null)
             where T : IHaveCreatedMeta<TBy>, IHaveUpdatedMeta<TBy>
         {
+            if (entity == null) throw new ArgumentNullException("entity");
+
             entity.CreatedOn = entity.UpdatedOn = @on ?? DateTimeOffset.Now;
             entity.CreatedBy = entity.UpdatedBy = @by;
             return entity;
@@ -38,14 +41,17 @@ namespace SimplePersistence.Model.Helper
         /// Fills all metadata of a given <see cref="IHaveCreatedMeta{TCreatedBy}"/> and <see cref="IHaveUpdatedMeta{TUpdatedBy}"/>
         /// </summary>
         /// <param name="entity">The entity to fill</param>
-        /// <param name="by">The by of whom created the entity</param>
+        /// <param name="by">Who created the entity</param>
         /// <param name="on">The <see cref="DateTimeOffset"/> when it was created. If null <see cref="DateTimeOffset.Now"/> will be used</param>
         /// <typeparam name="T">The entity type</typeparam>
-        /// <typeparam name="TBy"></typeparam>
+        /// <typeparam name="TBy">The created by type</typeparam>
         /// <returns>The received entity after changes</returns>
+        /// <exception cref="ArgumentNullException"/>
         public static T CreatedBy<T, TBy>(this T entity, TBy @by = default(TBy), DateTimeOffset? @on = null)
             where T : IHaveCreatedMeta<TBy>
         {
+            if (entity == null) throw new ArgumentNullException("entity");
+
             entity.CreatedOn = @on ?? DateTimeOffset.Now;
             entity.CreatedBy = @by;
             return entity;
@@ -55,16 +61,77 @@ namespace SimplePersistence.Model.Helper
         /// Fills all metadata of a given <see cref="IHaveUpdatedMeta{TUpdatedBy}"/>
         /// </summary>
         /// <param name="entity">The entity to fill</param>
-        /// <param name="by">The by of whom created the entity</param>
-        /// <param name="on">The <see cref="DateTimeOffset"/> when it was created. If null <see cref="DateTimeOffset.Now"/> will be used</param>
+        /// <param name="by">Who updated the entity</param>
+        /// <param name="on">The <see cref="DateTimeOffset"/> when it was updated. If null <see cref="DateTimeOffset.Now"/> will be used</param>
         /// <typeparam name="T">The entity type</typeparam>
-        /// <typeparam name="TBy"></typeparam>
+        /// <typeparam name="TBy">The updated by type</typeparam>
         /// <returns>The received entity after changes</returns>
+        /// <exception cref="ArgumentNullException"/>
         public static T UpdatedBy<T, TBy>(this T entity, TBy @by = default(TBy), DateTimeOffset? @on = null) 
             where T : IHaveUpdatedMeta<TBy>
         {
+            if (entity == null) throw new ArgumentNullException("entity");
+
             entity.UpdatedOn = @on ?? DateTimeOffset.Now;
             entity.UpdatedBy = @by;
+            return entity;
+        }
+
+        /// <summary>
+        /// Sets the given <see cref="IHaveDeletedMeta{TDeletedBy}"/> in the deleted state, and sets
+        /// the <see cref="IHaveUpdatedMeta{TUpdatedBy}"/> information
+        /// </summary>
+        /// <param name="entity">The entity to fill</param>
+        /// <param name="by">Who deleted the entity</param>
+        /// <param name="on">The <see cref="DateTimeOffset"/> when it was deleted. If null <see cref="DateTimeOffset.Now"/> will be used</param>
+        /// <typeparam name="T">The entity type</typeparam>
+        /// <typeparam name="TBy">The deleted by type</typeparam>
+        /// <returns>The received entity after changes</returns>
+        /// <exception cref="ArgumentNullException"/>
+        public static T UpdatedAndDeletedBy<T, TBy>(this T entity, TBy @by = default(TBy), DateTimeOffset? @on = null)
+            where T : IHaveDeletedMeta<TBy>, IHaveUpdatedMeta<TBy>
+        {
+            if (entity == null) throw new ArgumentNullException("entity");
+
+            entity.DeletedOn = entity.UpdatedOn = @on ?? DateTimeOffset.Now;
+            entity.DeletedBy = entity.UpdatedBy = @by;
+            return entity;
+        }
+
+        /// <summary>
+        /// Sets the given <see cref="IHaveDeletedMeta{TDeletedBy}"/> in the deleted state
+        /// </summary>
+        /// <param name="entity">The entity to fill</param>
+        /// <param name="by">Who deleted the entity</param>
+        /// <param name="on">The <see cref="DateTimeOffset"/> when it was deleted. If null <see cref="DateTimeOffset.Now"/> will be used</param>
+        /// <typeparam name="T">The entity type</typeparam>
+        /// <typeparam name="TBy">The deleted by type</typeparam>
+        /// <returns>The received entity after changes</returns>
+        /// <exception cref="ArgumentNullException"/>
+        public static T DeletedBy<T, TBy>(this T entity, TBy @by = default(TBy), DateTimeOffset? @on = null)
+            where T : IHaveDeletedMeta<TBy>
+        {
+            if (entity == null) throw new ArgumentNullException("entity");
+
+            entity.DeletedOn = @on ?? DateTimeOffset.Now;
+            entity.DeletedBy = @by;
+            return entity;
+        }
+
+        /// <summary>
+        /// Updates the <see cref="IHaveSoftDelete"/> deleted state
+        /// </summary>
+        /// <param name="entity">The entity to fill</param>
+        /// <param name="delete">The delete state. By default will be set to <see cref="bool.True"/></param>
+        /// <typeparam name="T">The entity type</typeparam>
+        /// <returns>The received entity after changes</returns>
+        /// <exception cref="ArgumentNullException"/>
+        public static T Deleted<T>(this T entity, bool delete = true)
+            where T : IHaveSoftDelete
+        {
+            if (entity == null) throw new ArgumentNullException("entity");
+
+            entity.Deleted = delete;
             return entity;
         }
     }
