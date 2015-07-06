@@ -18,15 +18,33 @@ namespace SimplePersistence.Model.Helper
     public static class ModelsExtensions
     {
         /// <summary>
-        /// Fills all the created metadata of a given <see cref="IHaveCreatedMeta{TCreatedBy}"/>
+        /// Fills all metadata of a given <see cref="IHaveCreatedMeta{TCreatedBy}"/> and <see cref="IHaveUpdatedMeta{TUpdatedBy}"/>
         /// </summary>
         /// <param name="entity">The entity to fill</param>
         /// <param name="by">The by of whom created the entity</param>
         /// <param name="on">The <see cref="DateTimeOffset"/> when it was created. If null <see cref="DateTimeOffset.Now"/> will be used</param>
         /// <typeparam name="T">The entity type</typeparam>
+        /// <typeparam name="TBy"></typeparam>
         /// <returns>The received entity after changes</returns>
-        public static T SetInitialMeta<T>(this T entity, string @by = null, DateTimeOffset? @on = null) 
-            where T : IHaveCreatedMeta<string>
+        public static T InitializedBy<T, TBy>(this T entity, TBy @by = default(TBy), DateTimeOffset? @on = null)
+            where T : IHaveCreatedMeta<TBy>, IHaveUpdatedMeta<TBy>
+        {
+            entity.CreatedOn = entity.UpdatedOn = @on ?? DateTimeOffset.Now;
+            entity.CreatedBy = entity.UpdatedBy = @by;
+            return entity;
+        }
+
+        /// <summary>
+        /// Fills all metadata of a given <see cref="IHaveCreatedMeta{TCreatedBy}"/> and <see cref="IHaveUpdatedMeta{TUpdatedBy}"/>
+        /// </summary>
+        /// <param name="entity">The entity to fill</param>
+        /// <param name="by">The by of whom created the entity</param>
+        /// <param name="on">The <see cref="DateTimeOffset"/> when it was created. If null <see cref="DateTimeOffset.Now"/> will be used</param>
+        /// <typeparam name="T">The entity type</typeparam>
+        /// <typeparam name="TBy"></typeparam>
+        /// <returns>The received entity after changes</returns>
+        public static T CreatedBy<T, TBy>(this T entity, TBy @by = default(TBy), DateTimeOffset? @on = null)
+            where T : IHaveCreatedMeta<TBy>
         {
             entity.CreatedOn = @on ?? DateTimeOffset.Now;
             entity.CreatedBy = @by;
@@ -34,17 +52,19 @@ namespace SimplePersistence.Model.Helper
         }
 
         /// <summary>
-        /// Fills all the created metadata of a given <see cref="IHaveUpdatedMeta{TUpdatedBy}"/>
+        /// Fills all metadata of a given <see cref="IHaveUpdatedMeta{TUpdatedBy}"/>
         /// </summary>
         /// <param name="entity">The entity to fill</param>
-        /// <param name="username">The by of whom created the entity</param>
-        /// <param name="updatedOn">The <see cref="DateTimeOffset"/> when it was created. If null <see cref="DateTimeOffset.Now"/> will be used</param>
+        /// <param name="by">The by of whom created the entity</param>
+        /// <param name="on">The <see cref="DateTimeOffset"/> when it was created. If null <see cref="DateTimeOffset.Now"/> will be used</param>
         /// <typeparam name="T">The entity type</typeparam>
+        /// <typeparam name="TBy"></typeparam>
         /// <returns>The received entity after changes</returns>
-        public static T FillUpdatedMeta<T>(this T entity, string username = null, DateTimeOffset? updatedOn = null) where T : IHaveUpdatedMeta<string>
+        public static T UpdatedBy<T, TBy>(this T entity, TBy @by = default(TBy), DateTimeOffset? @on = null) 
+            where T : IHaveUpdatedMeta<TBy>
         {
-            entity.UpdatedOn = updatedOn ?? DateTimeOffset.Now;
-            entity.UpdatedBy = username;
+            entity.UpdatedOn = @on ?? DateTimeOffset.Now;
+            entity.UpdatedBy = @by;
             return entity;
         }
     }
