@@ -122,7 +122,7 @@ namespace SimplePersistence.Model.Helper
         /// Updates the <see cref="IHaveSoftDelete"/> deleted state
         /// </summary>
         /// <param name="entity">The entity to fill</param>
-        /// <param name="delete">The delete state. By default will be set to <see cref="bool.True"/></param>
+        /// <param name="delete">The delete state. By default will be set to true</param>
         /// <typeparam name="T">The entity type</typeparam>
         /// <returns>The received entity after changes</returns>
         /// <exception cref="ArgumentNullException"/>
