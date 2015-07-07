@@ -110,9 +110,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="id">The entity unique identifier</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> that will fetch the entity</returns>
-        public Task<TEntity> GetByIdAsync(TKey id)
+        public async Task<TEntity> GetByIdAsync(TKey id)
         {
-            return DbSet.FindAsync(id);
+            return await DbSet.FindAsync(id);
         }
 
         /// <summary>
@@ -121,9 +121,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="id">The entity unique identifier</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> that will fetch the entity</returns>
-        public Task<TEntity> GetByIdAsync(TKey id, CancellationToken ct)
+        public async Task<TEntity> GetByIdAsync(TKey id, CancellationToken ct)
         {
-            return DbSet.FindAsync(ct, id);
+            return await DbSet.FindAsync(ct, id);
         }
 
         #endregion
@@ -135,9 +135,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entity">The entity to add</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public Task<TEntity> AddAsync(TEntity entity)
+        public async Task<TEntity> AddAsync(TEntity entity)
         {
-            return AddAsync(entity, CancellationToken.None);
+            return await AddAsync(entity, CancellationToken.None);
         }
 
         /// <summary>
@@ -146,10 +146,10 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entity">The entity to add</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public Task<TEntity> AddAsync(TEntity entity, CancellationToken ct)
+        public async Task<TEntity> AddAsync(TEntity entity, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
-            return Task.FromResult(Add(entity));
+            return await Task.FromResult(Add(entity));
         }
 
         /// <summary>
@@ -157,9 +157,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entities">The entity to add</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public Task<IEnumerable<TEntity>> AddAsync(IEnumerable<TEntity> entities)
+        public async Task<IEnumerable<TEntity>> AddAsync(IEnumerable<TEntity> entities)
         {
-            return AddAsync(entities, CancellationToken.None);
+            return await AddAsync(entities, CancellationToken.None);
         }
 
         /// <summary>
@@ -168,10 +168,10 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entities">The entity to add</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public Task<IEnumerable<TEntity>> AddAsync(IEnumerable<TEntity> entities, CancellationToken ct)
+        public async Task<IEnumerable<TEntity>> AddAsync(IEnumerable<TEntity> entities, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
-            return Task.FromResult(Add(entities));
+            return await Task.FromResult(Add(entities));
         }
 
         #endregion
@@ -183,9 +183,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entity">The entity to update</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public Task<TEntity> UpdateAsync(TEntity entity)
+        public async Task<TEntity> UpdateAsync(TEntity entity)
         {
-            return UpdateAsync(entity, CancellationToken.None);
+            return await UpdateAsync(entity, CancellationToken.None);
         }
 
         /// <summary>
@@ -194,10 +194,10 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entity">The entity to update</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public Task<TEntity> UpdateAsync(TEntity entity, CancellationToken ct)
+        public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
-            return Task.FromResult(Update(entity));
+            return await Task.FromResult(Update(entity));
         }
 
         /// <summary>
@@ -205,9 +205,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entities">The entities to update</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities)
+        public async Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities)
         {
-            return UpdateAsync(entities, CancellationToken.None);
+            return await UpdateAsync(entities, CancellationToken.None);
         }
 
         /// <summary>
@@ -216,10 +216,10 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entities">The entities to update</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities, CancellationToken ct)
+        public async Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
-            return Task.FromResult(Update(entities));
+            return await Task.FromResult(Update(entities));
         }
 
         #endregion
@@ -231,9 +231,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entity">The entity to delete</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public Task<TEntity> DeleteAsync(TEntity entity)
+        public async Task<TEntity> DeleteAsync(TEntity entity)
         {
-            return DeleteAsync(entity, CancellationToken.None);
+            return await DeleteAsync(entity, CancellationToken.None);
         }
 
         /// <summary>
@@ -242,10 +242,10 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entity">The entity to delete</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public Task<TEntity> DeleteAsync(TEntity entity, CancellationToken ct)
+        public async Task<TEntity> DeleteAsync(TEntity entity, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
-            return Task.FromResult(Delete(entity));
+            return await Task.FromResult(Delete(entity));
         }
 
         /// <summary>
@@ -253,9 +253,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entities">The entities to delete</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public Task<IEnumerable<TEntity>> DeleteAsync(IEnumerable<TEntity> entities)
+        public async Task<IEnumerable<TEntity>> DeleteAsync(IEnumerable<TEntity> entities)
         {
-            return DeleteAsync(entities, CancellationToken.None);
+            return await DeleteAsync(entities, CancellationToken.None);
         }
 
         /// <summary>
@@ -264,10 +264,10 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entities">The entities to delete</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public Task<IEnumerable<TEntity>> DeleteAsync(IEnumerable<TEntity> entities, CancellationToken ct)
+        public async Task<IEnumerable<TEntity>> DeleteAsync(IEnumerable<TEntity> entities, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();
-            return Task.FromResult(Delete(entities));
+            return await Task.FromResult(Delete(entities));
         }
 
         #endregion
