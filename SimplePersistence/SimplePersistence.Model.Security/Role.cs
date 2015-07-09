@@ -25,6 +25,23 @@
     /// </summary>
     public class Role : Role<string>
     {
-        
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        public Role()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
+
+        /// <summary>
+        /// Creates a new role with the given name
+        /// </summary>
+        /// <param name="name">The name for this role</param>
+        /// <param name="description">The role name</param>
+        public Role(string name, string description = null) : this()
+        {
+            Name = name;
+            Description = description;
+        }
     }
 }
