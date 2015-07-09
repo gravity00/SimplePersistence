@@ -47,6 +47,7 @@
     <Compile Include="IClaimType.cs" />
     <Compile Include="ILoginProvider.cs" />
     <Compile Include="IRole.cs" />
+    <Compile Include="IRoleClaim.cs" />
     <Compile Include="IUser.cs" />
     <Compile Include="IUserClaim.cs" />
     <Compile Include="LoginProvider.cs" />

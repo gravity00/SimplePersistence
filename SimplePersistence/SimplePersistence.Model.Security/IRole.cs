@@ -10,10 +10,14 @@
 #endregion
 namespace SimplePersistence.Model.Security
 {
+    using System;
+
     /// <summary>
     /// Represents an user role
     /// </summary>
-    public interface IRole : IEntity<string>
+    /// <typeparam name="TIdentity">The identity type</typeparam>
+    public interface IRole<TIdentity> : IEntity<TIdentity> 
+        where TIdentity : IEquatable<TIdentity>
     {
         /// <summary>
         /// The role name
@@ -24,5 +28,13 @@ namespace SimplePersistence.Model.Security
         /// The role description
         /// </summary>
         string Description { get; set; }
+    }
+
+    /// <summary>
+    /// Represents an user role
+    /// </summary>
+    public interface IRole : IRole<string>
+    {
+        
     }
 }
