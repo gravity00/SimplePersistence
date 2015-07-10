@@ -188,7 +188,7 @@ namespace SimplePersistence.UoW
     /// to manipulate persisted entities
     /// </summary>
     /// <typeparam name="TEntity">The entity type</typeparam>
-    public interface IAsyncRepository<TEntity>
+    public interface IAsyncRepository<TEntity> : IExposeQueryable<TEntity>
         where TEntity : class
     {
         #region GetById
