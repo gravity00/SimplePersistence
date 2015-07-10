@@ -182,4 +182,170 @@ namespace SimplePersistence.UoW
 
         #endregion
     }
+
+    /// <summary>
+    /// Represents a repository that only exposes asynchronous operations 
+    /// to manipulate persisted entities
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type</typeparam>
+    public interface IAsyncRepository<TEntity>
+        where TEntity : class
+    {
+        #region GetById
+
+        /// <summary>
+        /// Gets an entity by its unique identifier from this repository asynchronously
+        /// </summary>
+        /// <param name="ids">The entity unique identifiers</param>
+        /// <returns>A <see cref="Task{TResult}"/> that will fetch the entity</returns>
+        Task<TEntity> GetByIdAsync(params object[] ids);
+
+        /// <summary>
+        /// Gets an entity by its unique identifier from this repository asynchronously
+        /// </summary>
+        /// <param name="ids">The entity unique identifier</param>
+        /// <param name="ct">The <see cref="CancellationToken"/> for the returned task</param>
+        /// <returns>A <see cref="Task{TResult}"/> that will fetch the entity</returns>
+        Task<TEntity> GetByIdAsync(CancellationToken ct, params object[] ids);
+
+        #endregion
+
+        #region Add
+
+        /// <summary>
+        /// Adds the entity to the repository asynchronously
+        /// </summary>
+        /// <param name="entity">The entity to add</param>
+        /// <returns>A <see cref="Task{TResult}"/> containing the entity</returns>
+        Task<TEntity> AddAsync(TEntity entity);
+
+        /// <summary>
+        /// Adds the entity to the repository asynchronously
+        /// </summary>
+        /// <param name="entity">The entity to add</param>
+        /// <param name="ct">The <see cref="CancellationToken"/> for the returned task</param>
+        /// <returns>A <see cref="Task{TResult}"/> containing the entity</returns>
+        Task<TEntity> AddAsync(TEntity entity, CancellationToken ct);
+
+        /// <summary>
+        /// Adds a range of entities to the repository asynchronously
+        /// </summary>
+        /// <param name="entities">The entity to add</param>
+        /// <returns>A <see cref="Task{TResult}"/> containing the entities</returns>
+        Task<IEnumerable<TEntity>> AddAsync(IEnumerable<TEntity> entities);
+
+        /// <summary>
+        /// Adds a range of entities to the repository asynchronously
+        /// </summary>
+        /// <param name="entities">The entity to add</param>
+        /// <param name="ct">The <see cref="CancellationToken"/> for the returned task</param>
+        /// <returns>A <see cref="Task{TResult}"/> containing the entities</returns>
+        Task<IEnumerable<TEntity>> AddAsync(IEnumerable<TEntity> entities, CancellationToken ct);
+
+        #endregion
+
+        #region Update
+
+        /// <summary>
+        /// Updates the entity in the repository asynchronously
+        /// </summary>
+        /// <param name="entity">The entity to update</param>
+        /// <returns>A <see cref="Task{TResult}"/> containing the entity</returns>
+        Task<TEntity> UpdateAsync(TEntity entity);
+
+        /// <summary>
+        /// Updates the entity in the repository asynchronously
+        /// </summary>
+        /// <param name="entity">The entity to update</param>
+        /// <param name="ct">The <see cref="CancellationToken"/> for the returned task</param>
+        /// <returns>A <see cref="Task{TResult}"/> containing the entity</returns>
+        Task<TEntity> UpdateAsync(TEntity entity, CancellationToken ct);
+
+        /// <summary>
+        /// Updates a range of entities in the repository asynchronously
+        /// </summary>
+        /// <param name="entities">The entities to update</param>
+        /// <returns>A <see cref="Task{TResult}"/> containing the entities</returns>
+        Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities);
+
+        /// <summary>
+        /// Updates a range of entities in the repository asynchronously
+        /// </summary>
+        /// <param name="entities">The entities to update</param>
+        /// <param name="ct">The <see cref="CancellationToken"/> for the returned task</param>
+        /// <returns>A <see cref="Task{TResult}"/> containing the entities</returns>
+        Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities, CancellationToken ct);
+
+        #endregion
+
+        #region Delete
+
+        /// <summary>
+        /// Deletes the entity in the repository asynchronously
+        /// </summary>
+        /// <param name="entity">The entity to delete</param>
+        /// <returns>A <see cref="Task{TResult}"/> containing the entity</returns>
+        Task<TEntity> DeleteAsync(TEntity entity);
+
+        /// <summary>
+        /// Deletes the entity in the repository asynchronously
+        /// </summary>
+        /// <param name="entity">The entity to delete</param>
+        /// <param name="ct">The <see cref="CancellationToken"/> for the returned task</param>
+        /// <returns>A <see cref="Task{TResult}"/> containing the entity</returns>
+        Task<TEntity> DeleteAsync(TEntity entity, CancellationToken ct);
+
+        /// <summary>
+        /// Deletes a range of entity in the repository asynchronously
+        /// </summary>
+        /// <param name="entities">The entities to delete</param>
+        /// <returns>A <see cref="Task{TResult}"/> containing the entities</returns>
+        Task<IEnumerable<TEntity>> DeleteAsync(IEnumerable<TEntity> entities);
+
+        /// <summary>
+        /// Deletes a range of entity in the repository asynchronously
+        /// </summary>
+        /// <param name="entities">The entities to delete</param>
+        /// <param name="ct">The <see cref="CancellationToken"/> for the returned task</param>
+        /// <returns>A <see cref="Task{TResult}"/> containing the entities</returns>
+        Task<IEnumerable<TEntity>> DeleteAsync(IEnumerable<TEntity> entities, CancellationToken ct);
+
+        #endregion
+
+        #region Total
+
+        /// <summary>
+        /// Gets the total entities in the repository asynchronously
+        /// </summary>
+        /// <returns>A <see cref="Task{TResult}"/> containing the total</returns>
+        Task<long> TotalAsync();
+
+        /// <summary>
+        /// Gets the total entities in the repository asynchronously
+        /// </summary>
+        /// <param name="ct">The <see cref="CancellationToken"/> for the returned task</param>
+        /// <returns>A <see cref="Task{TResult}"/> containing the total</returns>
+        Task<long> TotalAsync(CancellationToken ct);
+
+        #endregion
+
+        #region Exists
+
+        /// <summary>
+        /// Checks if an entity with the given key exists
+        /// </summary>
+        /// <param name="ids">The entity unique identifiers</param>
+        /// <returns>True if entity exists</returns>
+        Task<bool> ExistsAsync(params object[] ids);
+
+        /// <summary>
+        /// Checks if an entity with the given key exists
+        /// </summary>
+        /// <param name="ids">The entity unique identifiers</param>
+        /// <param name="ct">The <see cref="CancellationToken"/> for the returned task</param>
+        /// <returns>True if entity exists</returns>
+        Task<bool> ExistsAsync(CancellationToken ct, params object[] ids);
+
+        #endregion
+    }
 }

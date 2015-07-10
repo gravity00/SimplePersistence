@@ -48,4 +48,37 @@ namespace SimplePersistence.UoW
 
         #endregion
     }
+
+    /// <summary>
+    /// Can be exported as a <see cref="IQueryable{TEntity}"/>
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
+    public interface IExposeQueryable<TEntity>
+        where TEntity : class
+    {
+        #region Query
+
+        /// <summary>
+        /// Gets an <see cref="IQueryable{TEntity}"/> for this repository entities
+        /// </summary>
+        /// <returns>The <see cref="IQueryable{TEntity}"/> object</returns>
+        IQueryable<TEntity> Query();
+
+        /// <summary>
+        /// Gets an <see cref="IQueryable{TEntity}"/> for this repository entities
+        /// </summary>
+        /// <param name="ids">The entity unique identifiers</param>
+        /// <returns>The <see cref="IQueryable{TEntity}"/> object</returns>
+        IQueryable<TEntity> QueryById(params object[] ids);
+
+        /// <summary>
+        /// Gets an <see cref="IQueryable{TEntity}"/> for this repository entities
+        /// that will also fetch, on execution, all the entity navigation properties
+        /// </summary>
+        /// <param name="propertiesToFetch">The navigation properties to also fetch on query execution</param>
+        /// <returns>The <see cref="IQueryable{TEntity}"/> object</returns>
+        IQueryable<TEntity> QueryFetching(params Expression<Func<TEntity, object>>[] propertiesToFetch);
+
+        #endregion
+    }
 }

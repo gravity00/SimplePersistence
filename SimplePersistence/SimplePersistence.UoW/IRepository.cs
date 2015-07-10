@@ -24,4 +24,15 @@ namespace SimplePersistence.UoW
     {
 
     }
+
+    /// <summary>
+    /// Repository interface that will be used to query and manipulate
+    /// persisted entities
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type</typeparam>
+    public interface IRepository<TEntity> : IAsyncRepository<TEntity>, ISyncRepository<TEntity>
+        where TEntity : class
+    {
+
+    }
 }
