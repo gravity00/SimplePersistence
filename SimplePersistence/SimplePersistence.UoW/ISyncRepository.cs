@@ -115,6 +115,212 @@ namespace SimplePersistence.UoW
     /// to manipulate persisted entities
     /// </summary>
     /// <typeparam name="TEntity">The entity type</typeparam>
+    /// <typeparam name="TId01">The entity id first type</typeparam>
+    /// <typeparam name="TId02">The entity id second type</typeparam>
+    public interface ISyncRepository<TEntity, in TId01, in TId02> : IExposeQueryable<TEntity, TId01, TId02>
+        where TEntity : class
+        where TId01 : IEquatable<TId01>
+        where TId02 : IEquatable<TId02>
+    {
+        #region GetById
+
+        /// <summary>
+        /// Gets an entity by its unique identifier from this repository
+        /// </summary>
+        /// <param name="id01">The entity first unique identifier value</param>
+        /// <param name="id02">The entity second unique identifier value</param>
+        /// <returns>The entity or null if not found</returns>
+        TEntity GetById(TId01 id01, TId02 id02);
+
+        #endregion
+
+        #region Add
+
+        /// <summary>
+        /// Adds the entity to the repository
+        /// </summary>
+        /// <param name="entity">The entity to add</param>
+        /// <returns>The entity</returns>
+        TEntity Add(TEntity entity);
+
+        /// <summary>
+        /// Adds a range of entities to the repository
+        /// </summary>
+        /// <param name="entities">The entities to add</param>
+        /// <returns>The range of entities added</returns>
+        IEnumerable<TEntity> Add(IEnumerable<TEntity> entities);
+
+        #endregion
+
+        #region Update
+
+        /// <summary>
+        /// Updates the entity in the repository
+        /// </summary>
+        /// <param name="entity">The entity to update</param>
+        /// <returns>The entity</returns>
+        TEntity Update(TEntity entity);
+
+        /// <summary>
+        /// Updates a range of entities in the repository
+        /// </summary>
+        /// <param name="entities">The entities to update</param>
+        /// <returns>The entities</returns>
+        IEnumerable<TEntity> Update(IEnumerable<TEntity> entities);
+
+        #endregion
+
+        #region Delete
+
+        /// <summary>
+        /// Deletes the entity in the repository
+        /// </summary>
+        /// <param name="entity">The entity to delete</param>
+        /// <returns>The entity</returns>
+        TEntity Delete(TEntity entity);
+
+        /// <summary>
+        /// Deletes a range of entity in the repository
+        /// </summary>
+        /// <param name="entities">The entities to delete</param>
+        /// <returns>The entities</returns>
+        IEnumerable<TEntity> Delete(IEnumerable<TEntity> entities);
+
+        #endregion
+
+        #region Total
+
+        /// <summary>
+        /// Gets the total entities in the repository
+        /// </summary>
+        /// <returns>The total</returns>
+        long Total();
+
+        #endregion
+
+        #region Exists
+
+        /// <summary>
+        /// Checks if an entity with the given key exists
+        /// </summary>
+        /// <param name="id01">The entity first unique identifier value</param>
+        /// <param name="id02">The entity second unique identifier value</param>
+        /// <returns>True if entity exists</returns>
+        bool Exists(TId01 id01, TId02 id02);
+
+        #endregion
+    }
+
+    /// <summary>
+    /// Represents a repository that only exposes synchronous operations 
+    /// to manipulate persisted entities
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type</typeparam>
+    /// <typeparam name="TId01">The entity id first type</typeparam>
+    /// <typeparam name="TId02">The entity id second type</typeparam>
+    /// <typeparam name="TId03">The entity id third type</typeparam>
+    public interface ISyncRepository<TEntity, in TId01, in TId02, in TId03> : IExposeQueryable<TEntity, TId01, TId02, TId03>
+        where TEntity : class
+        where TId01 : IEquatable<TId01>
+        where TId02 : IEquatable<TId02>
+        where TId03 : IEquatable<TId03>
+    {
+        #region GetById
+
+        /// <summary>
+        /// Gets an entity by its unique identifier from this repository
+        /// </summary>
+        /// <param name="id01">The entity first unique identifier value</param>
+        /// <param name="id02">The entity second unique identifier value</param>
+        /// <param name="id03">The entity third identifier value</param>
+        /// <returns>The entity or null if not found</returns>
+        TEntity GetById(TId01 id01, TId02 id02, TId03 id03);
+
+        #endregion
+
+        #region Add
+
+        /// <summary>
+        /// Adds the entity to the repository
+        /// </summary>
+        /// <param name="entity">The entity to add</param>
+        /// <returns>The entity</returns>
+        TEntity Add(TEntity entity);
+
+        /// <summary>
+        /// Adds a range of entities to the repository
+        /// </summary>
+        /// <param name="entities">The entities to add</param>
+        /// <returns>The range of entities added</returns>
+        IEnumerable<TEntity> Add(IEnumerable<TEntity> entities);
+
+        #endregion
+
+        #region Update
+
+        /// <summary>
+        /// Updates the entity in the repository
+        /// </summary>
+        /// <param name="entity">The entity to update</param>
+        /// <returns>The entity</returns>
+        TEntity Update(TEntity entity);
+
+        /// <summary>
+        /// Updates a range of entities in the repository
+        /// </summary>
+        /// <param name="entities">The entities to update</param>
+        /// <returns>The entities</returns>
+        IEnumerable<TEntity> Update(IEnumerable<TEntity> entities);
+
+        #endregion
+
+        #region Delete
+
+        /// <summary>
+        /// Deletes the entity in the repository
+        /// </summary>
+        /// <param name="entity">The entity to delete</param>
+        /// <returns>The entity</returns>
+        TEntity Delete(TEntity entity);
+
+        /// <summary>
+        /// Deletes a range of entity in the repository
+        /// </summary>
+        /// <param name="entities">The entities to delete</param>
+        /// <returns>The entities</returns>
+        IEnumerable<TEntity> Delete(IEnumerable<TEntity> entities);
+
+        #endregion
+
+        #region Total
+
+        /// <summary>
+        /// Gets the total entities in the repository
+        /// </summary>
+        /// <returns>The total</returns>
+        long Total();
+
+        #endregion
+
+        #region Exists
+
+        /// <summary>
+        /// Checks if an entity with the given key exists
+        /// </summary>
+        /// <param name="id01">The entity first unique identifier value</param>
+        /// <param name="id02">The entity second unique identifier value</param>
+        /// <param name="id03">The entity third identifier value</param>
+        /// <returns>True if entity exists</returns>
+        bool Exists(TId01 id01, TId02 id02, TId03 id03);
+
+        #endregion
+    }
+
+    /// <summary>
+    /// Represents a repository that only exposes synchronous operations 
+    /// to manipulate persisted entities
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type</typeparam>
     public interface ISyncRepository<TEntity> : IExposeQueryable<TEntity> 
         where TEntity : class
     {
