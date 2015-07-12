@@ -380,7 +380,7 @@ namespace SimplePersistence.UoW.EF
     }
 
     /// <summary>
-    /// Implementation of an <see cref="IAsyncRepository{TEntity,TId}"/> for the Entity Framework,
+    /// Implementation of an <see cref="IAsyncRepository{TEntity,TId01,TId02}"/> for the Entity Framework,
     /// exposing only async operations
     /// </summary>
     /// <typeparam name="TEntity">The entity type</typeparam>
@@ -748,7 +748,7 @@ namespace SimplePersistence.UoW.EF
     }
 
     /// <summary>
-    /// Implementation of an <see cref="IAsyncRepository{TEntity,TId}"/> for the Entity Framework,
+    /// Implementation of an <see cref="IAsyncRepository{TEntity,TId01,TId02,TId03}"/> for the Entity Framework,
     /// exposing only async operations
     /// </summary>
     /// <typeparam name="TEntity">The entity type</typeparam>
