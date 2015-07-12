@@ -394,14 +394,14 @@ namespace SimplePersistence.UoW.EF
     /// exposing only async operations
     /// </summary>
     /// <typeparam name="TEntity">The entity type</typeparam>
-    /// <typeparam name="TId01">The entity id first type</typeparam>
-    /// <typeparam name="TId02">The entity id second type</typeparam>
-    public class EFAsyncRepository<TEntity, TId01, TId02> : IAsyncRepository<TEntity, TId01, TId02>
+    /// <typeparam name="TKey01">The entity id first type</typeparam>
+    /// <typeparam name="TKey02">The entity id second type</typeparam>
+    public class EFAsyncRepository<TEntity, TKey01, TKey02> : IAsyncRepository<TEntity, TKey01, TKey02>
         where TEntity : class
-        where TId01 : IEquatable<TId01>
-        where TId02 : IEquatable<TId02>
+        where TKey01 : IEquatable<TKey01>
+        where TKey02 : IEquatable<TKey02>
     {
-        private readonly Func<TEntity, TId01, TId02, bool> _filterById;
+        private readonly Func<TEntity, TKey01, TKey02, bool> _filterById;
         private readonly DbSet<TEntity> _dbSet;
         private readonly DbContext _dbContext;
 
@@ -427,7 +427,7 @@ namespace SimplePersistence.UoW.EF
         /// <param name="dbContext">The database context</param>
         /// <param name="filterById">The filter by the entity if expression</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public EFAsyncRepository(DbContext dbContext, Func<TEntity, TId01, TId02, bool> filterById)
+        public EFAsyncRepository(DbContext dbContext, Func<TEntity, TKey01, TKey02, bool> filterById)
         {
             if (dbContext == null) throw new ArgumentNullException("dbContext");
             if (filterById == null) throw new ArgumentNullException("filterById");
@@ -454,7 +454,7 @@ namespace SimplePersistence.UoW.EF
         /// <param name="id01">The entity first unique identifier value</param>
         /// <param name="id02">The entity second unique identifier value</param>
         /// <returns>The <see cref="IQueryable{TEntity}"/> object</returns>
-        public IQueryable<TEntity> QueryById(TId01 id01, TId02 id02)
+        public IQueryable<TEntity> QueryById(TKey01 id01, TKey02 id02)
         {
             return Query().Where(e => _filterById(e, id01, id02));
         }
@@ -485,7 +485,7 @@ namespace SimplePersistence.UoW.EF
         /// <param name="id01">The entity first unique identifier value</param>
         /// <param name="id02">The entity second unique identifier value</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> that will fetch the entity</returns>
-        public async Task<TEntity> GetByIdAsync(TId01 id01, TId02 id02)
+        public async Task<TEntity> GetByIdAsync(TKey01 id01, TKey02 id02)
         {
             return await DbSet.FindAsync(id01, id02);
         }
@@ -497,7 +497,7 @@ namespace SimplePersistence.UoW.EF
         /// <param name="id02">The entity second unique identifier value</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> that will fetch the entity</returns>
-        public async Task<TEntity> GetByIdAsync(TId01 id01, TId02 id02, CancellationToken ct)
+        public async Task<TEntity> GetByIdAsync(TKey01 id01, TKey02 id02, CancellationToken ct)
         {
             return await DbSet.FindAsync(ct, id01, id02);
         }
@@ -679,7 +679,7 @@ namespace SimplePersistence.UoW.EF
         /// <param name="id01">The entity first unique identifier value</param>
         /// <param name="id02">The entity second unique identifier value</param>
         /// <returns>True if entity exists</returns>
-        public bool Exists(TId01 id01, TId02 id02)
+        public bool Exists(TKey01 id01, TKey02 id02)
         {
             return QueryById(id01, id02).Any();
         }
@@ -690,7 +690,7 @@ namespace SimplePersistence.UoW.EF
         /// <param name="id01">The entity first unique identifier value</param>
         /// <param name="id02">The entity second unique identifier value</param>
         /// <returns>True if entity exists</returns>
-        public async Task<bool> ExistsAsync(TId01 id01, TId02 id02)
+        public async Task<bool> ExistsAsync(TKey01 id01, TKey02 id02)
         {
             return await QueryById(id01, id02).AnyAsync();
         }
@@ -702,7 +702,7 @@ namespace SimplePersistence.UoW.EF
         /// <param name="id02">The entity second unique identifier value</param>
         /// <param name="ct">The <see cref="CancellationToken"/> for the returned task</param>
         /// <returns>True if entity exists</returns>
-        public async Task<bool> ExistsAsync(TId01 id01, TId02 id02, CancellationToken ct)
+        public async Task<bool> ExistsAsync(TKey01 id01, TKey02 id02, CancellationToken ct)
         {
             return await QueryById(id01, id02).AnyAsync(ct);
         }
@@ -773,16 +773,16 @@ namespace SimplePersistence.UoW.EF
     /// exposing only async operations
     /// </summary>
     /// <typeparam name="TEntity">The entity type</typeparam>
-    /// <typeparam name="TId01">The entity id first type</typeparam>
-    /// <typeparam name="TId02">The entity id second type</typeparam>
-    /// <typeparam name="TId03">The entity id third type</typeparam>
-    public class EFAsyncRepository<TEntity, TId01, TId02, TId03> : IAsyncRepository<TEntity, TId01, TId02, TId03>
+    /// <typeparam name="TKey01">The entity id first type</typeparam>
+    /// <typeparam name="TKey02">The entity id second type</typeparam>
+    /// <typeparam name="TKey03">The entity id third type</typeparam>
+    public class EFAsyncRepository<TEntity, TKey01, TKey02, TKey03> : IAsyncRepository<TEntity, TKey01, TKey02, TKey03>
         where TEntity : class
-        where TId01 : IEquatable<TId01>
-        where TId02 : IEquatable<TId02>
-        where TId03 : IEquatable<TId03>
+        where TKey01 : IEquatable<TKey01>
+        where TKey02 : IEquatable<TKey02>
+        where TKey03 : IEquatable<TKey03>
     {
-        private readonly Func<TEntity, TId01, TId02, TId03, bool> _filterById;
+        private readonly Func<TEntity, TKey01, TKey02, TKey03, bool> _filterById;
         private readonly DbSet<TEntity> _dbSet;
         private readonly DbContext _dbContext;
 
@@ -808,7 +808,7 @@ namespace SimplePersistence.UoW.EF
         /// <param name="dbContext">The database context</param>
         /// <param name="filterById">The filter by the entity if expression</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public EFAsyncRepository(DbContext dbContext, Func<TEntity, TId01, TId02, TId03, bool> filterById)
+        public EFAsyncRepository(DbContext dbContext, Func<TEntity, TKey01, TKey02, TKey03, bool> filterById)
         {
             if (dbContext == null) throw new ArgumentNullException("dbContext");
             if (filterById == null) throw new ArgumentNullException("filterById");
@@ -836,7 +836,7 @@ namespace SimplePersistence.UoW.EF
         /// <param name="id02">The entity second unique identifier value</param>
         /// <param name="id03">The entity third identifier value</param>
         /// <returns>The <see cref="IQueryable{TEntity}"/> object</returns>
-        public IQueryable<TEntity> QueryById(TId01 id01, TId02 id02, TId03 id03)
+        public IQueryable<TEntity> QueryById(TKey01 id01, TKey02 id02, TKey03 id03)
         {
             return Query().Where(e => _filterById(e, id01, id02, id03));
         }
@@ -868,7 +868,7 @@ namespace SimplePersistence.UoW.EF
         /// <param name="id02">The entity second unique identifier value</param>
         /// <param name="id03">The entity third identifier value</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> that will fetch the entity</returns>
-        public async Task<TEntity> GetByIdAsync(TId01 id01, TId02 id02, TId03 id03)
+        public async Task<TEntity> GetByIdAsync(TKey01 id01, TKey02 id02, TKey03 id03)
         {
             return await DbSet.FindAsync(id01, id02, id03);
         }
@@ -881,7 +881,7 @@ namespace SimplePersistence.UoW.EF
         /// <param name="id03">The entity third identifier value</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> that will fetch the entity</returns>
-        public async Task<TEntity> GetByIdAsync(TId01 id01, TId02 id02, TId03 id03, CancellationToken ct)
+        public async Task<TEntity> GetByIdAsync(TKey01 id01, TKey02 id02, TKey03 id03, CancellationToken ct)
         {
             return await DbSet.FindAsync(ct, id01, id02, id03);
         }
@@ -1064,7 +1064,7 @@ namespace SimplePersistence.UoW.EF
         /// <param name="id02">The entity second unique identifier value</param>
         /// <param name="id03">The entity third identifier value</param>
         /// <returns>True if entity exists</returns>
-        public bool Exists(TId01 id01, TId02 id02, TId03 id03)
+        public bool Exists(TKey01 id01, TKey02 id02, TKey03 id03)
         {
             return QueryById(id01, id02, id03).Any();
         }
@@ -1076,7 +1076,7 @@ namespace SimplePersistence.UoW.EF
         /// <param name="id02">The entity second unique identifier value</param>
         /// <param name="id03">The entity third identifier value</param>
         /// <returns>True if entity exists</returns>
-        public async Task<bool> ExistsAsync(TId01 id01, TId02 id02, TId03 id03)
+        public async Task<bool> ExistsAsync(TKey01 id01, TKey02 id02, TKey03 id03)
         {
             return await QueryById(id01, id02, id03).AnyAsync();
         }
@@ -1089,7 +1089,7 @@ namespace SimplePersistence.UoW.EF
         /// <param name="id03">The entity third identifier value</param>
         /// <param name="ct">The <see cref="CancellationToken"/> for the returned task</param>
         /// <returns>True if entity exists</returns>
-        public async Task<bool> ExistsAsync(TId01 id01, TId02 id02, TId03 id03, CancellationToken ct)
+        public async Task<bool> ExistsAsync(TKey01 id01, TKey02 id02, TKey03 id03, CancellationToken ct)
         {
             return await QueryById(id01, id02, id03).AnyAsync(ct);
         }
