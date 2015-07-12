@@ -302,16 +302,6 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="id">The entity unique identifier</param>
         /// <returns>True if entity exists</returns>
-        public bool Exists(TKey id)
-        {
-            return QueryById(id).Any();
-        }
-
-        /// <summary>
-        /// Checks if an entity with the given key exists
-        /// </summary>
-        /// <param name="id">The entity unique identifier</param>
-        /// <returns>True if entity exists</returns>
         public async Task<bool> ExistsAsync(TKey id)
         {
             return await QueryById(id).AnyAsync();
@@ -672,17 +662,6 @@ namespace SimplePersistence.UoW.EF
         #endregion
 
         #region Exists
-
-        /// <summary>
-        /// Checks if an entity with the given key exists
-        /// </summary>
-        /// <param name="id01">The entity first unique identifier value</param>
-        /// <param name="id02">The entity second unique identifier value</param>
-        /// <returns>True if entity exists</returns>
-        public bool Exists(TKey01 id01, TKey02 id02)
-        {
-            return QueryById(id01, id02).Any();
-        }
 
         /// <summary>
         /// Checks if an entity with the given key exists
@@ -1064,18 +1043,6 @@ namespace SimplePersistence.UoW.EF
         /// <param name="id02">The entity second unique identifier value</param>
         /// <param name="id03">The entity third identifier value</param>
         /// <returns>True if entity exists</returns>
-        public bool Exists(TKey01 id01, TKey02 id02, TKey03 id03)
-        {
-            return QueryById(id01, id02, id03).Any();
-        }
-
-        /// <summary>
-        /// Checks if an entity with the given key exists
-        /// </summary>
-        /// <param name="id01">The entity first unique identifier value</param>
-        /// <param name="id02">The entity second unique identifier value</param>
-        /// <param name="id03">The entity third identifier value</param>
-        /// <returns>True if entity exists</returns>
         public async Task<bool> ExistsAsync(TKey01 id01, TKey02 id02, TKey03 id03)
         {
             return await QueryById(id01, id02, id03).AnyAsync();
@@ -1431,16 +1398,6 @@ namespace SimplePersistence.UoW.EF
         #endregion
 
         #region Exists
-
-        /// <summary>
-        /// Checks if an entity with the given key exists
-        /// </summary>
-        /// <param name="ids">The entity unique identifiers</param>
-        /// <returns>True if entity exists</returns>
-        public bool Exists(params object[] ids)
-        {
-            return QueryById(ids).Any();
-        }
 
         /// <summary>
         /// Checks if an entity with the given key exists
