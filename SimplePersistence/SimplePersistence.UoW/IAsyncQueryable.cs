@@ -237,5 +237,34 @@ namespace SimplePersistence.UoW
         Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken ct);
 
         #endregion
+
+        #region AllAsync
+
+        /// <summary>
+        ///     Asynchronously determines whether all the elements of a sequence satisfy a condition.
+        /// </summary>
+        /// <param name="predicate"> A function to test each element for a condition. </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains <c>true</c> if every element of the source sequence passes the test in the specified
+        ///     predicate; otherwise, <c>false</c>.
+        /// </returns>
+        Task<bool> AllAsync(Expression<Func<T, bool>> predicate);
+
+        /// <summary>
+        ///     Asynchronously determines whether all the elements of a sequence satisfy a condition.
+        /// </summary>
+        /// <param name="predicate"> A function to test each element for a condition. </param>
+        /// <param name="ct">
+        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains <c>true</c> if every element of the source sequence passes the test in the specified
+        ///     predicate; otherwise, <c>false</c>.
+        /// </returns>
+        Task<bool> AllAsync(Expression<Func<T, bool>> predicate, CancellationToken ct);
+
+        #endregion
     }
 }
