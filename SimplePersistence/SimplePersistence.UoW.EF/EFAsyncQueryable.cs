@@ -325,6 +325,62 @@ namespace SimplePersistence.UoW.EF
 
 		#endregion
 
-		#endregion
-	}
+        #region AnyAsync
+
+        /// <summary>
+        /// Asynchronously determines whether a sequence contains any elements.
+        /// </summary>
+        /// <returns>
+        /// A task that represents the asynchronous operation. 
+        /// The task result contains <c>true</c> if the source sequence contains any elements; otherwise, <c>false</c>.
+        /// </returns>
+        public Task<bool> AnyAsync()
+        {
+            return _queryable.AnyAsync();
+        }
+
+        /// <summary>
+        /// Asynchronously determines whether a sequence contains any elements.
+        /// </summary>
+        /// <param name="ct">The cancellation token</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation. 
+        /// The task result contains <c>true</c> if the source sequence contains any elements; otherwise, <c>false</c>.
+        /// </returns>
+        public Task<bool> AnyAsync(CancellationToken ct)
+        {
+            return _queryable.AnyAsync(ct);
+        }
+
+        /// <summary>
+        /// Asynchronously determines whether a sequence contains any elements.
+        /// </summary>
+        /// <param name="predicate">A function to test each element for a condition.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation. 
+        /// The task result contains <c>true</c> if the source sequence contains any elements; otherwise, <c>false</c>.
+        /// </returns>
+        public Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
+        {
+            return _queryable.AnyAsync();
+        }
+
+        /// <summary>
+        /// Asynchronously determines whether a sequence contains any elements.
+        /// </summary>
+        /// <param name="predicate">A function to test each element for a condition.</param>
+        /// <param name="ct">The cancellation token</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation. 
+        /// The task result contains <c>true</c> if the source sequence contains any elements; otherwise, <c>false</c>.
+        /// </returns>
+        public Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken ct)
+        {
+            return _queryable.AnyAsync(ct);
+        }
+
+        #endregion
+
+        #endregion
+    }
 }
