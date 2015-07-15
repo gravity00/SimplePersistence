@@ -416,6 +416,66 @@ namespace SimplePersistence.UoW.EF
 
         #endregion
 
+        #region CountAsync
+
+        /// <summary>
+        ///     Asynchronously returns the number of elements in a sequence.
+        /// </summary>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the number of elements in the input sequence.
+        /// </returns>
+        public Task<int> CountAsync()
+        {
+            return _queryable.CountAsync();
+        }
+
+        /// <summary>
+        ///     Asynchronously returns the number of elements in a sequence.
+        /// </summary>
+        /// <param name="ct">
+        ///     A <see cref="System.Threading.CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the number of elements in the input sequence.
+        /// </returns>
+        public Task<int> CountAsync(CancellationToken ct)
+        {
+            return _queryable.CountAsync(ct);
+        }
+
+        /// <summary>
+        ///     Asynchronously returns the number of elements in a sequence.
+        /// </summary>
+        /// <param name="predicate"> A function to test each element for a condition. </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the number of elements in the input sequence.
+        /// </returns>
+        public Task<int> CountAsync(Expression<Func<T, bool>> predicate)
+        {
+            return _queryable.CountAsync(predicate);
+        }
+
+        /// <summary>
+        ///     Asynchronously returns the number of elements in a sequence.
+        /// </summary>
+        /// <param name="predicate"> A function to test each element for a condition. </param>
+        /// <param name="ct">
+        ///     A <see cref="System.Threading.CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the number of elements in the input sequence.
+        /// </returns>
+        public Task<int> CountAsync(Expression<Func<T, bool>> predicate, CancellationToken ct)
+        {
+            return _queryable.CountAsync(predicate, ct);
+        }
+
+        #endregion
+
         #endregion
     }
 }
