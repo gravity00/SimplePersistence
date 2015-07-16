@@ -572,5 +572,69 @@ namespace SimplePersistence.UoW
         Task<T> SingleOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken ct);
 
         #endregion
+
+        #region MinAsync
+
+        /// <summary>
+        ///     Asynchronously returns the minimum value of a sequence.
+        /// </summary>
+        /// <remarks>
+        ///     Multiple active operations on the same context instance are not supported.  Use 'await' to ensure
+        ///     that any asynchronous operations have completed before calling another method on this context.
+        /// </remarks>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the minimum value in the sequence.
+        /// </returns>
+        Task<T> MinAsync();
+
+        /// <summary>
+        ///     Asynchronously returns the minimum value of a sequence.
+        /// </summary>
+        /// <remarks>
+        ///     Multiple active operations on the same context instance are not supported.  Use 'await' to ensure
+        ///     that any asynchronous operations have completed before calling another method on this context.
+        /// </remarks>
+        /// <param name="ct">
+        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the minimum value in the sequence.
+        /// </returns>
+        Task<T> MinAsync(CancellationToken ct);
+
+        /// <summary>
+        ///     Asynchronously returns the minimum value of a sequence.
+        /// </summary>
+        /// <remarks>
+        ///     Multiple active operations on the same context instance are not supported.  Use 'await' to ensure
+        ///     that any asynchronous operations have completed before calling another method on this context.
+        /// </remarks>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the minimum value in the sequence.
+        /// </returns>
+        Task<TResult> MinAsync<TResult>(Expression<Func<T, TResult>> selector);
+
+        /// <summary>
+        ///     Asynchronously returns the minimum value of a sequence.
+        /// </summary>
+        /// <remarks>
+        ///     Multiple active operations on the same context instance are not supported.  Use 'await' to ensure
+        ///     that any asynchronous operations have completed before calling another method on this context.
+        /// </remarks>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <param name="ct">
+        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the minimum value in the sequence.
+        /// </returns>
+        Task<TResult> MinAsync<TResult>(Expression<Func<T, TResult>> selector, CancellationToken ct);
+
+        #endregion
     }
 }

@@ -794,6 +794,82 @@ namespace SimplePersistence.UoW.EF
 
         #endregion
 
+        #region MinAsync
+
+        /// <summary>
+        ///     Asynchronously returns the minimum value of a sequence.
+        /// </summary>
+        /// <remarks>
+        ///     Multiple active operations on the same context instance are not supported.  Use 'await' to ensure
+        ///     that any asynchronous operations have completed before calling another method on this context.
+        /// </remarks>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the minimum value in the sequence.
+        /// </returns>
+        public Task<T> MinAsync()
+        {
+            return _queryable.MinAsync();
+        }
+
+        /// <summary>
+        ///     Asynchronously returns the minimum value of a sequence.
+        /// </summary>
+        /// <remarks>
+        ///     Multiple active operations on the same context instance are not supported.  Use 'await' to ensure
+        ///     that any asynchronous operations have completed before calling another method on this context.
+        /// </remarks>
+        /// <param name="ct">
+        ///     A <see cref="System.Threading.CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the minimum value in the sequence.
+        /// </returns>
+        public Task<T> MinAsync(CancellationToken ct)
+        {
+            return _queryable.MinAsync(ct);
+        }
+
+        /// <summary>
+        ///     Asynchronously returns the minimum value of a sequence.
+        /// </summary>
+        /// <remarks>
+        ///     Multiple active operations on the same context instance are not supported.  Use 'await' to ensure
+        ///     that any asynchronous operations have completed before calling another method on this context.
+        /// </remarks>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the minimum value in the sequence.
+        /// </returns>
+        public Task<TResult> MinAsync<TResult>(Expression<Func<T, TResult>> selector)
+        {
+            return _queryable.MinAsync(selector);
+        }
+
+        /// <summary>
+        ///     Asynchronously returns the minimum value of a sequence.
+        /// </summary>
+        /// <remarks>
+        ///     Multiple active operations on the same context instance are not supported.  Use 'await' to ensure
+        ///     that any asynchronous operations have completed before calling another method on this context.
+        /// </remarks>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <param name="ct">
+        ///     A <see cref="System.Threading.CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the minimum value in the sequence.
+        /// </returns>
+        public Task<TResult> MinAsync<TResult>(Expression<Func<T, TResult>> selector, CancellationToken ct)
+        {
+            return _queryable.MinAsync(selector, ct);
+        }
+
+        #endregion
+
         #endregion
     }
 }
