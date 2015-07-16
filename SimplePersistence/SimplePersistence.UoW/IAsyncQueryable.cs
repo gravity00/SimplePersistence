@@ -460,5 +460,59 @@ namespace SimplePersistence.UoW
         Task<T> LastOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken ct);
 
         #endregion
+
+        #region SingleAsync
+
+        /// <summary>
+        ///     Asynchronously returns the only element of a sequence that satisfies a specified condition,
+        ///     and throws an exception if more than one such element exists.
+        /// </summary>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the single element of the sequence.
+        /// </returns>
+        Task<T> SingleAsync();
+
+        /// <summary>
+        ///     Asynchronously returns the only element of a sequence that satisfies a specified condition,
+        ///     and throws an exception if more than one such element exists.
+        /// </summary>
+        /// <param name="ct">
+        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the single element of the sequence.
+        /// </returns>
+        Task<T> SingleAsync(CancellationToken ct);
+
+        /// <summary>
+        ///     Asynchronously returns the only element of a sequence that satisfies a specified condition,
+        ///     and throws an exception if more than one such element exists.
+        /// </summary>
+        /// <param name="predicate"> A function to test an element for a condition. </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the single element of the input sequence that satisfies the condition in
+        ///     <paramref name="predicate" />.
+        /// </returns>
+        Task<T> SingleAsync(Expression<Func<T, bool>> predicate);
+
+        /// <summary>
+        ///     Asynchronously returns the only element of a sequence that satisfies a specified condition,
+        ///     and throws an exception if more than one such element exists.
+        /// </summary>
+        /// <param name="predicate"> A function to test an element for a condition. </param>
+        /// <param name="ct">
+        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the single element of the input sequence that satisfies the condition in
+        ///     <paramref name="predicate" />.
+        /// </returns>
+        Task<T> SingleAsync(Expression<Func<T, bool>> predicate, CancellationToken ct);
+
+        #endregion
     }
 }
