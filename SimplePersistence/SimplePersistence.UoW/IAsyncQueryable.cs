@@ -362,5 +362,55 @@ namespace SimplePersistence.UoW
         Task<long> LongCountAsync(Expression<Func<T, bool>> predicate, CancellationToken ct);
 
         #endregion
+
+        #region LastAsync
+
+        /// <summary>
+        ///     Asynchronously returns the last element of a sequence that satisfies a specified condition.
+        /// </summary>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the last element.
+        /// </returns>
+        Task<T> LastAsync();
+
+        /// <summary>
+        ///     Asynchronously returns the last element of a sequence that satisfies a specified condition.
+        /// </summary>
+        /// <param name="ct">
+        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the last element.
+        /// </returns>
+        Task<T> LastAsync(CancellationToken ct);
+
+        /// <summary>
+        ///     Asynchronously returns the last element of a sequence that satisfies a specified condition.
+        /// </summary>
+        /// <param name="predicate"> A function to test each element for a condition. </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the last element that passes the test in
+        ///     <paramref name="predicate" />.
+        /// </returns>
+        Task<T> LastAsync(Expression<Func<T, bool>> predicate);
+
+        /// <summary>
+        ///     Asynchronously returns the last element of a sequence that satisfies a specified condition.
+        /// </summary>
+        /// <param name="predicate"> A function to test each element for a condition. </param>
+        /// <param name="ct">
+        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the last element that passes the test in
+        ///     <paramref name="predicate" />.
+        /// </returns>
+        Task<T> LastAsync(Expression<Func<T, bool>> predicate, CancellationToken ct);
+
+        #endregion
     }
 }
