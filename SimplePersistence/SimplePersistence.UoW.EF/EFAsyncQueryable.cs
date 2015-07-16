@@ -598,6 +598,66 @@ namespace SimplePersistence.UoW.EF
 
         #endregion
 
+        #region LastOrDefaultAsync
+
+        /// <summary>
+        ///     Asynchronously returns the last element of a sequence, or a default value if the sequence contains no elements.
+        /// </summary>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains <c>default</c> ( <typeparamref name="T" /> ) if empty; otherwise, the last element.
+        /// </returns>
+        public Task<T> LastOrDefaultAsync()
+        {
+            return LastOrDefaultAsync(CancellationToken.None);
+        }
+
+        /// <summary>
+        ///     Asynchronously returns the last element of a sequence, or a default value if the sequence contains no elements.
+        /// </summary>
+        /// <param name="ct">
+        ///     A <see cref="System.Threading.CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains <c>default</c> ( <typeparamref name="T" /> ) if empty; otherwise, the last element.
+        /// </returns>
+        public Task<T> LastOrDefaultAsync(CancellationToken ct)
+        {
+            return Task.Run(() => _queryable.LastOrDefault(), ct);
+        }
+
+        /// <summary>
+        ///     Asynchronously returns the last element of a sequence, or a default value if the sequence contains no elements.
+        /// </summary>
+        /// <param name="predicate">A function to test each element for a condition.</param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains <c>default</c> ( <typeparamref name="T" /> ) if empty; otherwise, the last element.
+        /// </returns>
+        public Task<T> LastOrDefaultAsync(Expression<Func<T, bool>> predicate)
+        {
+            return LastOrDefaultAsync(predicate, CancellationToken.None);
+        }
+
+        /// <summary>
+        ///     Asynchronously returns the last element of a sequence, or a default value if the sequence contains no elements.
+        /// </summary>
+        /// <param name="predicate">A function to test each element for a condition.</param>
+        /// <param name="ct">
+        ///     A <see cref="System.Threading.CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains <c>default</c> ( <typeparamref name="T" /> ) if empty; otherwise, the last element.
+        /// </returns>
+        public Task<T> LastOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken ct)
+        {
+            return Task.Run(() => _queryable.LastOrDefault(predicate), ct);
+        }
+
+        #endregion
+
         #endregion
     }
 }

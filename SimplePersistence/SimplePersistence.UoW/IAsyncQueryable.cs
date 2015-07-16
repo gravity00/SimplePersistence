@@ -412,5 +412,53 @@ namespace SimplePersistence.UoW
         Task<T> LastAsync(Expression<Func<T, bool>> predicate, CancellationToken ct);
 
         #endregion
+
+        #region LastOrDefaultAsync
+
+        /// <summary>
+        ///     Asynchronously returns the last element of a sequence, or a default value if the sequence contains no elements.
+        /// </summary>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains <c>default</c> ( <typeparamref name="T" /> ) if empty; otherwise, the last element.
+        /// </returns>
+        Task<T> LastOrDefaultAsync();
+
+        /// <summary>
+        ///     Asynchronously returns the last element of a sequence, or a default value if the sequence contains no elements.
+        /// </summary>
+        /// <param name="ct">
+        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains <c>default</c> ( <typeparamref name="T" /> ) if empty; otherwise, the last element.
+        /// </returns>
+        Task<T> LastOrDefaultAsync(CancellationToken ct);
+
+        /// <summary>
+        ///     Asynchronously returns the last element of a sequence, or a default value if the sequence contains no elements.
+        /// </summary>
+        /// <param name="predicate">A function to test each element for a condition.</param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains <c>default</c> ( <typeparamref name="T" /> ) if empty; otherwise, the last element.
+        /// </returns>
+        Task<T> LastOrDefaultAsync(Expression<Func<T, bool>> predicate);
+
+        /// <summary>
+        ///     Asynchronously returns the last element of a sequence, or a default value if the sequence contains no elements.
+        /// </summary>
+        /// <param name="predicate">A function to test each element for a condition.</param>
+        /// <param name="ct">
+        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains <c>default</c> ( <typeparamref name="T" /> ) if empty; otherwise, the last element.
+        /// </returns>
+        Task<T> LastOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken ct);
+
+        #endregion
     }
 }
