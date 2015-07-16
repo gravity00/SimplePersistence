@@ -724,6 +724,76 @@ namespace SimplePersistence.UoW.EF
 
         #endregion
 
+        #region SingleOrDefaultAsync
+
+        /// <summary>
+        ///     Asynchronously returns the only element of a sequence that satisfies a specified condition or
+        ///     a default value if no such element exists; this method throws an exception if more than one element
+        ///     satisfies the condition.
+        /// </summary>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the single element of the sequence, or <c>default</c> ( <typeparamref name="T" /> ) if no such element is found.
+        /// </returns>
+        public Task<T> SingleOrDefaultAsync()
+        {
+            return _queryable.SingleOrDefaultAsync();
+        }
+
+        /// <summary>
+        ///     Asynchronously returns the only element of a sequence that satisfies a specified condition or
+        ///     a default value if no such element exists; this method throws an exception if more than one element
+        ///     satisfies the condition.
+        /// </summary>
+        /// <param name="ct">
+        ///     A <see cref="System.Threading.CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the single element of the sequence, or <c>default</c> ( <typeparamref name="T" /> ) if no such element is found.
+        /// </returns>
+        public Task<T> SingleOrDefaultAsync(CancellationToken ct)
+        {
+            return _queryable.SingleOrDefaultAsync(ct);
+        }
+
+        /// <summary>
+        ///     Asynchronously returns the only element of a sequence that satisfies a specified condition or
+        ///     a default value if no such element exists; this method throws an exception if more than one element
+        ///     satisfies the condition.
+        /// </summary>
+        /// <param name="predicate"> A function to test an element for a condition. </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the single element of the input sequence that satisfies the condition in
+        ///     <paramref name="predicate" />, or <c>default</c> ( <typeparamref name="T" /> ) if no such element is found.
+        /// </returns>
+        public Task<T> SingleOrDefaultAsync(Expression<Func<T, bool>> predicate)
+        {
+            return _queryable.SingleOrDefaultAsync(predicate);
+        }
+
+        /// <summary>
+        ///     Asynchronously returns the only element of a sequence that satisfies a specified condition or
+        ///     a default value if no such element exists; this method throws an exception if more than one element
+        ///     satisfies the condition.
+        /// </summary>
+        /// <param name="predicate"> A function to test an element for a condition. </param>
+        /// <param name="ct">
+        ///     A <see cref="System.Threading.CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the single element of the input sequence that satisfies the condition in
+        ///     <paramref name="predicate" />, or <c>default</c> ( <typeparamref name="T" /> ) if no such element is found.
+        /// </returns>
+        public Task<T> SingleOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken ct)
+        {
+            return _queryable.SingleOrDefaultAsync(predicate, ct);
+        }
+
+        #endregion
+
         #endregion
     }
 }
