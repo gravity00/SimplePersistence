@@ -690,5 +690,259 @@ namespace SimplePersistence.UoW
         Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> selector, CancellationToken ct);
 
         #endregion
+
+        #region SumAsync
+
+        /// <summary>
+        ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
+        ///     each element of the input sequence.
+        /// </summary>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the sum of the projected values..
+        /// </returns>
+        Task<decimal> SumAsync(Expression<Func<T, decimal>> selector);
+
+        /// <summary>
+        ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
+        ///     each element of the input sequence.
+        /// </summary>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <param name="ct">
+        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the sum of the projected values..
+        /// </returns>
+        Task<decimal> SumAsync(Expression<Func<T, decimal>> selector, CancellationToken ct);
+
+        /// <summary>
+        ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
+        ///     each element of the input sequence.
+        /// </summary>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the sum of the projected values..
+        /// </returns>
+        Task<decimal?> SumAsync(Expression<Func<T, decimal?>> selector);
+
+        /// <summary>
+        ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
+        ///     each element of the input sequence.
+        /// </summary>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <param name="ct">
+        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the sum of the projected values..
+        /// </returns>
+        Task<decimal?> SumAsync(Expression<Func<T, decimal?>> selector, CancellationToken ct);
+
+        /// <summary>
+        ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
+        ///     each element of the input sequence.
+        /// </summary>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the sum of the projected values..
+        /// </returns>
+        Task<int> SumAsync(Expression<Func<T, int>> selector);
+
+        /// <summary>
+        ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
+        ///     each element of the input sequence.
+        /// </summary>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <param name="ct">
+        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the sum of the projected values..
+        /// </returns>
+        Task<int> SumAsync(Expression<Func<T, int>> selector, CancellationToken ct);
+
+        /// <summary>
+        ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
+        ///     each element of the input sequence.
+        /// </summary>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the sum of the projected values..
+        /// </returns>
+        Task<int?> SumAsync(Expression<Func<T, int?>> selector);
+
+        /// <summary>
+        ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
+        ///     each element of the input sequence.
+        /// </summary>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <param name="ct">
+        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the sum of the projected values..
+        /// </returns>
+        Task<int?> SumAsync(Expression<Func<T, int?>> selector, CancellationToken ct);
+
+        /// <summary>
+        ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
+        ///     each element of the input sequence.
+        /// </summary>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the sum of the projected values..
+        /// </returns>
+        Task<long> SumAsync(Expression<Func<T, long>> selector);
+
+        /// <summary>
+        ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
+        ///     each element of the input sequence.
+        /// </summary>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <param name="ct">
+        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the sum of the projected values..
+        /// </returns>
+        Task<long> SumAsync(Expression<Func<T, long>> selector, CancellationToken ct);
+
+        /// <summary>
+        ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
+        ///     each element of the input sequence.
+        /// </summary>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the sum of the projected values..
+        /// </returns>
+        Task<long?> SumAsync(Expression<Func<T, long?>> selector);
+
+        /// <summary>
+        ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
+        ///     each element of the input sequence.
+        /// </summary>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <param name="ct">
+        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the sum of the projected values..
+        /// </returns>
+        Task<long?> SumAsync(Expression<Func<T, long?>> selector, CancellationToken ct);
+
+        /// <summary>
+        ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
+        ///     each element of the input sequence.
+        /// </summary>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the sum of the projected values..
+        /// </returns>
+        Task<double> SumAsync(Expression<Func<T, double>> selector);
+
+        /// <summary>
+        ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
+        ///     each element of the input sequence.
+        /// </summary>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <param name="ct">
+        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the sum of the projected values..
+        /// </returns>
+        Task<double> SumAsync(Expression<Func<T, double>> selector, CancellationToken ct);
+
+        /// <summary>
+        ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
+        ///     each element of the input sequence.
+        /// </summary>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the sum of the projected values..
+        /// </returns>
+        Task<double?> SumAsync(Expression<Func<T, double?>> selector);
+
+        /// <summary>
+        ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
+        ///     each element of the input sequence.
+        /// </summary>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <param name="ct">
+        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the sum of the projected values..
+        /// </returns>
+        Task<double?> SumAsync(Expression<Func<T, double?>> selector, CancellationToken ct);
+
+        /// <summary>
+        ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
+        ///     each element of the input sequence.
+        /// </summary>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the sum of the projected values..
+        /// </returns>
+        Task<float> SumAsync(Expression<Func<T, float>> selector);
+
+        /// <summary>
+        ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
+        ///     each element of the input sequence.
+        /// </summary>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <param name="ct">
+        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the sum of the projected values..
+        /// </returns>
+        Task<float> SumAsync(Expression<Func<T, float>> selector, CancellationToken ct);
+
+        /// <summary>
+        ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
+        ///     each element of the input sequence.
+        /// </summary>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the sum of the projected values..
+        /// </returns>
+        Task<float?> SumAsync(Expression<Func<T, float?>> selector);
+
+        /// <summary>
+        ///     Asynchronously computes the sum of the sequence of values that is obtained by invoking a projection function on
+        ///     each element of the input sequence.
+        /// </summary>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <param name="ct">
+        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the sum of the projected values..
+        /// </returns>
+        Task<float?> SumAsync(Expression<Func<T, float?>> selector, CancellationToken ct);
+
+        #endregion
     }
 }
