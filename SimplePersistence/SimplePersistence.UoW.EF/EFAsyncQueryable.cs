@@ -201,9 +201,202 @@ namespace SimplePersistence.UoW.EF
         public Task<T[]> ToArrayAsync(CancellationToken ct)
 		{
 			return _queryable.ToArrayAsync(ct);
-		}
+        }
 
-		#endregion
+        #endregion
+
+        #region ToDictionaryAsync
+
+        /// <summary>
+        ///     Creates a <see cref="System.Collections.Generic.Dictionary{TKey,TValue}" /> from an <see cref="System.Linq.IQueryable{T}" /> by enumerating it
+        ///     asynchronously
+        ///     according to a specified key selector function.
+        /// </summary>
+        /// <typeparam name="TKey">
+        ///     The type of the key returned by <paramref name="keySelector" /> .
+        /// </typeparam>
+        /// <param name="keySelector"> A function to extract a key from each element. </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains a <see cref="System.Collections.Generic.Dictionary{TKey,TValue}" /> that contains selected keys and values.
+        /// </returns>
+        public Task<Dictionary<TKey, T>> ToDictionaryAsync<TKey>(Func<T, TKey> keySelector)
+        {
+            return _queryable.ToDictionaryAsync(keySelector);
+        }
+
+        /// <summary>
+        ///     Creates a <see cref="System.Collections.Generic.Dictionary{TKey,TValue}" /> from an <see cref="System.Linq.IQueryable{T}" /> by enumerating it
+        ///     asynchronously
+        ///     according to a specified key selector function.
+        /// </summary>
+        /// <typeparam name="TKey">
+        ///     The type of the key returned by <paramref name="keySelector" /> .
+        /// </typeparam>
+        /// <param name="keySelector"> A function to extract a key from each element. </param>
+        /// <param name="ct">
+        ///     A <see cref="System.Threading.CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains a <see cref="System.Collections.Generic.Dictionary{TKey,TValue}" /> that contains selected keys and values.
+        /// </returns>
+        public Task<Dictionary<TKey, T>> ToDictionaryAsync<TKey>(Func<T, TKey> keySelector, CancellationToken ct)
+        {
+            return _queryable.ToDictionaryAsync(keySelector, ct);
+        }
+
+        /// <summary>
+        ///     Creates a <see cref="System.Collections.Generic.Dictionary{TKey,TValue}" /> from an <see cref="System.Linq.IQueryable{T}" /> by enumerating it
+        ///     asynchronously
+        ///     according to a specified key selector function and a comparer.
+        /// </summary>
+        /// <typeparam name="TKey">
+        ///     The type of the key returned by <paramref name="keySelector" /> .
+        /// </typeparam>
+        /// <param name="keySelector"> A function to extract a key from each element. </param>
+        /// <param name="comparer">
+        ///     An <see cref="System.Collections.Generic.IEqualityComparer{T}" /> to compare keys.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains a <see cref="System.Collections.Generic.Dictionary{TKey,TValue}" /> that contains selected keys and values.
+        /// </returns>
+        public Task<Dictionary<TKey, T>> ToDictionaryAsync<TKey>(Func<T, TKey> keySelector, IEqualityComparer<TKey> comparer)
+        {
+            return _queryable.ToDictionaryAsync(keySelector, comparer);
+        }
+
+        /// <summary>
+        ///     Creates a <see cref="System.Collections.Generic.Dictionary{TKey,TValue}" /> from an <see cref="System.Linq.IQueryable{T}" /> by enumerating it
+        ///     asynchronously
+        ///     according to a specified key selector function and a comparer.
+        /// </summary>
+        /// <typeparam name="TKey">
+        ///     The type of the key returned by <paramref name="keySelector" /> .
+        /// </typeparam>
+        /// <param name="keySelector"> A function to extract a key from each element. </param>
+        /// <param name="comparer">
+        ///     An <see cref="System.Collections.Generic.IEqualityComparer{T}" /> to compare keys.
+        /// </param>
+        /// <param name="ct">
+        ///     A <see cref="System.Threading.CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains a <see cref="System.Collections.Generic.Dictionary{TKey,TValue}" /> that contains selected keys and values.
+        /// </returns>
+        public Task<Dictionary<TKey, T>> ToDictionaryAsync<TKey>(Func<T, TKey> keySelector, IEqualityComparer<TKey> comparer, CancellationToken ct)
+        {
+            return _queryable.ToDictionaryAsync(keySelector, comparer, ct);
+        }
+
+        /// <summary>
+        ///     Creates a <see cref="System.Collections.Generic.Dictionary{TKey,TValue}" /> from an <see cref="System.Linq.IQueryable{T}" /> by enumerating it
+        ///     asynchronously
+        ///     according to a specified key selector and an element selector function.
+        /// </summary>
+        /// <typeparam name="TKey">
+        ///     The type of the key returned by <paramref name="keySelector" /> .
+        /// </typeparam>
+        /// <typeparam name="TElement">
+        ///     The type of the value returned by <paramref name="elementSelector" />.
+        /// </typeparam>
+        /// <param name="keySelector"> A function to extract a key from each element. </param>
+        /// <param name="elementSelector"> A transform function to produce a result element value from each element. </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains a <see cref="System.Collections.Generic.Dictionary{TKey,TValue}" /> that contains values of type
+        ///     <typeparamref name="TElement" /> selected from the input sequence.
+        /// </returns>
+        public Task<Dictionary<TKey, TElement>> ToDictionaryAsync<TKey, TElement>(Func<T, TKey> keySelector, Func<T, TElement> elementSelector)
+        {
+            return _queryable.ToDictionaryAsync(keySelector, elementSelector);
+        }
+
+        /// <summary>
+        ///     Creates a <see cref="System.Collections.Generic.Dictionary{TKey,TValue}" /> from an <see cref="System.Linq.IQueryable{T}" /> by enumerating it
+        ///     asynchronously
+        ///     according to a specified key selector and an element selector function.
+        /// </summary>
+        /// <typeparam name="TKey">
+        ///     The type of the key returned by <paramref name="keySelector" /> .
+        /// </typeparam>
+        /// <typeparam name="TElement">
+        ///     The type of the value returned by <paramref name="elementSelector" />.
+        /// </typeparam>
+        /// <param name="keySelector"> A function to extract a key from each element. </param>
+        /// <param name="elementSelector"> A transform function to produce a result element value from each element. </param>
+        /// <param name="ct">
+        ///     A <see cref="System.Threading.CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains a <see cref="System.Collections.Generic.Dictionary{TKey,TValue}" /> that contains values of type
+        ///     <typeparamref name="TElement" /> selected from the input sequence.
+        /// </returns>
+        public Task<Dictionary<TKey, TElement>> ToDictionaryAsync<TKey, TElement>(Func<T, TKey> keySelector, Func<T, TElement> elementSelector, CancellationToken ct)
+        {
+            return _queryable.ToDictionaryAsync(keySelector, elementSelector, ct);
+        }
+
+        /// <summary>
+        ///     Creates a <see cref="System.Collections.Generic.Dictionary{TKey,TValue}" /> from an <see cref="System.Linq.IQueryable{T}" /> by enumerating it
+        ///     asynchronously
+        ///     according to a specified key selector function, a comparer, and an element selector function.
+        /// </summary>
+        /// <typeparam name="TKey">
+        ///     The type of the key returned by <paramref name="keySelector" /> .
+        /// </typeparam>
+        /// <typeparam name="TElement">
+        ///     The type of the value returned by <paramref name="elementSelector" />.
+        /// </typeparam>
+        /// <param name="keySelector"> A function to extract a key from each element. </param>
+        /// <param name="elementSelector"> A transform function to produce a result element value from each element. </param>
+        /// <param name="comparer">
+        ///     An <see cref="System.Collections.Generic.IEqualityComparer{T}" /> to compare keys.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains a <see cref="System.Collections.Generic.Dictionary{TKey,TValue}" /> that contains values of type
+        ///     <typeparamref name="TElement" /> selected from the input sequence.
+        /// </returns>
+        public Task<Dictionary<TKey, TElement>> ToDictionaryAsync<TKey, TElement>(Func<T, TKey> keySelector, Func<T, TElement> elementSelector, IEqualityComparer<TKey> comparer)
+        {
+            return _queryable.ToDictionaryAsync(keySelector, elementSelector, comparer);
+        }
+
+        /// <summary>
+        ///     Creates a <see cref="System.Collections.Generic.Dictionary{TKey,TValue}" /> from an <see cref="System.Linq.IQueryable{T}" /> by enumerating it
+        ///     asynchronously
+        ///     according to a specified key selector function, a comparer, and an element selector function.
+        /// </summary>
+        /// <typeparam name="TKey">
+        ///     The type of the key returned by <paramref name="keySelector" /> .
+        /// </typeparam>
+        /// <typeparam name="TElement">
+        ///     The type of the value returned by <paramref name="elementSelector" />.
+        /// </typeparam>
+        /// <param name="keySelector"> A function to extract a key from each element. </param>
+        /// <param name="elementSelector"> A transform function to produce a result element value from each element. </param>
+        /// <param name="comparer">
+        ///     An <see cref="System.Collections.Generic.IEqualityComparer{T}" /> to compare keys.
+        /// </param>
+        /// <param name="ct">
+        ///     A <see cref="System.Threading.CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains a <see cref="System.Collections.Generic.Dictionary{TKey,TValue}" /> that contains values of type
+        ///     <typeparamref name="TElement" /> selected from the input sequence.
+        /// </returns>
+        public Task<Dictionary<TKey, TElement>> ToDictionaryAsync<TKey, TElement>(
+            Func<T, TKey> keySelector, Func<T, TElement> elementSelector, IEqualityComparer<TKey> comparer, CancellationToken ct)
+        {
+            return _queryable.ToDictionaryAsync(keySelector, elementSelector, comparer, ct);
+        }
+
+        #endregion
 
 		#region FirstOrDefaultAsync
 
