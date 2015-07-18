@@ -31,13 +31,15 @@ namespace SimplePersistence.UoW.EF
 		/// <summary>
 		/// Creates a new instance that will wrapp the given <see cref="IQueryable{T}"/>
 		/// </summary>
-		/// <param name="queryable"></param>
+        /// <param name="queryable">The <see cref="IQueryable{T}"/> to be wrapped</param>
+        /// <exception cref="ArgumentNullException"/>
 		public EFAsyncQueryable(IQueryable<T> queryable)
 		{
-			_queryable = queryable;
+		    if (queryable == null) throw new ArgumentNullException("queryable");
+		    _queryable = queryable;
 		}
 
-		#region IQueryable<T>
+        #region IQueryable<T>
 
         /// <summary>
         /// Returns an enumerator that iterates through the collection.
@@ -124,10 +126,12 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="action">The action to perform on each element.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task ForEachAsync(Action<T> action)
-		{
-			return _queryable.ForEachAsync(action);
-		}
+        {
+            if (action == null) throw new ArgumentNullException("action");
+            return _queryable.ForEachAsync(action);
+        }
 
         /// <summary>
         /// Asynchronously enumerates the query results and performs the specified action on each element by using 
@@ -136,12 +140,14 @@ namespace SimplePersistence.UoW.EF
         /// <param name="action">The action to perform on each element.</param>
         /// <param name="ct">The cancellation token</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task ForEachAsync(Action<T> action, CancellationToken ct)
-		{
-			return _queryable.ForEachAsync(action, ct);
-		}
+        {
+            if (action == null) throw new ArgumentNullException("action");
+            return _queryable.ForEachAsync(action, ct);
+        }
 
-		#endregion
+        #endregion
 
 		#region ToListAsync
 
@@ -220,8 +226,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains a <see cref="System.Collections.Generic.Dictionary{TKey,TValue}" /> that contains selected keys and values.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<Dictionary<TKey, T>> ToDictionaryAsync<TKey>(Func<T, TKey> keySelector)
         {
+            if (keySelector == null) throw new ArgumentNullException("keySelector");
             return _queryable.ToDictionaryAsync(keySelector);
         }
 
@@ -241,8 +249,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains a <see cref="System.Collections.Generic.Dictionary{TKey,TValue}" /> that contains selected keys and values.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<Dictionary<TKey, T>> ToDictionaryAsync<TKey>(Func<T, TKey> keySelector, CancellationToken ct)
         {
+            if (keySelector == null) throw new ArgumentNullException("keySelector");
             return _queryable.ToDictionaryAsync(keySelector, ct);
         }
 
@@ -262,8 +272,11 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains a <see cref="System.Collections.Generic.Dictionary{TKey,TValue}" /> that contains selected keys and values.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<Dictionary<TKey, T>> ToDictionaryAsync<TKey>(Func<T, TKey> keySelector, IEqualityComparer<TKey> comparer)
         {
+            if (keySelector == null) throw new ArgumentNullException("keySelector");
+            if (comparer == null) throw new ArgumentNullException("comparer");
             return _queryable.ToDictionaryAsync(keySelector, comparer);
         }
 
@@ -286,8 +299,11 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains a <see cref="System.Collections.Generic.Dictionary{TKey,TValue}" /> that contains selected keys and values.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<Dictionary<TKey, T>> ToDictionaryAsync<TKey>(Func<T, TKey> keySelector, IEqualityComparer<TKey> comparer, CancellationToken ct)
         {
+            if (keySelector == null) throw new ArgumentNullException("keySelector");
+            if (comparer == null) throw new ArgumentNullException("comparer");
             return _queryable.ToDictionaryAsync(keySelector, comparer, ct);
         }
 
@@ -309,8 +325,11 @@ namespace SimplePersistence.UoW.EF
         ///     The task result contains a <see cref="System.Collections.Generic.Dictionary{TKey,TValue}" /> that contains values of type
         ///     <typeparamref name="TElement" /> selected from the input sequence.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<Dictionary<TKey, TElement>> ToDictionaryAsync<TKey, TElement>(Func<T, TKey> keySelector, Func<T, TElement> elementSelector)
         {
+            if (keySelector == null) throw new ArgumentNullException("keySelector");
+            if (elementSelector == null) throw new ArgumentNullException("elementSelector");
             return _queryable.ToDictionaryAsync(keySelector, elementSelector);
         }
 
@@ -335,8 +354,11 @@ namespace SimplePersistence.UoW.EF
         ///     The task result contains a <see cref="System.Collections.Generic.Dictionary{TKey,TValue}" /> that contains values of type
         ///     <typeparamref name="TElement" /> selected from the input sequence.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<Dictionary<TKey, TElement>> ToDictionaryAsync<TKey, TElement>(Func<T, TKey> keySelector, Func<T, TElement> elementSelector, CancellationToken ct)
         {
+            if (keySelector == null) throw new ArgumentNullException("keySelector");
+            if (elementSelector == null) throw new ArgumentNullException("elementSelector");
             return _queryable.ToDictionaryAsync(keySelector, elementSelector, ct);
         }
 
@@ -361,8 +383,12 @@ namespace SimplePersistence.UoW.EF
         ///     The task result contains a <see cref="System.Collections.Generic.Dictionary{TKey,TValue}" /> that contains values of type
         ///     <typeparamref name="TElement" /> selected from the input sequence.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<Dictionary<TKey, TElement>> ToDictionaryAsync<TKey, TElement>(Func<T, TKey> keySelector, Func<T, TElement> elementSelector, IEqualityComparer<TKey> comparer)
         {
+            if (keySelector == null) throw new ArgumentNullException("keySelector");
+            if (elementSelector == null) throw new ArgumentNullException("elementSelector");
+            if (comparer == null) throw new ArgumentNullException("comparer");
             return _queryable.ToDictionaryAsync(keySelector, elementSelector, comparer);
         }
 
@@ -390,9 +416,13 @@ namespace SimplePersistence.UoW.EF
         ///     The task result contains a <see cref="System.Collections.Generic.Dictionary{TKey,TValue}" /> that contains values of type
         ///     <typeparamref name="TElement" /> selected from the input sequence.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<Dictionary<TKey, TElement>> ToDictionaryAsync<TKey, TElement>(
             Func<T, TKey> keySelector, Func<T, TElement> elementSelector, IEqualityComparer<TKey> comparer, CancellationToken ct)
         {
+            if (keySelector == null) throw new ArgumentNullException("keySelector");
+            if (elementSelector == null) throw new ArgumentNullException("elementSelector");
+            if (comparer == null) throw new ArgumentNullException("comparer");
             return _queryable.ToDictionaryAsync(keySelector, elementSelector, comparer, ct);
         }
 
@@ -436,10 +466,12 @@ namespace SimplePersistence.UoW.EF
         /// A task that represents the asynchronous operation.
         /// The task result contains the first element in source.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate)
-		{
-			return _queryable.FirstOrDefaultAsync(predicate);
-		}
+        {
+            if (predicate == null) throw new ArgumentNullException("predicate");
+            return _queryable.FirstOrDefaultAsync(predicate);
+        }
 
         /// <summary>
         /// Asynchronously returns the first element of a sequence that satisfies a specified condition or a default value if no such element is found by using 
@@ -451,12 +483,14 @@ namespace SimplePersistence.UoW.EF
         /// A task that represents the asynchronous operation.
         /// The task result contains the first element in source.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken ct)
-		{
-			return _queryable.FirstOrDefaultAsync(predicate, ct);
-		}
+        {
+            if (predicate == null) throw new ArgumentNullException("predicate");
+            return _queryable.FirstOrDefaultAsync(predicate, ct);
+        }
 
-		#endregion
+        #endregion
 
 		#region FirstAsync
 
@@ -497,9 +531,10 @@ namespace SimplePersistence.UoW.EF
         /// The task result contains the first element in source.
         /// </returns>
         public Task<T> FirstAsync(Expression<Func<T, bool>> predicate)
-		{
-			return _queryable.FirstAsync(predicate);
-		}
+        {
+            if (predicate == null) throw new ArgumentNullException("predicate");
+            return _queryable.FirstAsync(predicate);
+        }
 
         /// <summary>
         /// Asynchronously returns the first element of a sequence that satisfies a specified condition by using 
@@ -512,11 +547,12 @@ namespace SimplePersistence.UoW.EF
         /// The task result contains the first element in source.
         /// </returns>
         public Task<T> FirstAsync(Expression<Func<T, bool>> predicate, CancellationToken ct)
-		{
-			return _queryable.FirstAsync(predicate, ct);
-		}
+        {
+            if (predicate == null) throw new ArgumentNullException("predicate");
+            return _queryable.FirstAsync(predicate, ct);
+        }
 
-		#endregion
+        #endregion
 
         #region AnyAsync
 
@@ -553,8 +589,10 @@ namespace SimplePersistence.UoW.EF
         /// A task that represents the asynchronous operation. 
         /// The task result contains <c>true</c> if the source sequence contains any elements; otherwise, <c>false</c>.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
         {
+            if (predicate == null) throw new ArgumentNullException("predicate");
             return _queryable.AnyAsync();
         }
 
@@ -567,8 +605,10 @@ namespace SimplePersistence.UoW.EF
         /// A task that represents the asynchronous operation. 
         /// The task result contains <c>true</c> if the source sequence contains any elements; otherwise, <c>false</c>.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken ct)
         {
+            if (predicate == null) throw new ArgumentNullException("predicate");
             return _queryable.AnyAsync(ct);
         }
 
@@ -585,8 +625,10 @@ namespace SimplePersistence.UoW.EF
         ///     The task result contains <c>true</c> if every element of the source sequence passes the test in the specified
         ///     predicate; otherwise, <c>false</c>.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<bool> AllAsync(Expression<Func<T, bool>> predicate)
         {
+            if (predicate == null) throw new ArgumentNullException("predicate");
             return _queryable.AllAsync(predicate);
         }
 
@@ -602,8 +644,10 @@ namespace SimplePersistence.UoW.EF
         ///     The task result contains <c>true</c> if every element of the source sequence passes the test in the specified
         ///     predicate; otherwise, <c>false</c>.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<bool> AllAsync(Expression<Func<T, bool>> predicate, CancellationToken ct)
         {
+            if (predicate == null) throw new ArgumentNullException("predicate");
             return _queryable.AllAsync(predicate, ct);
         }
 
@@ -646,8 +690,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the number of elements in the input sequence.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<int> CountAsync(Expression<Func<T, bool>> predicate)
         {
+            if (predicate == null) throw new ArgumentNullException("predicate");
             return _queryable.CountAsync(predicate);
         }
 
@@ -662,8 +708,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the number of elements in the input sequence.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<int> CountAsync(Expression<Func<T, bool>> predicate, CancellationToken ct)
         {
+            if (predicate == null) throw new ArgumentNullException("predicate");
             return _queryable.CountAsync(predicate, ct);
         }
 
@@ -706,8 +754,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the number of elements in the input sequence.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<long> LongCountAsync(Expression<Func<T, bool>> predicate)
         {
+            if (predicate == null) throw new ArgumentNullException("predicate");
             return _queryable.LongCountAsync(predicate);
         }
 
@@ -722,8 +772,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the number of elements in the input sequence.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<long> LongCountAsync(Expression<Func<T, bool>> predicate, CancellationToken ct)
         {
+            if (predicate == null) throw new ArgumentNullException("predicate");
             return _queryable.LongCountAsync(predicate, ct);
         }
 
@@ -767,8 +819,10 @@ namespace SimplePersistence.UoW.EF
         ///     The task result contains the last element that passes the test in
         ///     <paramref name="predicate" />.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<T> LastAsync(Expression<Func<T, bool>> predicate)
         {
+            if (predicate == null) throw new ArgumentNullException("predicate");
             return LastAsync(predicate, CancellationToken.None);
         }
 
@@ -784,8 +838,10 @@ namespace SimplePersistence.UoW.EF
         ///     The task result contains the last element that passes the test in
         ///     <paramref name="predicate" />.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<T> LastAsync(Expression<Func<T, bool>> predicate, CancellationToken ct)
         {
+            if (predicate == null) throw new ArgumentNullException("predicate");
             return Task.Run(() => _queryable.Last(predicate), ct);
         }
 
@@ -828,8 +884,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains <c>default</c> ( <typeparamref name="T" /> ) if empty; otherwise, the last element.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<T> LastOrDefaultAsync(Expression<Func<T, bool>> predicate)
         {
+            if (predicate == null) throw new ArgumentNullException("predicate");
             return LastOrDefaultAsync(predicate, CancellationToken.None);
         }
 
@@ -844,8 +902,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains <c>default</c> ( <typeparamref name="T" /> ) if empty; otherwise, the last element.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<T> LastOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken ct)
         {
+            if (predicate == null) throw new ArgumentNullException("predicate");
             return Task.Run(() => _queryable.LastOrDefault(predicate), ct);
         }
 
@@ -892,8 +952,10 @@ namespace SimplePersistence.UoW.EF
         ///     The task result contains the single element of the input sequence that satisfies the condition in
         ///     <paramref name="predicate" />.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<T> SingleAsync(Expression<Func<T, bool>> predicate)
         {
+            if (predicate == null) throw new ArgumentNullException("predicate");
             return _queryable.SingleAsync();
         }
 
@@ -910,8 +972,10 @@ namespace SimplePersistence.UoW.EF
         ///     The task result contains the single element of the input sequence that satisfies the condition in
         ///     <paramref name="predicate" />.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<T> SingleAsync(Expression<Func<T, bool>> predicate, CancellationToken ct)
         {
+            if (predicate == null) throw new ArgumentNullException("predicate");
             return _queryable.SingleAsync(predicate, ct);
         }
 
@@ -961,8 +1025,10 @@ namespace SimplePersistence.UoW.EF
         ///     The task result contains the single element of the input sequence that satisfies the condition in
         ///     <paramref name="predicate" />, or <c>default</c> ( <typeparamref name="T" /> ) if no such element is found.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<T> SingleOrDefaultAsync(Expression<Func<T, bool>> predicate)
         {
+            if (predicate == null) throw new ArgumentNullException("predicate");
             return _queryable.SingleOrDefaultAsync(predicate);
         }
 
@@ -980,8 +1046,10 @@ namespace SimplePersistence.UoW.EF
         ///     The task result contains the single element of the input sequence that satisfies the condition in
         ///     <paramref name="predicate" />, or <c>default</c> ( <typeparamref name="T" /> ) if no such element is found.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<T> SingleOrDefaultAsync(Expression<Func<T, bool>> predicate, CancellationToken ct)
         {
+            if (predicate == null) throw new ArgumentNullException("predicate");
             return _queryable.SingleOrDefaultAsync(predicate, ct);
         }
 
@@ -1036,8 +1104,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the minimum value in the sequence.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<TResult> MinAsync<TResult>(Expression<Func<T, TResult>> selector)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.MinAsync(selector);
         }
 
@@ -1056,8 +1126,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the minimum value in the sequence.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<TResult> MinAsync<TResult>(Expression<Func<T, TResult>> selector, CancellationToken ct)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.MinAsync(selector, ct);
         }
 
@@ -1103,8 +1175,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the maximum value in the sequence.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> selector)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.MaxAsync(selector);
         }
 
@@ -1122,8 +1196,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the maximum value in the sequence.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> selector, CancellationToken ct)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.MaxAsync(selector, ct);
         }
 
@@ -1140,8 +1216,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the sum of the projected values..
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<decimal> SumAsync(Expression<Func<T, decimal>> selector)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.SumAsync(selector);
         }
 
@@ -1157,8 +1235,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the sum of the projected values..
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<decimal> SumAsync(Expression<Func<T, decimal>> selector, CancellationToken ct)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.SumAsync(selector, ct);
         }
 
@@ -1171,8 +1251,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the sum of the projected values..
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<decimal?> SumAsync(Expression<Func<T, decimal?>> selector)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.SumAsync(selector);
         }
 
@@ -1188,8 +1270,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the sum of the projected values..
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<decimal?> SumAsync(Expression<Func<T, decimal?>> selector, CancellationToken ct)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.SumAsync(selector, ct);
         }
 
@@ -1202,8 +1286,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the sum of the projected values..
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<int> SumAsync(Expression<Func<T, int>> selector)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.SumAsync(selector);
         }
 
@@ -1219,8 +1305,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the sum of the projected values..
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<int> SumAsync(Expression<Func<T, int>> selector, CancellationToken ct)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.SumAsync(selector, ct);
         }
 
@@ -1233,8 +1321,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the sum of the projected values..
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<int?> SumAsync(Expression<Func<T, int?>> selector)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.SumAsync(selector);
         }
 
@@ -1250,8 +1340,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the sum of the projected values..
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<int?> SumAsync(Expression<Func<T, int?>> selector, CancellationToken ct)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.SumAsync(selector, ct);
         }
 
@@ -1264,8 +1356,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the sum of the projected values..
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<long> SumAsync(Expression<Func<T, long>> selector)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.SumAsync(selector);
         }
 
@@ -1281,8 +1375,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the sum of the projected values..
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<long> SumAsync(Expression<Func<T, long>> selector, CancellationToken ct)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.SumAsync(selector, ct);
         }
 
@@ -1295,8 +1391,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the sum of the projected values..
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<long?> SumAsync(Expression<Func<T, long?>> selector)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.SumAsync(selector);
         }
 
@@ -1312,8 +1410,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the sum of the projected values..
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<long?> SumAsync(Expression<Func<T, long?>> selector, CancellationToken ct)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.SumAsync(selector, ct);
         }
 
@@ -1326,8 +1426,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the sum of the projected values..
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<double> SumAsync(Expression<Func<T, double>> selector)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.SumAsync(selector);
         }
 
@@ -1343,8 +1445,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the sum of the projected values..
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<double> SumAsync(Expression<Func<T, double>> selector, CancellationToken ct)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.SumAsync(selector, ct);
         }
 
@@ -1357,8 +1461,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the sum of the projected values..
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<double?> SumAsync(Expression<Func<T, double?>> selector)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.SumAsync(selector);
         }
 
@@ -1374,8 +1480,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the sum of the projected values..
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<double?> SumAsync(Expression<Func<T, double?>> selector, CancellationToken ct)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.SumAsync(selector, ct);
         }
 
@@ -1388,8 +1496,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the sum of the projected values..
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<float> SumAsync(Expression<Func<T, float>> selector)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.SumAsync(selector);
         }
 
@@ -1405,8 +1515,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the sum of the projected values..
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<float> SumAsync(Expression<Func<T, float>> selector, CancellationToken ct)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.SumAsync(selector, ct);
         }
 
@@ -1419,8 +1531,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the sum of the projected values..
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<float?> SumAsync(Expression<Func<T, float?>> selector)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.SumAsync(selector);
         }
 
@@ -1436,8 +1550,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the sum of the projected values..
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<float?> SumAsync(Expression<Func<T, float?>> selector, CancellationToken ct)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.SumAsync(selector, ct);
         }
 
@@ -1454,8 +1570,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the average of the projected values.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<decimal> AverageAsync(Expression<Func<T, decimal>> selector)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.AverageAsync(selector);
         }
 
@@ -1471,8 +1589,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the average of the projected values.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<decimal> AverageAsync(Expression<Func<T, decimal>> selector, CancellationToken ct)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.AverageAsync(selector, ct);
         }
 
@@ -1485,8 +1605,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the average of the projected values.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<decimal?> AverageAsync(Expression<Func<T, decimal?>> selector)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.AverageAsync(selector);
         }
 
@@ -1502,8 +1624,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the average of the projected values.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<decimal?> AverageAsync(Expression<Func<T, decimal?>> selector, CancellationToken ct)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.AverageAsync(selector, ct);
         }
 
@@ -1516,8 +1640,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the average of the projected values.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<double> AverageAsync(Expression<Func<T, int>> selector)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.AverageAsync(selector);
         }
 
@@ -1533,8 +1659,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the average of the projected values.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<double> AverageAsync(Expression<Func<T, int>> selector, CancellationToken ct)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.AverageAsync(selector, ct);
         }
 
@@ -1547,8 +1675,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the average of the projected values.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<double?> AverageAsync(Expression<Func<T, int?>> selector)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.AverageAsync(selector);
         }
 
@@ -1564,8 +1694,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the average of the projected values.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<double?> AverageAsync(Expression<Func<T, int?>> selector, CancellationToken ct)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.AverageAsync(selector, ct);
         }
 
@@ -1578,8 +1710,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the average of the projected values.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<double> AverageAsync(Expression<Func<T, long>> selector)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.AverageAsync(selector);
         }
 
@@ -1595,8 +1729,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the average of the projected values.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<double> AverageAsync(Expression<Func<T, long>> selector, CancellationToken ct)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.AverageAsync(selector, ct);
         }
 
@@ -1609,8 +1745,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the average of the projected values.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<double?> AverageAsync(Expression<Func<T, long?>> selector)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.AverageAsync(selector);
         }
 
@@ -1626,8 +1764,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the average of the projected values.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<double?> AverageAsync(Expression<Func<T, long?>> selector, CancellationToken ct)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.AverageAsync(selector, ct);
         }
 
@@ -1640,8 +1780,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the average of the projected values.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<double> AverageAsync(Expression<Func<T, double>> selector)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.AverageAsync(selector);
         }
 
@@ -1657,8 +1799,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the average of the projected values.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<double> AverageAsync(Expression<Func<T, double>> selector, CancellationToken ct)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.AverageAsync(selector, ct);
         }
 
@@ -1671,8 +1815,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the average of the projected values.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<double?> AverageAsync(Expression<Func<T, double?>> selector)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.AverageAsync(selector);
         }
 
@@ -1688,8 +1834,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the average of the projected values.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<double?> AverageAsync(Expression<Func<T, double?>> selector, CancellationToken ct)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.AverageAsync(selector, ct);
         }
 
@@ -1702,8 +1850,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the average of the projected values.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<float> AverageAsync(Expression<Func<T, float>> selector)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.AverageAsync(selector);
         }
 
@@ -1719,8 +1869,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the average of the projected values.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<float> AverageAsync(Expression<Func<T, float>> selector, CancellationToken ct)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.AverageAsync(selector, ct);
         }
 
@@ -1733,8 +1885,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the average of the projected values.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<float?> AverageAsync(Expression<Func<T, float?>> selector)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.AverageAsync(selector);
         }
 
@@ -1750,8 +1904,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains the average of the projected values.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<float?> AverageAsync(Expression<Func<T, float?>> selector, CancellationToken ct)
         {
+            if (selector == null) throw new ArgumentNullException("selector");
             return _queryable.AverageAsync(selector, ct);
         }
 
@@ -1767,8 +1923,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains <c>true</c> if the input sequence contains the specified value; otherwise, <c>false</c>.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<bool> ContainsAsync(T item)
         {
+            if (item == null) throw new ArgumentNullException("item");
             return _queryable.ContainsAsync(item);
         }
 
@@ -1783,8 +1941,10 @@ namespace SimplePersistence.UoW.EF
         ///     A task that represents the asynchronous operation.
         ///     The task result contains <c>true</c> if the input sequence contains the specified value; otherwise, <c>false</c>.
         /// </returns>
+        /// <exception cref="ArgumentNullException"/>
         public Task<bool> ContainsAsync(T item, CancellationToken ct)
         {
+            if (item == null) throw new ArgumentNullException("item");
             return _queryable.ContainsAsync(item, ct);
         }
 
