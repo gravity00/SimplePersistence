@@ -870,6 +870,72 @@ namespace SimplePersistence.UoW.EF
 
         #endregion
 
+        #region MaxAsync
+
+        /// <summary>
+        ///     Asynchronously invokes a projection function on each element of a sequence and returns the maximum resulting value.
+        /// </summary>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the maximum value in the sequence.
+        /// </returns>
+        public Task<T> MaxAsync()
+        {
+            return _queryable.MaxAsync();
+        }
+
+        /// <summary>
+        ///     Asynchronously invokes a projection function on each element of a sequence and returns the maximum resulting value.
+        /// </summary>
+        /// <param name="ct">
+        ///     A <see cref="System.Threading.CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the maximum value in the sequence.
+        /// </returns>
+        public Task<T> MaxAsync(CancellationToken ct)
+        {
+            return _queryable.MaxAsync(ct);
+        }
+
+        /// <summary>
+        ///     Asynchronously invokes a projection function on each element of a sequence and returns the maximum resulting value.
+        /// </summary>
+        /// <typeparam name="TResult">
+        ///     The type of the value returned by the function represented by <paramref name="selector" /> .
+        /// </typeparam>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the maximum value in the sequence.
+        /// </returns>
+        public Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> selector)
+        {
+            return _queryable.MaxAsync(selector);
+        }
+
+        /// <summary>
+        ///     Asynchronously invokes a projection function on each element of a sequence and returns the maximum resulting value.
+        /// </summary>
+        /// <typeparam name="TResult">
+        ///     The type of the value returned by the function represented by <paramref name="selector" /> .
+        /// </typeparam>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <param name="ct">
+        ///     A <see cref="System.Threading.CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the maximum value in the sequence.
+        /// </returns>
+        public Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> selector, CancellationToken ct)
+        {
+            return _queryable.MaxAsync(selector, ct);
+        }
+
+        #endregion
+
         #endregion
     }
 }

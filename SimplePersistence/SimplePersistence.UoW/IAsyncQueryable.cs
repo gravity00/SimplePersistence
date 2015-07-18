@@ -636,5 +636,59 @@ namespace SimplePersistence.UoW
         Task<TResult> MinAsync<TResult>(Expression<Func<T, TResult>> selector, CancellationToken ct);
 
         #endregion
+
+        #region MaxAsync
+
+        /// <summary>
+        ///     Asynchronously invokes a projection function on each element of a sequence and returns the maximum resulting value.
+        /// </summary>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the maximum value in the sequence.
+        /// </returns>
+        Task<T> MaxAsync();
+
+        /// <summary>
+        ///     Asynchronously invokes a projection function on each element of a sequence and returns the maximum resulting value.
+        /// </summary>
+        /// <param name="ct">
+        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the maximum value in the sequence.
+        /// </returns>
+        Task<T> MaxAsync(CancellationToken ct);
+
+        /// <summary>
+        ///     Asynchronously invokes a projection function on each element of a sequence and returns the maximum resulting value.
+        /// </summary>
+        /// <typeparam name="TResult">
+        ///     The type of the value returned by the function represented by <paramref name="selector" /> .
+        /// </typeparam>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the maximum value in the sequence.
+        /// </returns>
+        Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> selector);
+
+        /// <summary>
+        ///     Asynchronously invokes a projection function on each element of a sequence and returns the maximum resulting value.
+        /// </summary>
+        /// <typeparam name="TResult">
+        ///     The type of the value returned by the function represented by <paramref name="selector" /> .
+        /// </typeparam>
+        /// <param name="selector"> A projection function to apply to each element. </param>
+        /// <param name="ct">
+        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains the maximum value in the sequence.
+        /// </returns>
+        Task<TResult> MaxAsync<TResult>(Expression<Func<T, TResult>> selector, CancellationToken ct);
+
+        #endregion
     }
 }
