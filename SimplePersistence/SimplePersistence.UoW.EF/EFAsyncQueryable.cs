@@ -1564,6 +1564,39 @@ namespace SimplePersistence.UoW.EF
 
         #endregion
 
+        #region ContainsAsync
+
+        /// <summary>
+        ///     Asynchronously determines whether a sequence contains a specified element by using the default equality comparer.
+        /// </summary>
+        /// <param name="item"> The object to locate in the sequence. </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains <c>true</c> if the input sequence contains the specified value; otherwise, <c>false</c>.
+        /// </returns>
+        public Task<bool> ContainsAsync(T item)
+        {
+            return _queryable.ContainsAsync(item);
+        }
+
+        /// <summary>
+        ///     Asynchronously determines whether a sequence contains a specified element by using the default equality comparer.
+        /// </summary>
+        /// <param name="item"> The object to locate in the sequence. </param>
+        /// <param name="ct">
+        ///     A <see cref="CancellationToken" /> to observe while waiting for the task to complete.
+        /// </param>
+        /// <returns>
+        ///     A task that represents the asynchronous operation.
+        ///     The task result contains <c>true</c> if the input sequence contains the specified value; otherwise, <c>false</c>.
+        /// </returns>
+        public Task<bool> ContainsAsync(T item, CancellationToken ct)
+        {
+            return _queryable.ContainsAsync(item, ct);
+        }
+
+        #endregion
+
         #endregion
     }
 }
