@@ -46,7 +46,6 @@ namespace SimplePersistence.UoW
         }
 
         private int _currentScope;
-        // ReSharper disable once UnusedMember.Local
         private readonly Guid _privateId = Guid.NewGuid();
 
 		#region IUnitOfWork
@@ -151,7 +150,22 @@ namespace SimplePersistence.UoW
 
 	    #endregion
 
-		/// <summary>
+        #region Object
+
+        /// <summary>
+        /// Returns a <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="T:System.String"/> that represents the current <see cref="T:System.Object"/>.
+        /// </returns>
+        public override string ToString()
+        {
+            return string.Concat("{ UoW : '", GetType().FullName, "', Id : '", _privateId, "' }");
+        }
+
+        #endregion
+
+        /// <summary>
 		/// Invoked once for any given scope, it should prepare the
 		/// current instance for any subsequent work
 		/// </summary>
