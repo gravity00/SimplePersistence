@@ -36,15 +36,6 @@ namespace SimplePersistence.UoW
     /// </summary>
     public abstract class ScopeEnabledUnitOfWork : IUnitOfWork
     {
-        private static readonly Task<bool> CachedCompletedTask;
-
-        static ScopeEnabledUnitOfWork()
-        {
-            var tcs = new TaskCompletionSource<bool>();
-            tcs.TrySetResult(true);
-            CachedCompletedTask = tcs.Task;
-        }
-
         private int _currentScope;
         private readonly Guid _privateId = Guid.NewGuid();
 
@@ -70,7 +61,15 @@ namespace SimplePersistence.UoW
         public Task BeginAsync(CancellationToken ct)
         {
             var s = IncrementScope();
-	        return s == 1 ? OnBeginAsync(ct) : CachedCompletedTask;
+            if (s == 1) 
+                return OnBeginAsync(ct);
+
+            var tcs = new TaskCompletionSource<bool>();
+            if(ct.IsCancellationRequested)
+                tcs.SetCanceled();
+            else
+                tcs.SetResult(true);
+            return tcs.Task;
         }
 
         /// <summary>
@@ -117,27 +116,32 @@ namespace SimplePersistence.UoW
             var s = DecrementScope();
             if (s < 0)
                 throw new UndefinedScopeException();
-            if (s != 0)
-                return CachedCompletedTask;
+            if (s == 0)
+                return
+                    OnCommitAsync(ct)
+                        .ContinueWith(
+                            t =>
+                            {
+                                if (!t.IsFaulted) return;
 
-            return
-                OnCommitAsync(ct)
-                    .ContinueWith(
-                        t =>
-                        {
-                            if (!t.IsFaulted) return;
+                                if (t.Exception == null)
+                                    throw new CommitException();
 
-                            if (t.Exception == null)
-                                throw new CommitException();
+                                var ex = t.Exception.InnerException;
+                                if (ex == null)
+                                    throw new CommitException();
 
-                            var ex = t.Exception.InnerException;
-                            if (ex == null)
-                                throw new CommitException();
+                                if (ex.GetType() != typeof (UnitOfWorkException))
+                                    throw t.Exception;
+                                throw new CommitException(ex);
+                            }, ct);
 
-                            if (ex.GetType() != typeof(UnitOfWorkException))
-                                throw t.Exception;
-                            throw new CommitException(ex);
-                        }, ct);
+            var tcs = new TaskCompletionSource<bool>();
+            if (ct.IsCancellationRequested)
+                tcs.SetCanceled();
+            else
+                tcs.SetResult(true);
+            return tcs.Task;
         }
 
         /// <summary>
