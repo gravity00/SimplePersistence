@@ -26,9 +26,9 @@ namespace SimplePersistence.UoW.EF
         where TEntity : class
         where TKey : IEquatable<TKey>
     {
-        private readonly Func<TEntity, TKey, bool> _filterById;
         private readonly DbSet<TEntity> _dbSet;
         private readonly DbContext _dbContext;
+        private readonly EFSyncRepository<TEntity> _repository;
 
         /// <summary>
         /// The Entity Framework database context
@@ -57,9 +57,12 @@ namespace SimplePersistence.UoW.EF
             if (dbContext == null) throw new ArgumentNullException("dbContext");
             if (filterById == null) throw new ArgumentNullException("filterById");
 
-            _filterById = filterById;
             _dbContext = dbContext;
             _dbSet = dbContext.Set<TEntity>();
+            _repository =
+                new EFSyncRepository<TEntity>(
+                    dbContext,
+                    (e, o) => filterById(e, (TKey) o[0]));
         }
 
         #region Query
@@ -70,7 +73,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The <see cref="System.Linq.IQueryable{T}"/> object</returns>
         public IQueryable<TEntity> Query()
         {
-            return DbSet;
+            return _repository.Query();
         }
 
         /// <summary>
@@ -80,7 +83,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The <see cref="IQueryable{TEntity}"/> object</returns>
         public IQueryable<TEntity> QueryById(TKey id)
         {
-            return Query().Where(e => _filterById(e, id));
+            return _repository.QueryById(id);
         }
 
         /// <summary>
@@ -92,11 +95,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IQueryable<TEntity> QueryFetching(params Expression<Func<TEntity, object>>[] propertiesToFetch)
         {
-            if (propertiesToFetch == null) throw new ArgumentNullException("propertiesToFetch");
-            return
-                propertiesToFetch
-                    .Aggregate<Expression<Func<TEntity, object>>, IQueryable<TEntity>>(
-                        DbSet, (current, expression) => current.Include(expression));
+            return _repository.QueryFetching(propertiesToFetch);
         }
 
         #endregion
@@ -110,7 +109,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity or null if not found</returns>
         public TEntity GetById(TKey id)
         {
-            return DbSet.Find(id);
+            return _repository.GetById(id);
         }
 
         #endregion
@@ -124,12 +123,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity</returns>
         public TEntity Add(TEntity entity)
         {
-            var dbEntityEntry = DbContext.Entry(entity);
-            if (dbEntityEntry.State == EntityState.Detached)
-                return DbSet.Add(entity);
-
-            dbEntityEntry.State = EntityState.Added;
-            return dbEntityEntry.Entity;
+            return _repository.Add(entity);
         }
 
         /// <summary>
@@ -140,8 +134,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IEnumerable<TEntity> Add(IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return DbSet.AddRange(entities);
+            return _repository.Add(entities);
         }
 
         #endregion
@@ -155,13 +148,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity</returns>
         public TEntity Update(TEntity entity)
         {
-            var dbEntityEntry = DbContext.Entry(entity);
-            if (dbEntityEntry.State == EntityState.Detached)
-                DbSet.Attach(entity);
-            if (dbEntityEntry.State != EntityState.Added && dbEntityEntry.State != EntityState.Deleted)
-                dbEntityEntry.State = EntityState.Modified;
-
-            return dbEntityEntry.Entity;
+            return _repository.Update(entity);
         }
 
         /// <summary>
@@ -172,8 +159,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IEnumerable<TEntity> Update(IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return entities.Select(Update).ToArray();
+            return _repository.Update(entities);
         }
 
         #endregion
@@ -187,17 +173,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity</returns>
         public TEntity Delete(TEntity entity)
         {
-            var dbEntityEntry = DbContext.Entry(entity);
-            if (dbEntityEntry.State != EntityState.Deleted)
-            {
-                dbEntityEntry.State = EntityState.Deleted;
-                return dbEntityEntry.Entity;
-            }
-
-            DbSet.Attach(entity);
-            DbSet.Remove(entity);
-
-            return entity;
+            return _repository.Delete(entity);
         }
 
         /// <summary>
@@ -208,8 +184,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IEnumerable<TEntity> Delete(IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return entities.Select(Delete).ToArray();
+            return _repository.Delete(entities);
         }
 
         #endregion
@@ -222,7 +197,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The total</returns>
         public long Total()
         {
-            return DbSet.LongCount();
+            return _repository.Total();
         }
 
         #endregion
@@ -236,7 +211,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>True if entity exists</returns>
         public bool Exists(TKey id)
         {
-            return QueryById(id).Any();
+            return _repository.Exists(id);
         }
 
         #endregion
@@ -254,9 +229,9 @@ namespace SimplePersistence.UoW.EF
         where TKey01 : IEquatable<TKey01>
         where TKey02 : IEquatable<TKey02>
     {
-        private readonly Func<TEntity, TKey01, TKey02, bool> _filterById;
         private readonly DbSet<TEntity> _dbSet;
         private readonly DbContext _dbContext;
+        private readonly EFSyncRepository<TEntity> _repository;
 
         /// <summary>
         /// The Entity Framework database context
@@ -285,9 +260,12 @@ namespace SimplePersistence.UoW.EF
             if (dbContext == null) throw new ArgumentNullException("dbContext");
             if (filterById == null) throw new ArgumentNullException("filterById");
 
-            _filterById = filterById;
             _dbContext = dbContext;
             _dbSet = dbContext.Set<TEntity>();
+            _repository =
+                new EFSyncRepository<TEntity>(
+                    dbContext,
+                    (e, o) => filterById(e, (TKey01) o[0], (TKey02) o[1]));
         }
 
         #region Query
@@ -298,7 +276,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The <see cref="System.Linq.IQueryable{T}"/> object</returns>
         public IQueryable<TEntity> Query()
         {
-            return DbSet;
+            return _repository.Query();
         }
 
         /// <summary>
@@ -309,7 +287,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The <see cref="IQueryable{TEntity}"/> object</returns>
         public IQueryable<TEntity> QueryById(TKey01 id01, TKey02 id02)
         {
-            return Query().Where(e => _filterById(e, id01, id02));
+            return _repository.QueryById(id01, id02);
         }
 
         /// <summary>
@@ -321,11 +299,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IQueryable<TEntity> QueryFetching(params Expression<Func<TEntity, object>>[] propertiesToFetch)
         {
-            if (propertiesToFetch == null) throw new ArgumentNullException("propertiesToFetch");
-            return
-                propertiesToFetch
-                    .Aggregate<Expression<Func<TEntity, object>>, IQueryable<TEntity>>(
-                        DbSet, (current, expression) => current.Include(expression));
+            return _repository.QueryFetching(propertiesToFetch);
         }
 
         #endregion
@@ -340,7 +314,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity or null if not found</returns>
         public TEntity GetById(TKey01 id01, TKey02 id02)
         {
-            return DbSet.Find(id01, id02);
+            return _repository.GetById(id01, id02);
         }
 
         #endregion
@@ -354,12 +328,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity</returns>
         public TEntity Add(TEntity entity)
         {
-            var dbEntityEntry = DbContext.Entry(entity);
-            if (dbEntityEntry.State == EntityState.Detached)
-                return DbSet.Add(entity);
-
-            dbEntityEntry.State = EntityState.Added;
-            return dbEntityEntry.Entity;
+            return _repository.Add(entity);
         }
 
         /// <summary>
@@ -370,8 +339,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IEnumerable<TEntity> Add(IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return DbSet.AddRange(entities);
+            return _repository.Add(entities);
         }
 
         #endregion
@@ -385,13 +353,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity</returns>
         public TEntity Update(TEntity entity)
         {
-            var dbEntityEntry = DbContext.Entry(entity);
-            if (dbEntityEntry.State == EntityState.Detached)
-                DbSet.Attach(entity);
-            if (dbEntityEntry.State != EntityState.Added && dbEntityEntry.State != EntityState.Deleted)
-                dbEntityEntry.State = EntityState.Modified;
-
-            return dbEntityEntry.Entity;
+            return _repository.Update(entity);
         }
 
         /// <summary>
@@ -402,8 +364,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IEnumerable<TEntity> Update(IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return entities.Select(Update).ToArray();
+            return _repository.Update(entities);
         }
 
         #endregion
@@ -417,17 +378,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity</returns>
         public TEntity Delete(TEntity entity)
         {
-            var dbEntityEntry = DbContext.Entry(entity);
-            if (dbEntityEntry.State != EntityState.Deleted)
-            {
-                dbEntityEntry.State = EntityState.Deleted;
-                return dbEntityEntry.Entity;
-            }
-
-            DbSet.Attach(entity);
-            DbSet.Remove(entity);
-
-            return entity;
+            return _repository.Delete(entity);
         }
 
         /// <summary>
@@ -438,8 +389,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IEnumerable<TEntity> Delete(IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return entities.Select(Delete).ToArray();
+            return _repository.Delete(entities);
         }
 
         #endregion
@@ -452,7 +402,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The total</returns>
         public long Total()
         {
-            return DbSet.LongCount();
+            return _repository.Total();
         }
 
         #endregion
@@ -467,7 +417,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>True if entity exists</returns>
         public bool Exists(TKey01 id01, TKey02 id02)
         {
-            return QueryById(id01, id02).Any();
+            return _repository.Exists(id01, id02);
         }
 
         #endregion
@@ -487,9 +437,9 @@ namespace SimplePersistence.UoW.EF
         where TKey02 : IEquatable<TKey02>
         where TKey03 : IEquatable<TKey03>
     {
-        private readonly Func<TEntity, TKey01, TKey02, TKey03, bool> _filterById;
         private readonly DbSet<TEntity> _dbSet;
         private readonly DbContext _dbContext;
+        private readonly EFSyncRepository<TEntity> _repository;
 
         /// <summary>
         /// The Entity Framework database context
@@ -518,9 +468,12 @@ namespace SimplePersistence.UoW.EF
             if (dbContext == null) throw new ArgumentNullException("dbContext");
             if (filterById == null) throw new ArgumentNullException("filterById");
 
-            _filterById = filterById;
             _dbContext = dbContext;
             _dbSet = dbContext.Set<TEntity>();
+            _repository =
+                new EFSyncRepository<TEntity>(
+                    dbContext,
+                    (e, o) => filterById(e, (TKey01) o[0], (TKey02) o[1], (TKey03) o[2]));
         }
 
         #region Query
@@ -531,7 +484,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The <see cref="System.Linq.IQueryable{T}"/> object</returns>
         public IQueryable<TEntity> Query()
         {
-            return DbSet;
+            return _repository.Query();
         }
 
         /// <summary>
@@ -543,7 +496,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The <see cref="IQueryable{TEntity}"/> object</returns>
         public IQueryable<TEntity> QueryById(TKey01 id01, TKey02 id02, TKey03 id03)
         {
-            return Query().Where(e => _filterById(e, id01, id02, id03));
+            return _repository.QueryById(id01, id02, id03);
         }
 
         /// <summary>
@@ -555,11 +508,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IQueryable<TEntity> QueryFetching(params Expression<Func<TEntity, object>>[] propertiesToFetch)
         {
-            if (propertiesToFetch == null) throw new ArgumentNullException("propertiesToFetch");
-            return
-                propertiesToFetch
-                    .Aggregate<Expression<Func<TEntity, object>>, IQueryable<TEntity>>(
-                        DbSet, (current, expression) => current.Include(expression));
+            return _repository.QueryFetching(propertiesToFetch);
         }
 
         #endregion
@@ -575,7 +524,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity or null if not found</returns>
         public TEntity GetById(TKey01 id01, TKey02 id02, TKey03 id03)
         {
-            return DbSet.Find(id01, id02, id03);
+            return _repository.GetById(id01, id02, id03);
         }
 
         #endregion
@@ -589,12 +538,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity</returns>
         public TEntity Add(TEntity entity)
         {
-            var dbEntityEntry = DbContext.Entry(entity);
-            if (dbEntityEntry.State == EntityState.Detached)
-                return DbSet.Add(entity);
-
-            dbEntityEntry.State = EntityState.Added;
-            return dbEntityEntry.Entity;
+            return _repository.Add(entity);
         }
 
         /// <summary>
@@ -605,8 +549,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IEnumerable<TEntity> Add(IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return DbSet.AddRange(entities);
+            return _repository.Add(entities);
         }
 
         #endregion
@@ -620,13 +563,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity</returns>
         public TEntity Update(TEntity entity)
         {
-            var dbEntityEntry = DbContext.Entry(entity);
-            if (dbEntityEntry.State == EntityState.Detached)
-                DbSet.Attach(entity);
-            if (dbEntityEntry.State != EntityState.Added && dbEntityEntry.State != EntityState.Deleted)
-                dbEntityEntry.State = EntityState.Modified;
-
-            return dbEntityEntry.Entity;
+            return _repository.Update(entity);
         }
 
         /// <summary>
@@ -637,8 +574,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IEnumerable<TEntity> Update(IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return entities.Select(Update).ToArray();
+            return _repository.Update(entities);
         }
 
         #endregion
@@ -652,17 +588,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity</returns>
         public TEntity Delete(TEntity entity)
         {
-            var dbEntityEntry = DbContext.Entry(entity);
-            if (dbEntityEntry.State != EntityState.Deleted)
-            {
-                dbEntityEntry.State = EntityState.Deleted;
-                return dbEntityEntry.Entity;
-            }
-
-            DbSet.Attach(entity);
-            DbSet.Remove(entity);
-
-            return entity;
+            return _repository.Delete(entity);
         }
 
         /// <summary>
@@ -673,8 +599,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IEnumerable<TEntity> Delete(IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return entities.Select(Delete).ToArray();
+            return _repository.Delete(entities);
         }
 
         #endregion
@@ -687,7 +612,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The total</returns>
         public long Total()
         {
-            return DbSet.LongCount();
+            return _repository.Total();
         }
 
         #endregion
@@ -703,7 +628,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>True if entity exists</returns>
         public bool Exists(TKey01 id01, TKey02 id02, TKey03 id03)
         {
-            return QueryById(id01, id02, id03).Any();
+            return _repository.Exists(id01, id02, id03);
         }
 
         #endregion
@@ -725,9 +650,9 @@ namespace SimplePersistence.UoW.EF
         where TKey03 : IEquatable<TKey03>
         where TKey04 : IEquatable<TKey04>
     {
-        private readonly Func<TEntity, TKey01, TKey02, TKey03, TKey04, bool> _filterById;
         private readonly DbSet<TEntity> _dbSet;
         private readonly DbContext _dbContext;
+        private readonly EFSyncRepository<TEntity> _repository;
 
         /// <summary>
         /// The Entity Framework database context
@@ -756,9 +681,12 @@ namespace SimplePersistence.UoW.EF
             if (dbContext == null) throw new ArgumentNullException("dbContext");
             if (filterById == null) throw new ArgumentNullException("filterById");
 
-            _filterById = filterById;
             _dbContext = dbContext;
             _dbSet = dbContext.Set<TEntity>();
+            _repository =
+                new EFSyncRepository<TEntity>(
+                    dbContext,
+                    (e, o) => filterById(e, (TKey01) o[0], (TKey02) o[1], (TKey03) o[2], (TKey04) o[3]));
         }
 
         #region Query
@@ -769,7 +697,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The <see cref="System.Linq.IQueryable{T}"/> object</returns>
         public IQueryable<TEntity> Query()
         {
-            return DbSet;
+            return _repository.Query();
         }
 
         /// <summary>
@@ -782,7 +710,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The <see cref="IQueryable{TEntity}"/> object</returns>
         public IQueryable<TEntity> QueryById(TKey01 id01, TKey02 id02, TKey03 id03, TKey04 id04)
         {
-            return Query().Where(e => _filterById(e, id01, id02, id03, id04));
+            return _repository.QueryById(id01, id02, id03, id04);
         }
 
         /// <summary>
@@ -794,11 +722,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IQueryable<TEntity> QueryFetching(params Expression<Func<TEntity, object>>[] propertiesToFetch)
         {
-            if (propertiesToFetch == null) throw new ArgumentNullException("propertiesToFetch");
-            return
-                propertiesToFetch
-                    .Aggregate<Expression<Func<TEntity, object>>, IQueryable<TEntity>>(
-                        DbSet, (current, expression) => current.Include(expression));
+            return _repository.QueryFetching(propertiesToFetch);
         }
 
         #endregion
@@ -815,7 +739,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity or null if not found</returns>
         public TEntity GetById(TKey01 id01, TKey02 id02, TKey03 id03, TKey04 id04)
         {
-            return DbSet.Find(id01, id02, id03, id04);
+            return _repository.GetById(id01, id02, id03, id04);
         }
 
         #endregion
@@ -829,12 +753,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity</returns>
         public TEntity Add(TEntity entity)
         {
-            var dbEntityEntry = DbContext.Entry(entity);
-            if (dbEntityEntry.State == EntityState.Detached)
-                return DbSet.Add(entity);
-
-            dbEntityEntry.State = EntityState.Added;
-            return dbEntityEntry.Entity;
+            return _repository.Add(entity);
         }
 
         /// <summary>
@@ -845,8 +764,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IEnumerable<TEntity> Add(IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return DbSet.AddRange(entities);
+            return _repository.Add(entities);
         }
 
         #endregion
@@ -860,13 +778,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity</returns>
         public TEntity Update(TEntity entity)
         {
-            var dbEntityEntry = DbContext.Entry(entity);
-            if (dbEntityEntry.State == EntityState.Detached)
-                DbSet.Attach(entity);
-            if (dbEntityEntry.State != EntityState.Added && dbEntityEntry.State != EntityState.Deleted)
-                dbEntityEntry.State = EntityState.Modified;
-
-            return dbEntityEntry.Entity;
+            return _repository.Update(entity);
         }
 
         /// <summary>
@@ -877,8 +789,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IEnumerable<TEntity> Update(IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return entities.Select(Update).ToArray();
+            return _repository.Update(entities);
         }
 
         #endregion
@@ -892,17 +803,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity</returns>
         public TEntity Delete(TEntity entity)
         {
-            var dbEntityEntry = DbContext.Entry(entity);
-            if (dbEntityEntry.State != EntityState.Deleted)
-            {
-                dbEntityEntry.State = EntityState.Deleted;
-                return dbEntityEntry.Entity;
-            }
-
-            DbSet.Attach(entity);
-            DbSet.Remove(entity);
-
-            return entity;
+            return _repository.Delete(entity);
         }
 
         /// <summary>
@@ -913,8 +814,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IEnumerable<TEntity> Delete(IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return entities.Select(Delete).ToArray();
+            return _repository.Delete(entities);
         }
 
         #endregion
@@ -927,7 +827,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The total</returns>
         public long Total()
         {
-            return DbSet.LongCount();
+            return _repository.Total();
         }
 
         #endregion
@@ -944,7 +844,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>True if entity exists</returns>
         public bool Exists(TKey01 id01, TKey02 id02, TKey03 id03, TKey04 id04)
         {
-            return QueryById(id01, id02, id03, id04).Any();
+            return _repository.Exists(id01, id02, id03, id04);
         }
 
         #endregion
