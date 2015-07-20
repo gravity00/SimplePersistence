@@ -132,6 +132,50 @@ namespace SimplePersistence.UoW
     /// Can be exported as a <see cref="IQueryable{TEntity}"/>
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
+    /// <typeparam name="TId01"></typeparam>
+    /// <typeparam name="TId02"></typeparam>
+    /// <typeparam name="TId03"></typeparam>
+    /// <typeparam name="TId04"></typeparam>
+    public interface IExposeQueryable<TEntity, in TId01, in TId02, in TId03, in TId04>
+        where TEntity : class
+        where TId01 : IEquatable<TId01>
+        where TId02 : IEquatable<TId02>
+        where TId03 : IEquatable<TId03>
+        where TId04 : IEquatable<TId04>
+    {
+        #region Query
+
+        /// <summary>
+        /// Gets an <see cref="IQueryable{TEntity}"/> for this repository entities
+        /// </summary>
+        /// <returns>The <see cref="IQueryable{TEntity}"/> object</returns>
+        IQueryable<TEntity> Query();
+
+        /// <summary>
+        /// Gets an <see cref="IQueryable{TEntity}"/> for this repository entities
+        /// </summary>
+        /// <param name="id01">The entity first unique identifier value</param>
+        /// <param name="id02">The entity second unique identifier value</param>
+        /// <param name="id03">The entity third identifier value</param>
+        /// <param name="id04">The entity third identifier value</param>
+        /// <returns>The <see cref="IQueryable{TEntity}"/> object</returns>
+        IQueryable<TEntity> QueryById(TId01 id01, TId02 id02, TId03 id03, TId04 id04);
+
+        /// <summary>
+        /// Gets an <see cref="IQueryable{TEntity}"/> for this repository entities
+        /// that will also fetch, on execution, all the entity navigation properties
+        /// </summary>
+        /// <param name="propertiesToFetch">The navigation properties to also fetch on query execution</param>
+        /// <returns>The <see cref="IQueryable{TEntity}"/> object</returns>
+        IQueryable<TEntity> QueryFetching(params Expression<Func<TEntity, object>>[] propertiesToFetch);
+
+        #endregion
+    }
+
+    /// <summary>
+    /// Can be exported as a <see cref="IQueryable{TEntity}"/>
+    /// </summary>
+    /// <typeparam name="TEntity"></typeparam>
     public interface IExposeQueryable<TEntity>
         where TEntity : class
     {

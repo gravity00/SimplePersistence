@@ -62,6 +62,25 @@ namespace SimplePersistence.UoW
     /// persisted entities
     /// </summary>
     /// <typeparam name="TEntity">The entity type</typeparam>
+    /// <typeparam name="TId01">The entity id first type</typeparam>
+    /// <typeparam name="TId02">The entity id second type</typeparam>
+    /// <typeparam name="TId03">The entity id third type</typeparam>
+    /// <typeparam name="TId04">The entity id fourth type</typeparam>
+    public interface IRepository<TEntity, in TId01, in TId02, in TId03, in TId04> : IAsyncRepository<TEntity, TId01, TId02, TId03, TId04>, ISyncRepository<TEntity, TId01, TId02, TId03, TId04>
+        where TEntity : class
+        where TId01 : IEquatable<TId01>
+        where TId02 : IEquatable<TId02>
+        where TId03 : IEquatable<TId03>
+        where TId04 : IEquatable<TId04>
+    {
+
+    }
+
+    /// <summary>
+    /// Repository interface that will be used to query and manipulate
+    /// persisted entities
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type</typeparam>
     public interface IRepository<TEntity> : IAsyncRepository<TEntity>, ISyncRepository<TEntity>
         where TEntity : class
     {
