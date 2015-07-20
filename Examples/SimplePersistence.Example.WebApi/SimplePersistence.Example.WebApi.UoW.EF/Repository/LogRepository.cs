@@ -8,7 +8,7 @@ namespace SimplePersistence.Example.WebApi.UoW.EF.Repository
     public class LogRepository : EFRepository<Log, long>, ILogRepository
     {
         public LogRepository(DbContext dbContext)
-            : base(dbContext)
+            : base(dbContext, (log, l) => log.Id == l)
         {
 
         }

@@ -8,7 +8,7 @@ namespace SimplePersistence.Example.WebApi.UoW.EF.Repository
     public class ApplicationRepository : EFRepository<Application, string>, IApplicationRepository
     {
         public ApplicationRepository(DbContext dbContext)
-            : base(dbContext)
+            : base(dbContext, (application, s) => application.Id == s)
         {
 
         }

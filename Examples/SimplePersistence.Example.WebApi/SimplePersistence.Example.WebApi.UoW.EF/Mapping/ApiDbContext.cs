@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
 using SimplePersistence.Example.WebApi.Models.Logging;
-using SimplePersistence.UoW.EF.Helper;
+using SimplePersistence.Model.EF.Fluent;
 
 namespace SimplePersistence.Example.WebApi.UoW.EF.Mapping
 {
