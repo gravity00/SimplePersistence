@@ -15,4 +15,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("Library that provides consistente model classes guaranteeing ORM compatibility.")]
 [assembly: Guid("26bf2ceb-dec6-43c8-a94d-6d993ea9ffe6")]
 
-[assembly: AssemblyVersion("1.0.2")]
+[assembly: AssemblyVersion("2.0.0")]
