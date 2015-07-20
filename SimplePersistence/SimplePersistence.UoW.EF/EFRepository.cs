@@ -28,9 +28,9 @@ namespace SimplePersistence.UoW.EF
         where TEntity : class 
         where TKey : IEquatable<TKey>
     {
-        private readonly Func<TEntity, TKey, bool> _filterById;
         private readonly DbSet<TEntity> _dbSet;
         private readonly DbContext _dbContext;
+        private readonly EFRepository<TEntity> _repository;
 
         /// <summary>
         /// The Entity Framework database context
@@ -59,9 +59,12 @@ namespace SimplePersistence.UoW.EF
             if (dbContext == null) throw new ArgumentNullException("dbContext");
             if (filterById == null) throw new ArgumentNullException("filterById");
 
-            _filterById = filterById;
             _dbContext = dbContext;
             _dbSet = dbContext.Set<TEntity>();
+            _repository =
+                new EFRepository<TEntity>(
+                    dbContext,
+                    (e, o) => filterById(e, (TKey) o[0]));
         }
 
         #region Query
@@ -72,7 +75,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The <see cref="System.Linq.IQueryable{T}"/> object</returns>
         public IQueryable<TEntity> Query()
         {
-            return DbSet;
+            return _repository.Query();
         }
 
         /// <summary>
@@ -82,7 +85,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The <see cref="IQueryable{TEntity}"/> object</returns>
         public IQueryable<TEntity> QueryById(TKey id)
         {
-            return Query().Where(e => _filterById(e, id));
+            return _repository.QueryById(id);
         }
 
         /// <summary>
@@ -94,12 +97,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IQueryable<TEntity> QueryFetching(params Expression<Func<TEntity, object>>[] propertiesToFetch)
         {
-            if (propertiesToFetch == null) throw new ArgumentNullException("propertiesToFetch");
-
-            return
-                propertiesToFetch
-                    .Aggregate<Expression<Func<TEntity, object>>, IQueryable<TEntity>>(
-                        DbSet, (current, expression) => current.Include(expression));
+            return _repository.QueryFetching(propertiesToFetch);
         }
 
         #endregion
@@ -113,7 +111,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity or null if not found</returns>
         public TEntity GetById(TKey id)
         {
-            return DbSet.Find(id);
+            return _repository.GetById(id);
         }
 
         /// <summary>
@@ -121,9 +119,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="id">The entity unique identifier</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> that will fetch the entity</returns>
-        public async Task<TEntity> GetByIdAsync(TKey id)
+        public Task<TEntity> GetByIdAsync(TKey id)
         {
-            return await DbSet.FindAsync(id);
+            return _repository.GetByIdAsync(id);
         }
 
         /// <summary>
@@ -132,9 +130,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="id">The entity unique identifier</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> that will fetch the entity</returns>
-        public async Task<TEntity> GetByIdAsync(TKey id, CancellationToken ct)
+        public Task<TEntity> GetByIdAsync(TKey id, CancellationToken ct)
         {
-            return await DbSet.FindAsync(ct, id);
+            return _repository.GetByIdAsync(ct, id);
         }
 
         #endregion
@@ -148,12 +146,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity</returns>
         public TEntity Add(TEntity entity)
         {
-            var dbEntityEntry = DbContext.Entry(entity);
-            if (dbEntityEntry.State == EntityState.Detached)
-                return DbSet.Add(entity);
-
-            dbEntityEntry.State = EntityState.Added;
-            return dbEntityEntry.Entity;
+            return _repository.Add(entity);
         }
 
         /// <summary>
@@ -161,9 +154,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entity">The entity to add</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public async Task<TEntity> AddAsync(TEntity entity)
+        public Task<TEntity> AddAsync(TEntity entity)
         {
-            return await AddAsync(entity, CancellationToken.None);
+            return _repository.AddAsync(entity);
         }
 
         /// <summary>
@@ -172,10 +165,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entity">The entity to add</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public async Task<TEntity> AddAsync(TEntity entity, CancellationToken ct)
+        public Task<TEntity> AddAsync(TEntity entity, CancellationToken ct)
         {
-            ct.ThrowIfCancellationRequested();
-            return await Task.FromResult(Add(entity));
+            return _repository.AddAsync(entity, ct);
         }
 
         /// <summary>
@@ -186,8 +178,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IEnumerable<TEntity> Add(IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return DbSet.AddRange(entities);
+            return _repository.Add(entities);
         }
 
         /// <summary>
@@ -195,9 +186,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entities">The entity to add</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public async Task<IEnumerable<TEntity>> AddAsync(IEnumerable<TEntity> entities)
+        public Task<IEnumerable<TEntity>> AddAsync(IEnumerable<TEntity> entities)
         {
-            return await AddAsync(entities, CancellationToken.None);
+            return _repository.AddAsync(entities);
         }
 
         /// <summary>
@@ -206,10 +197,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entities">The entity to add</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public async Task<IEnumerable<TEntity>> AddAsync(IEnumerable<TEntity> entities, CancellationToken ct)
+        public Task<IEnumerable<TEntity>> AddAsync(IEnumerable<TEntity> entities, CancellationToken ct)
         {
-            ct.ThrowIfCancellationRequested();
-            return await Task.FromResult(Add(entities));
+            return _repository.AddAsync(entities, ct);
         }
 
         #endregion
@@ -223,13 +213,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity</returns>
         public TEntity Update(TEntity entity)
         {
-            var dbEntityEntry = DbContext.Entry(entity);
-            if (dbEntityEntry.State == EntityState.Detached)
-                DbSet.Attach(entity);
-            if (dbEntityEntry.State != EntityState.Added && dbEntityEntry.State != EntityState.Deleted)
-                dbEntityEntry.State = EntityState.Modified;
-
-            return dbEntityEntry.Entity;
+            return _repository.Update(entity);
         }
 
         /// <summary>
@@ -237,9 +221,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entity">The entity to update</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public async Task<TEntity> UpdateAsync(TEntity entity)
+        public Task<TEntity> UpdateAsync(TEntity entity)
         {
-            return await UpdateAsync(entity, CancellationToken.None);
+            return _repository.UpdateAsync(entity);
         }
 
         /// <summary>
@@ -248,10 +232,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entity">The entity to update</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken ct)
+        public Task<TEntity> UpdateAsync(TEntity entity, CancellationToken ct)
         {
-            ct.ThrowIfCancellationRequested();
-            return await Task.FromResult(Update(entity));
+            return _repository.UpdateAsync(entity, ct);
         }
 
         /// <summary>
@@ -262,8 +245,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IEnumerable<TEntity> Update(IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return entities.Select(Update).ToArray();
+            return _repository.Update(entities);
         }
 
         /// <summary>
@@ -271,9 +253,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entities">The entities to update</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public async Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities)
+        public Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities)
         {
-            return await UpdateAsync(entities, CancellationToken.None);
+            return _repository.UpdateAsync(entities);
         }
 
         /// <summary>
@@ -282,10 +264,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entities">The entities to update</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public async Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities, CancellationToken ct)
+        public Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities, CancellationToken ct)
         {
-            ct.ThrowIfCancellationRequested();
-            return await Task.FromResult(Update(entities));
+            return _repository.UpdateAsync(entities, ct);
         }
 
         #endregion
@@ -299,17 +280,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity</returns>
         public TEntity Delete(TEntity entity)
         {
-            var dbEntityEntry = DbContext.Entry(entity);
-            if (dbEntityEntry.State != EntityState.Deleted)
-            {
-                dbEntityEntry.State = EntityState.Deleted;
-                return dbEntityEntry.Entity;
-            }
-
-            DbSet.Attach(entity);
-            DbSet.Remove(entity);
-
-            return entity;
+            return _repository.Delete(entity);
         }
 
         /// <summary>
@@ -317,9 +288,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entity">The entity to delete</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public async Task<TEntity> DeleteAsync(TEntity entity)
+        public Task<TEntity> DeleteAsync(TEntity entity)
         {
-            return await DeleteAsync(entity, CancellationToken.None);
+            return _repository.DeleteAsync(entity);
         }
 
         /// <summary>
@@ -328,10 +299,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entity">The entity to delete</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public async Task<TEntity> DeleteAsync(TEntity entity, CancellationToken ct)
+        public Task<TEntity> DeleteAsync(TEntity entity, CancellationToken ct)
         {
-            ct.ThrowIfCancellationRequested();
-            return await Task.FromResult(Delete(entity));
+            return _repository.DeleteAsync(entity, ct);
         }
 
         /// <summary>
@@ -342,8 +312,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IEnumerable<TEntity> Delete(IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return entities.Select(Delete).ToArray();
+            return _repository.Delete(entities);
         }
 
         /// <summary>
@@ -351,9 +320,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entities">The entities to delete</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public async Task<IEnumerable<TEntity>> DeleteAsync(IEnumerable<TEntity> entities)
+        public Task<IEnumerable<TEntity>> DeleteAsync(IEnumerable<TEntity> entities)
         {
-            return await DeleteAsync(entities, CancellationToken.None);
+            return _repository.DeleteAsync(entities);
         }
 
         /// <summary>
@@ -362,10 +331,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entities">The entities to delete</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public async Task<IEnumerable<TEntity>> DeleteAsync(IEnumerable<TEntity> entities, CancellationToken ct)
+        public Task<IEnumerable<TEntity>> DeleteAsync(IEnumerable<TEntity> entities, CancellationToken ct)
         {
-            ct.ThrowIfCancellationRequested();
-            return await Task.FromResult(Delete(entities));
+            return _repository.DeleteAsync(entities, ct);
         }
 
         #endregion
@@ -378,16 +346,16 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The total</returns>
         public long Total()
         {
-            return DbSet.LongCount();
+            return _repository.Total();
         }
 
         /// <summary>
         /// Gets the total entities in the repository asynchronously
         /// </summary>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the total</returns>
-        public async Task<long> TotalAsync()
+        public Task<long> TotalAsync()
         {
-            return await DbSet.LongCountAsync();
+            return _repository.TotalAsync();
         }
 
         /// <summary>
@@ -395,9 +363,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the total</returns>
-        public async Task<long> TotalAsync(CancellationToken ct)
+        public Task<long> TotalAsync(CancellationToken ct)
         {
-            return await DbSet.LongCountAsync(ct);
+            return _repository.TotalAsync(ct);
         }
 
         #endregion
@@ -411,7 +379,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>True if entity exists</returns>
         public bool Exists(TKey id)
         {
-            return QueryById(id).Any();
+            return _repository.Exists(id);
         }
 
         /// <summary>
@@ -419,9 +387,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="id">The entity unique identifier</param>
         /// <returns>True if entity exists</returns>
-        public async Task<bool> ExistsAsync(TKey id)
+        public Task<bool> ExistsAsync(TKey id)
         {
-            return await QueryById(id).AnyAsync();
+            return _repository.ExistsAsync(id);
         }
 
         /// <summary>
@@ -430,9 +398,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="id">The entity unique identifier</param>
         /// <param name="ct">The <see cref="CancellationToken"/> for the returned task</param>
         /// <returns>True if entity exists</returns>
-        public async Task<bool> ExistsAsync(TKey id, CancellationToken ct)
+        public Task<bool> ExistsAsync(TKey id, CancellationToken ct)
         {
-            return await QueryById(id).AnyAsync(ct);
+            return _repository.ExistsAsync(ct, id);
         }
 
         #endregion
@@ -450,9 +418,9 @@ namespace SimplePersistence.UoW.EF
         where TKey01 : IEquatable<TKey01>
         where TKey02 : IEquatable<TKey02>
     {
-        private readonly Func<TEntity, TKey01, TKey02, bool> _filterById;
         private readonly DbSet<TEntity> _dbSet;
         private readonly DbContext _dbContext;
+        private readonly EFRepository<TEntity> _repository;
 
         /// <summary>
         /// The Entity Framework database context
@@ -481,9 +449,12 @@ namespace SimplePersistence.UoW.EF
             if (dbContext == null) throw new ArgumentNullException("dbContext");
             if (filterById == null) throw new ArgumentNullException("filterById");
 
-            _filterById = filterById;
             _dbContext = dbContext;
             _dbSet = dbContext.Set<TEntity>();
+            _repository =
+                new EFRepository<TEntity>(
+                    dbContext,
+                    (e, o) => filterById(e, (TKey01) o[0], (TKey02) o[1]));
         }
 
         #region Query
@@ -494,7 +465,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The <see cref="System.Linq.IQueryable{T}"/> object</returns>
         public IQueryable<TEntity> Query()
         {
-            return DbSet;
+            return _repository.Query();
         }
 
         /// <summary>
@@ -505,7 +476,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The <see cref="IQueryable{TEntity}"/> object</returns>
         public IQueryable<TEntity> QueryById(TKey01 id01, TKey02 id02)
         {
-            return Query().Where(e => _filterById(e, id01, id02));
+            return _repository.QueryById(id01, id02);
         }
 
         /// <summary>
@@ -517,12 +488,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IQueryable<TEntity> QueryFetching(params Expression<Func<TEntity, object>>[] propertiesToFetch)
         {
-            if (propertiesToFetch == null) throw new ArgumentNullException("propertiesToFetch");
-
-            return
-                propertiesToFetch
-                    .Aggregate<Expression<Func<TEntity, object>>, IQueryable<TEntity>>(
-                        DbSet, (current, expression) => current.Include(expression));
+            return _repository.QueryFetching(propertiesToFetch);
         }
 
         #endregion
@@ -537,7 +503,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity or null if not found</returns>
         public TEntity GetById(TKey01 id01, TKey02 id02)
         {
-            return DbSet.Find(id01, id02);
+            return _repository.GetById(id01, id02);
         }
 
         /// <summary>
@@ -546,9 +512,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="id01">The entity first unique identifier value</param>
         /// <param name="id02">The entity second unique identifier value</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> that will fetch the entity</returns>
-        public async Task<TEntity> GetByIdAsync(TKey01 id01, TKey02 id02)
+        public Task<TEntity> GetByIdAsync(TKey01 id01, TKey02 id02)
         {
-            return await DbSet.FindAsync(id01, id02);
+            return _repository.GetByIdAsync(id01, id02);
         }
 
         /// <summary>
@@ -558,9 +524,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="id02">The entity second unique identifier value</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> that will fetch the entity</returns>
-        public async Task<TEntity> GetByIdAsync(TKey01 id01, TKey02 id02, CancellationToken ct)
+        public Task<TEntity> GetByIdAsync(TKey01 id01, TKey02 id02, CancellationToken ct)
         {
-            return await DbSet.FindAsync(ct, id01, id02);
+            return _repository.GetByIdAsync(ct, id01, id02);
         }
 
         #endregion
@@ -574,12 +540,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity</returns>
         public TEntity Add(TEntity entity)
         {
-            var dbEntityEntry = DbContext.Entry(entity);
-            if (dbEntityEntry.State == EntityState.Detached)
-                return DbSet.Add(entity);
-
-            dbEntityEntry.State = EntityState.Added;
-            return dbEntityEntry.Entity;
+            return _repository.Add(entity);
         }
 
         /// <summary>
@@ -587,9 +548,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entity">The entity to add</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public async Task<TEntity> AddAsync(TEntity entity)
+        public Task<TEntity> AddAsync(TEntity entity)
         {
-            return await AddAsync(entity, CancellationToken.None);
+            return _repository.AddAsync(entity);
         }
 
         /// <summary>
@@ -598,10 +559,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entity">The entity to add</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public async Task<TEntity> AddAsync(TEntity entity, CancellationToken ct)
+        public Task<TEntity> AddAsync(TEntity entity, CancellationToken ct)
         {
-            ct.ThrowIfCancellationRequested();
-            return await Task.FromResult(Add(entity));
+            return _repository.AddAsync(entity, ct);
         }
 
         /// <summary>
@@ -612,8 +572,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IEnumerable<TEntity> Add(IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return DbSet.AddRange(entities);
+            return _repository.Add(entities);
         }
 
         /// <summary>
@@ -621,9 +580,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entities">The entity to add</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public async Task<IEnumerable<TEntity>> AddAsync(IEnumerable<TEntity> entities)
+        public Task<IEnumerable<TEntity>> AddAsync(IEnumerable<TEntity> entities)
         {
-            return await AddAsync(entities, CancellationToken.None);
+            return _repository.AddAsync(entities);
         }
 
         /// <summary>
@@ -632,10 +591,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entities">The entity to add</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public async Task<IEnumerable<TEntity>> AddAsync(IEnumerable<TEntity> entities, CancellationToken ct)
+        public Task<IEnumerable<TEntity>> AddAsync(IEnumerable<TEntity> entities, CancellationToken ct)
         {
-            ct.ThrowIfCancellationRequested();
-            return await Task.FromResult(Add(entities));
+            return _repository.AddAsync(entities, ct);
         }
 
         #endregion
@@ -649,13 +607,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity</returns>
         public TEntity Update(TEntity entity)
         {
-            var dbEntityEntry = DbContext.Entry(entity);
-            if (dbEntityEntry.State == EntityState.Detached)
-                DbSet.Attach(entity);
-            if (dbEntityEntry.State != EntityState.Added && dbEntityEntry.State != EntityState.Deleted)
-                dbEntityEntry.State = EntityState.Modified;
-
-            return dbEntityEntry.Entity;
+            return _repository.Update(entity);
         }
 
         /// <summary>
@@ -663,9 +615,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entity">The entity to update</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public async Task<TEntity> UpdateAsync(TEntity entity)
+        public Task<TEntity> UpdateAsync(TEntity entity)
         {
-            return await UpdateAsync(entity, CancellationToken.None);
+            return _repository.UpdateAsync(entity);
         }
 
         /// <summary>
@@ -674,10 +626,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entity">The entity to update</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken ct)
+        public Task<TEntity> UpdateAsync(TEntity entity, CancellationToken ct)
         {
-            ct.ThrowIfCancellationRequested();
-            return await Task.FromResult(Update(entity));
+            return _repository.UpdateAsync(entity, ct);
         }
 
         /// <summary>
@@ -688,8 +639,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IEnumerable<TEntity> Update(IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return entities.Select(Update).ToArray();
+            return _repository.Update(entities);
         }
 
         /// <summary>
@@ -697,9 +647,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entities">The entities to update</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public async Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities)
+        public Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities)
         {
-            return await UpdateAsync(entities, CancellationToken.None);
+            return _repository.UpdateAsync(entities);
         }
 
         /// <summary>
@@ -708,10 +658,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entities">The entities to update</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public async Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities, CancellationToken ct)
+        public Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities, CancellationToken ct)
         {
-            ct.ThrowIfCancellationRequested();
-            return await Task.FromResult(Update(entities));
+            return _repository.UpdateAsync(entities, ct);
         }
 
         #endregion
@@ -725,17 +674,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity</returns>
         public TEntity Delete(TEntity entity)
         {
-            var dbEntityEntry = DbContext.Entry(entity);
-            if (dbEntityEntry.State != EntityState.Deleted)
-            {
-                dbEntityEntry.State = EntityState.Deleted;
-                return dbEntityEntry.Entity;
-            }
-
-            DbSet.Attach(entity);
-            DbSet.Remove(entity);
-
-            return entity;
+            return _repository.Delete(entity);
         }
 
         /// <summary>
@@ -743,9 +682,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entity">The entity to delete</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public async Task<TEntity> DeleteAsync(TEntity entity)
+        public Task<TEntity> DeleteAsync(TEntity entity)
         {
-            return await DeleteAsync(entity, CancellationToken.None);
+            return _repository.DeleteAsync(entity);
         }
 
         /// <summary>
@@ -754,10 +693,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entity">The entity to delete</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public async Task<TEntity> DeleteAsync(TEntity entity, CancellationToken ct)
+        public Task<TEntity> DeleteAsync(TEntity entity, CancellationToken ct)
         {
-            ct.ThrowIfCancellationRequested();
-            return await Task.FromResult(Delete(entity));
+            return _repository.DeleteAsync(entity, ct);
         }
 
         /// <summary>
@@ -768,8 +706,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IEnumerable<TEntity> Delete(IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return entities.Select(Delete).ToArray();
+            return _repository.Delete(entities);
         }
 
         /// <summary>
@@ -777,9 +714,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entities">The entities to delete</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public async Task<IEnumerable<TEntity>> DeleteAsync(IEnumerable<TEntity> entities)
+        public Task<IEnumerable<TEntity>> DeleteAsync(IEnumerable<TEntity> entities)
         {
-            return await DeleteAsync(entities, CancellationToken.None);
+            return _repository.DeleteAsync(entities);
         }
 
         /// <summary>
@@ -788,10 +725,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entities">The entities to delete</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public async Task<IEnumerable<TEntity>> DeleteAsync(IEnumerable<TEntity> entities, CancellationToken ct)
+        public Task<IEnumerable<TEntity>> DeleteAsync(IEnumerable<TEntity> entities, CancellationToken ct)
         {
-            ct.ThrowIfCancellationRequested();
-            return await Task.FromResult(Delete(entities));
+            return _repository.DeleteAsync(entities, ct);
         }
 
         #endregion
@@ -804,16 +740,16 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The total</returns>
         public long Total()
         {
-            return DbSet.LongCount();
+            return _repository.Total();
         }
 
         /// <summary>
         /// Gets the total entities in the repository asynchronously
         /// </summary>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the total</returns>
-        public async Task<long> TotalAsync()
+        public Task<long> TotalAsync()
         {
-            return await DbSet.LongCountAsync();
+            return _repository.TotalAsync();
         }
 
         /// <summary>
@@ -821,9 +757,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the total</returns>
-        public async Task<long> TotalAsync(CancellationToken ct)
+        public Task<long> TotalAsync(CancellationToken ct)
         {
-            return await DbSet.LongCountAsync(ct);
+            return _repository.TotalAsync(ct);
         }
 
         #endregion
@@ -838,7 +774,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>True if entity exists</returns>
         public bool Exists(TKey01 id01, TKey02 id02)
         {
-            return QueryById(id01, id02).Any();
+            return _repository.Exists(id01, id02);
         }
 
         /// <summary>
@@ -847,9 +783,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="id01">The entity first unique identifier value</param>
         /// <param name="id02">The entity second unique identifier value</param>
         /// <returns>True if entity exists</returns>
-        public async Task<bool> ExistsAsync(TKey01 id01, TKey02 id02)
+        public Task<bool> ExistsAsync(TKey01 id01, TKey02 id02)
         {
-            return await QueryById(id01, id02).AnyAsync();
+            return _repository.ExistsAsync(id01, id02);
         }
 
         /// <summary>
@@ -859,9 +795,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="id02">The entity second unique identifier value</param>
         /// <param name="ct">The <see cref="CancellationToken"/> for the returned task</param>
         /// <returns>True if entity exists</returns>
-        public async Task<bool> ExistsAsync(TKey01 id01, TKey02 id02, CancellationToken ct)
+        public Task<bool> ExistsAsync(TKey01 id01, TKey02 id02, CancellationToken ct)
         {
-            return await QueryById(id01, id02).AnyAsync(ct);
+            return _repository.ExistsAsync(ct, id01, id02);
         }
 
         #endregion
@@ -881,9 +817,9 @@ namespace SimplePersistence.UoW.EF
         where TKey02 : IEquatable<TKey02>
         where TKey03 : IEquatable<TKey03>
     {
-        private readonly Func<TEntity, TKey01, TKey02, TKey03, bool> _filterById;
         private readonly DbSet<TEntity> _dbSet;
         private readonly DbContext _dbContext;
+        private readonly EFRepository<TEntity> _repository;
 
         /// <summary>
         /// The Entity Framework database context
@@ -912,9 +848,12 @@ namespace SimplePersistence.UoW.EF
             if (dbContext == null) throw new ArgumentNullException("dbContext");
             if (filterById == null) throw new ArgumentNullException("filterById");
 
-            _filterById = filterById;
             _dbContext = dbContext;
             _dbSet = dbContext.Set<TEntity>();
+            _repository =
+                new EFRepository<TEntity>(
+                    dbContext,
+                    (e, o) => filterById(e, (TKey01) o[0], (TKey02) o[1], (TKey03) o[2]));
         }
 
         #region Query
@@ -925,7 +864,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The <see cref="System.Linq.IQueryable{T}"/> object</returns>
         public IQueryable<TEntity> Query()
         {
-            return DbSet;
+            return _repository.Query();
         }
 
         /// <summary>
@@ -933,11 +872,11 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="id01">The entity first unique identifier value</param>
         /// <param name="id02">The entity second unique identifier value</param>
-        /// <param name="id03">The entity third identifier value</param>
+        /// <param name="id03">The entity third unique identifier value</param>
         /// <returns>The <see cref="IQueryable{TEntity}"/> object</returns>
         public IQueryable<TEntity> QueryById(TKey01 id01, TKey02 id02, TKey03 id03)
         {
-            return Query().Where(e => _filterById(e, id01, id02, id03));
+            return _repository.QueryById(id01, id02, id03);
         }
 
         /// <summary>
@@ -949,12 +888,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IQueryable<TEntity> QueryFetching(params Expression<Func<TEntity, object>>[] propertiesToFetch)
         {
-            if (propertiesToFetch == null) throw new ArgumentNullException("propertiesToFetch");
-
-            return
-                propertiesToFetch
-                    .Aggregate<Expression<Func<TEntity, object>>, IQueryable<TEntity>>(
-                        DbSet, (current, expression) => current.Include(expression));
+            return _repository.QueryFetching(propertiesToFetch);
         }
 
         #endregion
@@ -970,7 +904,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity or null if not found</returns>
         public TEntity GetById(TKey01 id01, TKey02 id02, TKey03 id03)
         {
-            return DbSet.Find(id01, id02, id03);
+            return _repository.GetById(id01, id02, id03);
         }
 
         /// <summary>
@@ -980,9 +914,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="id02">The entity second unique identifier value</param>
         /// <param name="id03">The entity third identifier value</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> that will fetch the entity</returns>
-        public async Task<TEntity> GetByIdAsync(TKey01 id01, TKey02 id02, TKey03 id03)
+        public Task<TEntity> GetByIdAsync(TKey01 id01, TKey02 id02, TKey03 id03)
         {
-            return await DbSet.FindAsync(id01, id02, id03);
+            return _repository.GetByIdAsync(id01, id02, id03);
         }
 
         /// <summary>
@@ -993,9 +927,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="id03">The entity third identifier value</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> that will fetch the entity</returns>
-        public async Task<TEntity> GetByIdAsync(TKey01 id01, TKey02 id02, TKey03 id03, CancellationToken ct)
+        public Task<TEntity> GetByIdAsync(TKey01 id01, TKey02 id02, TKey03 id03, CancellationToken ct)
         {
-            return await DbSet.FindAsync(ct, id01, id02, id03);
+            return _repository.GetByIdAsync(ct, id01, id02, id03);
         }
 
         #endregion
@@ -1009,12 +943,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity</returns>
         public TEntity Add(TEntity entity)
         {
-            var dbEntityEntry = DbContext.Entry(entity);
-            if (dbEntityEntry.State == EntityState.Detached)
-                return DbSet.Add(entity);
-
-            dbEntityEntry.State = EntityState.Added;
-            return dbEntityEntry.Entity;
+            return _repository.Add(entity);
         }
 
         /// <summary>
@@ -1022,9 +951,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entity">The entity to add</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public async Task<TEntity> AddAsync(TEntity entity)
+        public Task<TEntity> AddAsync(TEntity entity)
         {
-            return await AddAsync(entity, CancellationToken.None);
+            return _repository.AddAsync(entity);
         }
 
         /// <summary>
@@ -1033,10 +962,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entity">The entity to add</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public async Task<TEntity> AddAsync(TEntity entity, CancellationToken ct)
+        public Task<TEntity> AddAsync(TEntity entity, CancellationToken ct)
         {
-            ct.ThrowIfCancellationRequested();
-            return await Task.FromResult(Add(entity));
+            return _repository.AddAsync(entity, ct);
         }
 
         /// <summary>
@@ -1047,8 +975,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IEnumerable<TEntity> Add(IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return DbSet.AddRange(entities);
+            return _repository.Add(entities);
         }
 
         /// <summary>
@@ -1056,9 +983,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entities">The entity to add</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public async Task<IEnumerable<TEntity>> AddAsync(IEnumerable<TEntity> entities)
+        public Task<IEnumerable<TEntity>> AddAsync(IEnumerable<TEntity> entities)
         {
-            return await AddAsync(entities, CancellationToken.None);
+            return _repository.AddAsync(entities);
         }
 
         /// <summary>
@@ -1067,10 +994,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entities">The entity to add</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public async Task<IEnumerable<TEntity>> AddAsync(IEnumerable<TEntity> entities, CancellationToken ct)
+        public Task<IEnumerable<TEntity>> AddAsync(IEnumerable<TEntity> entities, CancellationToken ct)
         {
-            ct.ThrowIfCancellationRequested();
-            return await Task.FromResult(Add(entities));
+            return _repository.AddAsync(entities, ct);
         }
 
         #endregion
@@ -1084,13 +1010,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity</returns>
         public TEntity Update(TEntity entity)
         {
-            var dbEntityEntry = DbContext.Entry(entity);
-            if (dbEntityEntry.State == EntityState.Detached)
-                DbSet.Attach(entity);
-            if (dbEntityEntry.State != EntityState.Added && dbEntityEntry.State != EntityState.Deleted)
-                dbEntityEntry.State = EntityState.Modified;
-
-            return dbEntityEntry.Entity;
+            return _repository.Update(entity);
         }
 
         /// <summary>
@@ -1098,9 +1018,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entity">The entity to update</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public async Task<TEntity> UpdateAsync(TEntity entity)
+        public Task<TEntity> UpdateAsync(TEntity entity)
         {
-            return await UpdateAsync(entity, CancellationToken.None);
+            return _repository.UpdateAsync(entity);
         }
 
         /// <summary>
@@ -1109,10 +1029,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entity">The entity to update</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken ct)
+        public Task<TEntity> UpdateAsync(TEntity entity, CancellationToken ct)
         {
-            ct.ThrowIfCancellationRequested();
-            return await Task.FromResult(Update(entity));
+            return _repository.UpdateAsync(entity, ct);
         }
 
         /// <summary>
@@ -1123,8 +1042,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IEnumerable<TEntity> Update(IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return entities.Select(Update).ToArray();
+            return _repository.Update(entities);
         }
 
         /// <summary>
@@ -1132,9 +1050,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entities">The entities to update</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public async Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities)
+        public Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities)
         {
-            return await UpdateAsync(entities, CancellationToken.None);
+            return _repository.UpdateAsync(entities);
         }
 
         /// <summary>
@@ -1143,10 +1061,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entities">The entities to update</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public async Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities, CancellationToken ct)
+        public Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities, CancellationToken ct)
         {
-            ct.ThrowIfCancellationRequested();
-            return await Task.FromResult(Update(entities));
+            return _repository.UpdateAsync(entities, ct);
         }
 
         #endregion
@@ -1160,17 +1077,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity</returns>
         public TEntity Delete(TEntity entity)
         {
-            var dbEntityEntry = DbContext.Entry(entity);
-            if (dbEntityEntry.State != EntityState.Deleted)
-            {
-                dbEntityEntry.State = EntityState.Deleted;
-                return dbEntityEntry.Entity;
-            }
-
-            DbSet.Attach(entity);
-            DbSet.Remove(entity);
-
-            return entity;
+            return _repository.Delete(entity);
         }
 
         /// <summary>
@@ -1178,9 +1085,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entity">The entity to delete</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public async Task<TEntity> DeleteAsync(TEntity entity)
+        public Task<TEntity> DeleteAsync(TEntity entity)
         {
-            return await DeleteAsync(entity, CancellationToken.None);
+            return _repository.DeleteAsync(entity);
         }
 
         /// <summary>
@@ -1189,10 +1096,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entity">The entity to delete</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public async Task<TEntity> DeleteAsync(TEntity entity, CancellationToken ct)
+        public Task<TEntity> DeleteAsync(TEntity entity, CancellationToken ct)
         {
-            ct.ThrowIfCancellationRequested();
-            return await Task.FromResult(Delete(entity));
+            return _repository.DeleteAsync(entity, ct);
         }
 
         /// <summary>
@@ -1203,8 +1109,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IEnumerable<TEntity> Delete(IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return entities.Select(Delete).ToArray();
+            return _repository.Delete(entities);
         }
 
         /// <summary>
@@ -1212,9 +1117,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entities">The entities to delete</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public async Task<IEnumerable<TEntity>> DeleteAsync(IEnumerable<TEntity> entities)
+        public Task<IEnumerable<TEntity>> DeleteAsync(IEnumerable<TEntity> entities)
         {
-            return await DeleteAsync(entities, CancellationToken.None);
+            return _repository.DeleteAsync(entities);
         }
 
         /// <summary>
@@ -1223,10 +1128,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entities">The entities to delete</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public async Task<IEnumerable<TEntity>> DeleteAsync(IEnumerable<TEntity> entities, CancellationToken ct)
+        public Task<IEnumerable<TEntity>> DeleteAsync(IEnumerable<TEntity> entities, CancellationToken ct)
         {
-            ct.ThrowIfCancellationRequested();
-            return await Task.FromResult(Delete(entities));
+            return _repository.DeleteAsync(entities, ct);
         }
 
         #endregion
@@ -1239,16 +1143,16 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The total</returns>
         public long Total()
         {
-            return DbSet.LongCount();
+            return _repository.Total();
         }
 
         /// <summary>
         /// Gets the total entities in the repository asynchronously
         /// </summary>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the total</returns>
-        public async Task<long> TotalAsync()
+        public Task<long> TotalAsync()
         {
-            return await DbSet.LongCountAsync();
+            return _repository.TotalAsync();
         }
 
         /// <summary>
@@ -1256,9 +1160,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the total</returns>
-        public async Task<long> TotalAsync(CancellationToken ct)
+        public Task<long> TotalAsync(CancellationToken ct)
         {
-            return await DbSet.LongCountAsync(ct);
+            return _repository.TotalAsync(ct);
         }
 
         #endregion
@@ -1270,11 +1174,11 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="id01">The entity first unique identifier value</param>
         /// <param name="id02">The entity second unique identifier value</param>
-        /// <param name="id03">The entity third identifier value</param>
+        /// <param name="id03">The entity third unique identifier value</param>
         /// <returns>True if entity exists</returns>
         public bool Exists(TKey01 id01, TKey02 id02, TKey03 id03)
         {
-            return QueryById(id01, id02, id03).Any();
+            return _repository.Exists(id01, id02, id03);
         }
 
         /// <summary>
@@ -1282,11 +1186,11 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="id01">The entity first unique identifier value</param>
         /// <param name="id02">The entity second unique identifier value</param>
-        /// <param name="id03">The entity third identifier value</param>
+        /// <param name="id03">The entity third unique identifier value</param>
         /// <returns>True if entity exists</returns>
-        public async Task<bool> ExistsAsync(TKey01 id01, TKey02 id02, TKey03 id03)
+        public Task<bool> ExistsAsync(TKey01 id01, TKey02 id02, TKey03 id03)
         {
-            return await QueryById(id01, id02, id03).AnyAsync();
+            return _repository.ExistsAsync(id01, id02, id03);
         }
 
         /// <summary>
@@ -1294,12 +1198,12 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="id01">The entity first unique identifier value</param>
         /// <param name="id02">The entity second unique identifier value</param>
-        /// <param name="id03">The entity third identifier value</param>
+        /// <param name="id03">The entity third unique identifier value</param>
         /// <param name="ct">The <see cref="CancellationToken"/> for the returned task</param>
         /// <returns>True if entity exists</returns>
-        public async Task<bool> ExistsAsync(TKey01 id01, TKey02 id02, TKey03 id03, CancellationToken ct)
+        public Task<bool> ExistsAsync(TKey01 id01, TKey02 id02, TKey03 id03, CancellationToken ct)
         {
-            return await QueryById(id01, id02, id03).AnyAsync(ct);
+            return _repository.ExistsAsync(ct, id01, id02, id03);
         }
 
         #endregion
@@ -1321,9 +1225,9 @@ namespace SimplePersistence.UoW.EF
         where TKey03 : IEquatable<TKey03>
         where TKey04 : IEquatable<TKey04>
     {
-        private readonly Func<TEntity, TKey01, TKey02, TKey03, TKey04, bool> _filterById;
         private readonly DbSet<TEntity> _dbSet;
         private readonly DbContext _dbContext;
+        private readonly EFRepository<TEntity> _repository;
 
         /// <summary>
         /// The Entity Framework database context
@@ -1352,9 +1256,12 @@ namespace SimplePersistence.UoW.EF
             if (dbContext == null) throw new ArgumentNullException("dbContext");
             if (filterById == null) throw new ArgumentNullException("filterById");
 
-            _filterById = filterById;
             _dbContext = dbContext;
             _dbSet = dbContext.Set<TEntity>();
+            _repository =
+                new EFRepository<TEntity>(
+                    dbContext,
+                    (e, o) => filterById(e, (TKey01) o[0], (TKey02) o[1], (TKey03) o[2], (TKey04) o[3]));
         }
 
         #region Query
@@ -1365,7 +1272,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The <see cref="System.Linq.IQueryable{T}"/> object</returns>
         public IQueryable<TEntity> Query()
         {
-            return DbSet;
+            return _repository.Query();
         }
 
         /// <summary>
@@ -1373,12 +1280,12 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="id01">The entity first unique identifier value</param>
         /// <param name="id02">The entity second unique identifier value</param>
-        /// <param name="id03">The entity third identifier value</param>
-        /// <param name="id04">The entity fourth identifier value</param>
+        /// <param name="id03">The entity third unique identifier value</param>
+        /// <param name="id04">The entity fourth unique identifier value</param>
         /// <returns>The <see cref="IQueryable{TEntity}"/> object</returns>
         public IQueryable<TEntity> QueryById(TKey01 id01, TKey02 id02, TKey03 id03, TKey04 id04)
         {
-            return Query().Where(e => _filterById(e, id01, id02, id03, id04));
+            return _repository.QueryById(id01, id02, id03, id04);
         }
 
         /// <summary>
@@ -1390,12 +1297,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IQueryable<TEntity> QueryFetching(params Expression<Func<TEntity, object>>[] propertiesToFetch)
         {
-            if (propertiesToFetch == null) throw new ArgumentNullException("propertiesToFetch");
-
-            return
-                propertiesToFetch
-                    .Aggregate<Expression<Func<TEntity, object>>, IQueryable<TEntity>>(
-                        DbSet, (current, expression) => current.Include(expression));
+            return _repository.QueryFetching(propertiesToFetch);
         }
 
         #endregion
@@ -1412,7 +1314,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity or null if not found</returns>
         public TEntity GetById(TKey01 id01, TKey02 id02, TKey03 id03, TKey04 id04)
         {
-            return DbSet.Find(id01, id02, id03, id04);
+            return _repository.GetById(id01, id02, id03, id04);
         }
 
         /// <summary>
@@ -1423,9 +1325,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="id03">The entity third identifier value</param>
         /// <param name="id04">The entity fourth identifier value</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> that will fetch the entity</returns>
-        public async Task<TEntity> GetByIdAsync(TKey01 id01, TKey02 id02, TKey03 id03, TKey04 id04)
+        public Task<TEntity> GetByIdAsync(TKey01 id01, TKey02 id02, TKey03 id03, TKey04 id04)
         {
-            return await DbSet.FindAsync(id01, id02, id03, id04);
+            return _repository.GetByIdAsync(id01, id02, id03, id04);
         }
 
         /// <summary>
@@ -1437,9 +1339,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="id04">The entity fourth identifier value</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> that will fetch the entity</returns>
-        public async Task<TEntity> GetByIdAsync(TKey01 id01, TKey02 id02, TKey03 id03, TKey04 id04, CancellationToken ct)
+        public Task<TEntity> GetByIdAsync(TKey01 id01, TKey02 id02, TKey03 id03, TKey04 id04, CancellationToken ct)
         {
-            return await DbSet.FindAsync(ct, id01, id02, id03, id04);
+            return _repository.GetByIdAsync(ct, id01, id02, id03, id04);
         }
 
         #endregion
@@ -1453,12 +1355,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity</returns>
         public TEntity Add(TEntity entity)
         {
-            var dbEntityEntry = DbContext.Entry(entity);
-            if (dbEntityEntry.State == EntityState.Detached)
-                return DbSet.Add(entity);
-
-            dbEntityEntry.State = EntityState.Added;
-            return dbEntityEntry.Entity;
+            return _repository.Add(entity);
         }
 
         /// <summary>
@@ -1466,9 +1363,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entity">The entity to add</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public async Task<TEntity> AddAsync(TEntity entity)
+        public Task<TEntity> AddAsync(TEntity entity)
         {
-            return await AddAsync(entity, CancellationToken.None);
+            return _repository.AddAsync(entity);
         }
 
         /// <summary>
@@ -1477,10 +1374,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entity">The entity to add</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public async Task<TEntity> AddAsync(TEntity entity, CancellationToken ct)
+        public Task<TEntity> AddAsync(TEntity entity, CancellationToken ct)
         {
-            ct.ThrowIfCancellationRequested();
-            return await Task.FromResult(Add(entity));
+            return _repository.AddAsync(entity, ct);
         }
 
         /// <summary>
@@ -1491,8 +1387,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IEnumerable<TEntity> Add(IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return DbSet.AddRange(entities);
+            return _repository.Add(entities);
         }
 
         /// <summary>
@@ -1500,9 +1395,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entities">The entity to add</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public async Task<IEnumerable<TEntity>> AddAsync(IEnumerable<TEntity> entities)
+        public Task<IEnumerable<TEntity>> AddAsync(IEnumerable<TEntity> entities)
         {
-            return await AddAsync(entities, CancellationToken.None);
+            return _repository.AddAsync(entities);
         }
 
         /// <summary>
@@ -1511,10 +1406,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entities">The entity to add</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public async Task<IEnumerable<TEntity>> AddAsync(IEnumerable<TEntity> entities, CancellationToken ct)
+        public Task<IEnumerable<TEntity>> AddAsync(IEnumerable<TEntity> entities, CancellationToken ct)
         {
-            ct.ThrowIfCancellationRequested();
-            return await Task.FromResult(Add(entities));
+            return _repository.AddAsync(entities, ct);
         }
 
         #endregion
@@ -1528,13 +1422,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity</returns>
         public TEntity Update(TEntity entity)
         {
-            var dbEntityEntry = DbContext.Entry(entity);
-            if (dbEntityEntry.State == EntityState.Detached)
-                DbSet.Attach(entity);
-            if (dbEntityEntry.State != EntityState.Added && dbEntityEntry.State != EntityState.Deleted)
-                dbEntityEntry.State = EntityState.Modified;
-
-            return dbEntityEntry.Entity;
+            return _repository.Update(entity);
         }
 
         /// <summary>
@@ -1542,9 +1430,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entity">The entity to update</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public async Task<TEntity> UpdateAsync(TEntity entity)
+        public Task<TEntity> UpdateAsync(TEntity entity)
         {
-            return await UpdateAsync(entity, CancellationToken.None);
+            return _repository.UpdateAsync(entity);
         }
 
         /// <summary>
@@ -1553,10 +1441,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entity">The entity to update</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken ct)
+        public Task<TEntity> UpdateAsync(TEntity entity, CancellationToken ct)
         {
-            ct.ThrowIfCancellationRequested();
-            return await Task.FromResult(Update(entity));
+            return _repository.UpdateAsync(entity, ct);
         }
 
         /// <summary>
@@ -1567,8 +1454,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IEnumerable<TEntity> Update(IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return entities.Select(Update).ToArray();
+            return _repository.Update(entities);
         }
 
         /// <summary>
@@ -1576,9 +1462,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entities">The entities to update</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public async Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities)
+        public Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities)
         {
-            return await UpdateAsync(entities, CancellationToken.None);
+            return _repository.UpdateAsync(entities);
         }
 
         /// <summary>
@@ -1587,10 +1473,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entities">The entities to update</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public async Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities, CancellationToken ct)
+        public Task<IEnumerable<TEntity>> UpdateAsync(IEnumerable<TEntity> entities, CancellationToken ct)
         {
-            ct.ThrowIfCancellationRequested();
-            return await Task.FromResult(Update(entities));
+            return _repository.UpdateAsync(entities, ct);
         }
 
         #endregion
@@ -1604,17 +1489,7 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The entity</returns>
         public TEntity Delete(TEntity entity)
         {
-            var dbEntityEntry = DbContext.Entry(entity);
-            if (dbEntityEntry.State != EntityState.Deleted)
-            {
-                dbEntityEntry.State = EntityState.Deleted;
-                return dbEntityEntry.Entity;
-            }
-
-            DbSet.Attach(entity);
-            DbSet.Remove(entity);
-
-            return entity;
+            return _repository.Delete(entity);
         }
 
         /// <summary>
@@ -1622,9 +1497,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entity">The entity to delete</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public async Task<TEntity> DeleteAsync(TEntity entity)
+        public Task<TEntity> DeleteAsync(TEntity entity)
         {
-            return await DeleteAsync(entity, CancellationToken.None);
+            return _repository.DeleteAsync(entity);
         }
 
         /// <summary>
@@ -1633,10 +1508,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entity">The entity to delete</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entity</returns>
-        public async Task<TEntity> DeleteAsync(TEntity entity, CancellationToken ct)
+        public Task<TEntity> DeleteAsync(TEntity entity, CancellationToken ct)
         {
-            ct.ThrowIfCancellationRequested();
-            return await Task.FromResult(Delete(entity));
+            return _repository.DeleteAsync(entity, ct);
         }
 
         /// <summary>
@@ -1647,8 +1521,7 @@ namespace SimplePersistence.UoW.EF
         /// <exception cref="ArgumentNullException"></exception>
         public IEnumerable<TEntity> Delete(IEnumerable<TEntity> entities)
         {
-            if (entities == null) throw new ArgumentNullException("entities");
-            return entities.Select(Delete).ToArray();
+            return _repository.Delete(entities);
         }
 
         /// <summary>
@@ -1656,9 +1529,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="entities">The entities to delete</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public async Task<IEnumerable<TEntity>> DeleteAsync(IEnumerable<TEntity> entities)
+        public Task<IEnumerable<TEntity>> DeleteAsync(IEnumerable<TEntity> entities)
         {
-            return await DeleteAsync(entities, CancellationToken.None);
+            return _repository.DeleteAsync(entities);
         }
 
         /// <summary>
@@ -1667,10 +1540,9 @@ namespace SimplePersistence.UoW.EF
         /// <param name="entities">The entities to delete</param>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the entities</returns>
-        public async Task<IEnumerable<TEntity>> DeleteAsync(IEnumerable<TEntity> entities, CancellationToken ct)
+        public Task<IEnumerable<TEntity>> DeleteAsync(IEnumerable<TEntity> entities, CancellationToken ct)
         {
-            ct.ThrowIfCancellationRequested();
-            return await Task.FromResult(Delete(entities));
+            return _repository.DeleteAsync(entities, ct);
         }
 
         #endregion
@@ -1683,16 +1555,16 @@ namespace SimplePersistence.UoW.EF
         /// <returns>The total</returns>
         public long Total()
         {
-            return DbSet.LongCount();
+            return _repository.Total();
         }
 
         /// <summary>
         /// Gets the total entities in the repository asynchronously
         /// </summary>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the total</returns>
-        public async Task<long> TotalAsync()
+        public Task<long> TotalAsync()
         {
-            return await DbSet.LongCountAsync();
+            return _repository.TotalAsync();
         }
 
         /// <summary>
@@ -1700,9 +1572,9 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="ct">The <see cref="System.Threading.CancellationToken"/> for the returned task</param>
         /// <returns>A <see cref="System.Threading.Tasks.Task{TResult}"/> containing the total</returns>
-        public async Task<long> TotalAsync(CancellationToken ct)
+        public Task<long> TotalAsync(CancellationToken ct)
         {
-            return await DbSet.LongCountAsync(ct);
+            return _repository.TotalAsync(ct);
         }
 
         #endregion
@@ -1714,12 +1586,12 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="id01">The entity first unique identifier value</param>
         /// <param name="id02">The entity second unique identifier value</param>
-        /// <param name="id03">The entity third identifier value</param>
-        /// <param name="id04">The entity fourth identifier value</param>
+        /// <param name="id03">The entity third unique identifier value</param>
+        /// <param name="id04">The entity fourth unique identifier value</param>
         /// <returns>True if entity exists</returns>
         public bool Exists(TKey01 id01, TKey02 id02, TKey03 id03, TKey04 id04)
         {
-            return QueryById(id01, id02, id03, id04).Any();
+            return _repository.Exists(id01, id02, id03, id04);
         }
 
         /// <summary>
@@ -1727,12 +1599,12 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="id01">The entity first unique identifier value</param>
         /// <param name="id02">The entity second unique identifier value</param>
-        /// <param name="id03">The entity third identifier value</param>
-        /// <param name="id04">The entity fourth identifier value</param>
+        /// <param name="id03">The entity third unique identifier value</param>
+        /// <param name="id04">The entity fourth unique identifier value</param>
         /// <returns>True if entity exists</returns>
-        public async Task<bool> ExistsAsync(TKey01 id01, TKey02 id02, TKey03 id03, TKey04 id04)
+        public Task<bool> ExistsAsync(TKey01 id01, TKey02 id02, TKey03 id03, TKey04 id04)
         {
-            return await QueryById(id01, id02, id03, id04).AnyAsync();
+            return _repository.ExistsAsync(id01, id02, id03, id04);
         }
 
         /// <summary>
@@ -1740,13 +1612,13 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="id01">The entity first unique identifier value</param>
         /// <param name="id02">The entity second unique identifier value</param>
-        /// <param name="id03">The entity third identifier value</param>
-        /// <param name="id04">The entity fourth identifier value</param>
+        /// <param name="id03">The entity third unique identifier value</param>
+        /// <param name="id04">The entity fourth unique identifier value</param>
         /// <param name="ct">The <see cref="CancellationToken"/> for the returned task</param>
         /// <returns>True if entity exists</returns>
-        public async Task<bool> ExistsAsync(TKey01 id01, TKey02 id02, TKey03 id03, TKey04 id04, CancellationToken ct)
+        public Task<bool> ExistsAsync(TKey01 id01, TKey02 id02, TKey03 id03, TKey04 id04, CancellationToken ct)
         {
-            return await QueryById(id01, id02, id03, id04).AnyAsync(ct);
+            return _repository.ExistsAsync(ct, id01, id02, id03, id04);
         }
 
         #endregion
