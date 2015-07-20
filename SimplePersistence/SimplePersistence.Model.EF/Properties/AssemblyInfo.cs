@@ -15,4 +15,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("SimplePersistence.Model Entity Framework specializations and helpers")]
 [assembly: Guid("0b5c7058-77a8-4efb-acd2-6eb5162626cb")]
 
-[assembly: AssemblyVersion("0.0.1.0")]
+[assembly: AssemblyVersion("1.0.0")]
