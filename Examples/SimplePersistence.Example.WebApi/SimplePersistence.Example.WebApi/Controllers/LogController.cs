@@ -4,15 +4,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.OData;
-using SimplePersistence.Example.WebApi.Helpers;
 using SimplePersistence.Example.WebApi.Models.Logging;
 using SimplePersistence.Example.WebApi.UoW;
 using SimplePersistence.UoW;
+using SimplePersistence.UoW.Helper;
 
 namespace SimplePersistence.Example.WebApi.Controllers
 {
-    public class LogController : ODataController, 
-        ODataGet<Log>.WithKey<long>,
+    public class LogController : ODataController, ODataGet<Log>.WithKey<long>,
         ODataPost<Log>
     {
         private readonly IUnitOfWorkFactory _unitOfWorkFactory;
@@ -58,7 +57,7 @@ namespace SimplePersistence.Example.WebApi.Controllers
             if (entity.Application == null)
                 return Conflict();
 
-            return Created(await _uow.ExecuteAsync(async () =>
+            return Created(await _uow.ExecuteAndCommitAsync(async () =>
             {
                 entity.CreatedOn = DateTimeOffset.Now;
                 entity.CreatedBy = User.Identity.Name;

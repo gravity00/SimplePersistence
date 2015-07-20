@@ -126,7 +126,6 @@
     <Compile Include="Controllers\LevelController.cs" />
     <Compile Include="Controllers\ApplicationController.cs" />
     <Compile Include="Controllers\ODataInterfaces.cs" />
-    <Compile Include="Helpers\UnitOfWorkExtensions.cs" />
     <Compile Include="Helpers\ModelBuilderExtensions.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Global.asax.cs">
