@@ -15,4 +15,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("Library that offers unit of work classes specialized for NHibernate")]
 [assembly: Guid("13ff432b-416d-4b62-ac01-3cd3a11c5b1c")]
 
-[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyVersion("2.0.0")]
