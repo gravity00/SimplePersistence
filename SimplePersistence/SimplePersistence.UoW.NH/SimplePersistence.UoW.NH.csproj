@@ -44,6 +44,7 @@
     <Compile Include="..\SimplePersistence\Properties\ProductAssemblyInfo.cs">
       <Link>Properties\ProductAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="NHAsyncQueryable.cs" />
     <Compile Include="INHibernateUnitOfWork.cs" />
     <Compile Include="INHWorkArea.cs" />
     <Compile Include="NHibernateAsyncRepository.cs" />
