@@ -9,7 +9,7 @@ namespace SimplePersistence.Example.Console.UoW.EF.Repository.Logging
     public class LevelRepository : EFRepository<Level, string>, ILevelRepository
     {
         public LevelRepository(DbContext dbContext)
-            : base(dbContext)
+            : base(dbContext, (e, id) => e.Id == id)
         {
         }
     }
