@@ -19,6 +19,7 @@
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -170,6 +171,10 @@
     <ProjectReference Include="..\SimplePersistence.Example.WebApi.UoW.EF\SimplePersistence.Example.WebApi.UoW.EF.csproj">
       <Project>{A0DB1E4D-9A1E-4AAD-9B3B-B621C66357FB}</Project>
       <Name>SimplePersistence.Example.WebApi.UoW.EF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SimplePersistence.Example.WebApi.UoW.NH\SimplePersistence.Example.WebApi.UoW.NH.csproj">
+      <Project>{0412813b-1837-419d-9534-6b639eb7c485}</Project>
+      <Name>SimplePersistence.Example.WebApi.UoW.NH</Name>
     </ProjectReference>
     <ProjectReference Include="..\SimplePersistence.Example.WebApi.UoW\SimplePersistence.Example.WebApi.UoW.csproj">
       <Project>{419D9ED5-A1BA-40B7-A497-1E96C727BB8A}</Project>
