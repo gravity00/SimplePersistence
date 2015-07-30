@@ -1,5 +1,5 @@
 # Simple Persistence
-Simple Persistence is a set of libraries that help developers to create consistent database models and data access code across multiple applications in a simple way.
+Simple Persistence is a set of libraries that help developers to create consistent database models and data access code across multiple applications in a simple way. 
 
 ## Packages are available on Nuget
 - [SimplePersistence.Model](https://www.nuget.org/packages/SimplePersistence.Model/) - Model interfaces, classes and extensions that can be used to create consistent models accross your applications;
