@@ -274,6 +274,40 @@ namespace SimplePersistence.Model.EF.Fluent
 
         #endregion
 
+        #region Key
+
+        /// <summary>
+        /// Maps the property <see cref="IEntity{TIdentity}.Id"/> as an identity in the database
+        /// </summary>
+        /// <param name="cfg">The entity configuration</param>
+        /// <typeparam name="T">The entity type</typeparam>
+        /// <returns>The entity configuration after changes</returns>
+        public static EntityTypeConfiguration<T> HasIdentityKeyAsLong<T>(this EntityTypeConfiguration<T> cfg)
+            where T : class, IEntity<long>
+        {
+            cfg.HasKey(e => e.Id)
+                .Property(e => e.Id).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+
+            return cfg;
+        }
+
+        /// <summary>
+        /// Maps the property <see cref="IEntity{TIdentity}.Id"/> as an identity in the database
+        /// </summary>
+        /// <param name="cfg">The entity configuration</param>
+        /// <typeparam name="T">The entity type</typeparam>
+        /// <returns>The entity configuration after changes</returns>
+        public static EntityTypeConfiguration<T> HasIdentityKeyAsInt<T>(this EntityTypeConfiguration<T> cfg)
+            where T : class, IEntity<int>
+        {
+            cfg.HasKey(e => e.Id)
+                .Property(e => e.Id).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+
+            return cfg;
+        } 
+
+        #endregion
+
         /// <summary>
         /// Maps the deleted metadata for an entity implementing the <see cref="IHaveVersionAsByteArray"/>
         /// </summary>
