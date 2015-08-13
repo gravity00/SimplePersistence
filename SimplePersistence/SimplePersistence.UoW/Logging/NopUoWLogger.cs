@@ -17,7 +17,7 @@ namespace SimplePersistence.UoW.Logging
     /// <summary>
     /// Implementation of a no operation <see cref="IUnitOfWork"/>
     /// </summary>
-    public class NopUoWLogger : IUoWLogger
+    internal class NopUoWLogger : IUoWLogger
     {
         /// <summary>
         /// Default instance of this logger

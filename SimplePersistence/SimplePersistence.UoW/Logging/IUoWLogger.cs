@@ -17,7 +17,7 @@ namespace SimplePersistence.UoW.Logging
     /// <summary>
     /// The logger interface used by UoW classes
     /// </summary>
-    public interface IUoWLogger
+    internal interface IUoWLogger
     {
         /// <summary>
         /// Writes a debug message
