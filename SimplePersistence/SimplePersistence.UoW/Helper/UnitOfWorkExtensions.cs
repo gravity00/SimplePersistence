@@ -8,6 +8,9 @@
 // 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endregion
+
+using SimplePersistence.UoW.Exceptions;
+
 namespace SimplePersistence.UoW.Helper
 {
     using System;
@@ -33,6 +36,8 @@ namespace SimplePersistence.UoW.Helper
         /// <typeparam name="T">The return type</typeparam>
         /// <returns>A task to be awaited</returns>
         /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ConcurrencyException"/>
+        /// <exception cref="CommitException"/>
         public static Task<T> ExecuteAndCommitAsync<T>(this IUnitOfWork uow, Func<Task<T>> toExecute)
         {
             return uow.ExecuteAndCommitAsync(toExecute, CancellationToken.None);
@@ -48,6 +53,8 @@ namespace SimplePersistence.UoW.Helper
         /// <typeparam name="T">The return type</typeparam>
         /// <returns>A task to be awaited</returns>
         /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ConcurrencyException"/>
+        /// <exception cref="CommitException"/>
         public static Task<T> ExecuteAndCommitAsync<T>(this IUnitOfWork uow, Func<Task<T>> toExecute, CancellationToken ct)
         {
             return uow.ExecuteAndCommitAsync((w, c) => toExecute(), ct);
@@ -62,6 +69,8 @@ namespace SimplePersistence.UoW.Helper
         /// <typeparam name="T">The return type</typeparam>
         /// <returns>A task to be awaited</returns>
         /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ConcurrencyException"/>
+        /// <exception cref="CommitException"/>
         public static Task<T> ExecuteAndCommitAsync<T>(this IUnitOfWork uow, Func<IUnitOfWork, CancellationToken, Task<T>> toExecute)
         {
             return uow.ExecuteAndCommitAsync(toExecute, CancellationToken.None);
@@ -77,6 +86,8 @@ namespace SimplePersistence.UoW.Helper
         /// <typeparam name="T">The return type</typeparam>
         /// <returns>A task to be awaited</returns>
         /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ConcurrencyException"/>
+        /// <exception cref="CommitException"/>
         public static Task<T> ExecuteAndCommitAsync<T>(this IUnitOfWork uow, Func<IUnitOfWork, CancellationToken, Task<T>> toExecute, CancellationToken ct)
         {
             if (uow == null) throw new ArgumentNullException("uow");
@@ -87,7 +98,7 @@ namespace SimplePersistence.UoW.Helper
             {
                 if (t01.IsFaulted)
                 {
-                    tcs.SetException(t01.Exception ?? new Exception(Resources.TaskInFaultedStateExceptionMessage));
+                    tcs.SetExceptionFromTask(t01);
                 }
                 else if (t01.IsCompleted)
                 {
@@ -95,7 +106,7 @@ namespace SimplePersistence.UoW.Helper
                     {
                         if (t02.IsFaulted)
                         {
-                            tcs.SetException(t02.Exception ?? new Exception(Resources.TaskInFaultedStateExceptionMessage));
+                            tcs.SetExceptionFromTask(t02);
                         }
                         else if (t02.IsCompleted)
                         {
@@ -103,7 +114,7 @@ namespace SimplePersistence.UoW.Helper
                             {
                                 if (t03.IsFaulted)
                                 {
-                                    tcs.SetException(t03.Exception ?? new Exception(Resources.TaskInFaultedStateExceptionMessage));
+                                    tcs.SetExceptionFromTask(t03);
                                 }
                                 else if (t03.IsCompleted)
                                 {
@@ -142,6 +153,8 @@ namespace SimplePersistence.UoW.Helper
         /// <param name="toExecute">The code to be executed inside the scope</param>
         /// <returns>A task to be awaited</returns>
         /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ConcurrencyException"/>
+        /// <exception cref="CommitException"/>
         public static Task ExecuteAndCommitAsync(this IUnitOfWork uow, Func<Task> toExecute)
         {
             return uow.ExecuteAndCommitAsync((u, c) => toExecute(), CancellationToken.None);
@@ -156,6 +169,8 @@ namespace SimplePersistence.UoW.Helper
         /// <param name="ct">The cancellation token</param>
         /// <returns>A task to be awaited</returns>
         /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ConcurrencyException"/>
+        /// <exception cref="CommitException"/>
         public static Task ExecuteAndCommitAsync(this IUnitOfWork uow, Func<Task> toExecute, CancellationToken ct)
         {
             return uow.ExecuteAndCommitAsync((u, c) => toExecute(), ct);
@@ -169,6 +184,8 @@ namespace SimplePersistence.UoW.Helper
         /// <param name="toExecute">The code to be executed inside the scope</param>
         /// <returns>A task to be awaited</returns>
         /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ConcurrencyException"/>
+        /// <exception cref="CommitException"/>
         public static Task ExecuteAndCommitAsync(this IUnitOfWork uow, Func<IUnitOfWork, CancellationToken, Task> toExecute)
         {
             return uow.ExecuteAndCommitAsync(toExecute, CancellationToken.None);
@@ -183,17 +200,20 @@ namespace SimplePersistence.UoW.Helper
         /// <param name="ct">The cancellation token</param>
         /// <returns>A task to be awaited</returns>
         /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ConcurrencyException"/>
+        /// <exception cref="CommitException"/>
         public static Task ExecuteAndCommitAsync(this IUnitOfWork uow, Func<IUnitOfWork, CancellationToken, Task> toExecute, CancellationToken ct)
         {
             if (uow == null) throw new ArgumentNullException("uow");
             if (toExecute == null) throw new ArgumentNullException("toExecute");
 
+            //*
             var tcs = new TaskCompletionSource<bool>();
             uow.BeginAsync(ct).ContinueWith(t01 =>
             {
                 if (t01.IsFaulted)
                 {
-                    tcs.SetException(t01.Exception ?? new Exception(Resources.TaskInFaultedStateExceptionMessage));
+                    tcs.SetExceptionFromTask(t01);
                 }
                 else if (t01.IsCompleted)
                 {
@@ -201,7 +221,7 @@ namespace SimplePersistence.UoW.Helper
                     {
                         if (t02.IsFaulted)
                         {
-                            tcs.SetException(t02.Exception ?? new Exception(Resources.TaskInFaultedStateExceptionMessage));
+                            tcs.SetExceptionFromTask(t02);
                         }
                         else if (t02.IsCompleted)
                         {
@@ -209,7 +229,7 @@ namespace SimplePersistence.UoW.Helper
                             {
                                 if (t03.IsFaulted)
                                 {
-                                    tcs.SetException(t03.Exception ?? new Exception(Resources.TaskInFaultedStateExceptionMessage));
+                                    tcs.SetExceptionFromTask(t03);
                                 }
                                 else if (t03.IsCompleted)
                                 {
@@ -234,6 +254,7 @@ namespace SimplePersistence.UoW.Helper
             }, ct);
 
             return tcs.Task;
+            //*/
         }
 
         #endregion
@@ -253,6 +274,8 @@ namespace SimplePersistence.UoW.Helper
         /// <typeparam name="T">The return type</typeparam>
         /// <returns>A task to be awaited</returns>
         /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ConcurrencyException"/>
+        /// <exception cref="CommitException"/>
         public static T ExecuteAndCommit<T>(this IUnitOfWork uow, Func<T> toExecute)
         {
             return uow.ExecuteAndCommit(u => toExecute());
@@ -267,6 +290,8 @@ namespace SimplePersistence.UoW.Helper
         /// <typeparam name="T">The return type</typeparam>
         /// <returns>A task to be awaited</returns>
         /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ConcurrencyException"/>
+        /// <exception cref="CommitException"/>
         public static T ExecuteAndCommit<T>(this IUnitOfWork uow, Func<IUnitOfWork, T> toExecute)
         {
             if (uow == null) throw new ArgumentNullException("uow");
@@ -290,6 +315,9 @@ namespace SimplePersistence.UoW.Helper
         /// </summary>
         /// <param name="uow">The <see cref="IUnitOfWork"/> to be used</param>
         /// <param name="toExecute">The code to be executed inside the scope</param>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ConcurrencyException"/>
+        /// <exception cref="CommitException"/>
         public static void ExecuteAndCommit(this IUnitOfWork uow, Action toExecute)
         {
             uow.ExecuteAndCommit(u => toExecute());
@@ -301,6 +329,9 @@ namespace SimplePersistence.UoW.Helper
         /// </summary>
         /// <param name="uow">The <see cref="IUnitOfWork"/> to be used</param>
         /// <param name="toExecute">The code to be executed inside the scope</param>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ConcurrencyException"/>
+        /// <exception cref="CommitException"/>
         public static void ExecuteAndCommit(this IUnitOfWork uow, Action<IUnitOfWork> toExecute)
         {
             if (uow == null) throw new ArgumentNullException("uow");
@@ -314,6 +345,31 @@ namespace SimplePersistence.UoW.Helper
         }
 
         #endregion
+
+        #endregion
+
+        #region Private
+
+        private static Exception NewDefaultException()
+        {
+            return new Exception(Resources.TaskInFaultedStateExceptionMessage);
+        }
+
+        private static void SetExceptionFromTask<T>(this TaskCompletionSource<T> tcs, Task task)
+        {
+            if (!task.IsFaulted) return;
+
+            if (task.Exception == null) //  It should never happen
+                tcs.SetException(NewDefaultException());
+            else
+            {
+                task.Exception.Flatten().Handle(ex =>
+                {
+                    tcs.SetException(ex ?? NewDefaultException());
+                    return true;
+                });
+            }
+        }
 
         #endregion
     }
