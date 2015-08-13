@@ -124,16 +124,15 @@ namespace SimplePersistence.UoW
                             {
                                 if (!t.IsFaulted) return;
 
-                                if (t.Exception == null)
+                                if (t.Exception == null) //  It should never happen
                                     throw new CommitException();
 
-                                var ex = t.Exception.InnerException;
-                                if (ex == null)
-                                    throw new CommitException();
-
-                                if (ex.GetType() != typeof (UnitOfWorkException))
-                                    throw t.Exception;
-                                throw new CommitException(ex);
+                                t.Exception.Flatten().Handle(ex =>
+                                {
+                                    if (ex is UnitOfWorkException)
+                                        throw ex;
+                                    throw new CommitException(ex);
+                                });
                             }, ct);
 
             var tcs = new TaskCompletionSource<bool>();
