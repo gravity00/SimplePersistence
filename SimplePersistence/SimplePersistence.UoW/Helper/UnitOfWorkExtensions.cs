@@ -8,15 +8,13 @@
 // 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endregion
-
-using SimplePersistence.UoW.Exceptions;
-
 namespace SimplePersistence.UoW.Helper
 {
     using System;
     using System.Threading;
     using System.Threading.Tasks;
     using Properties;
+    using Exceptions;
 
     /// <summary>
     /// Extension classes for the Unit of Work pattern
@@ -73,6 +71,7 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="CommitException"/>
         public static Task<T> ExecuteAndCommitAsync<T>(this IUnitOfWork uow, Func<IUnitOfWork, CancellationToken, Task<T>> toExecute)
         {
+            //  bug fix https://github.com/gravity00/SimplePersistence/issues/5
             return uow.ExecuteAndCommitAsync(toExecute, CancellationToken.None);
         }
 
@@ -89,6 +88,44 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
         public static Task<T> ExecuteAndCommitAsync<T>(this IUnitOfWork uow, Func<IUnitOfWork, CancellationToken, Task<T>> toExecute, CancellationToken ct)
+        {
+            //  bug fix https://github.com/gravity00/SimplePersistence/issues/5
+            return ExecuteAndCommitAsync<IUnitOfWork, T>(uow, toExecute, ct);
+        }
+
+        /// <summary>
+        /// Executes the given asynchronous function inside an <see cref="IUnitOfWork.BeginAsync"/> 
+        /// and <see cref="IUnitOfWork.CommitAsync"/> scope
+        /// </summary>
+        /// <param name="uow">The <see cref="IUnitOfWork"/> to be used</param>
+        /// <param name="toExecute">The code to be executed inside the scope</param>
+        /// <typeparam name="TUoW">The <see cref="IUnitOfWork"/> type</typeparam>
+        /// <typeparam name="T">The return type</typeparam>
+        /// <returns>A task to be awaited</returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ConcurrencyException"/>
+        /// <exception cref="CommitException"/>
+        public static Task<T> ExecuteAndCommitAsync<TUoW, T>(this TUoW uow, Func<TUoW, CancellationToken, Task<T>> toExecute)
+            where TUoW : IUnitOfWork
+        {
+            return uow.ExecuteAndCommitAsync(toExecute, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Executes the given asynchronous function inside an <see cref="IUnitOfWork.BeginAsync"/> 
+        /// and <see cref="IUnitOfWork.CommitAsync"/> scope
+        /// </summary>
+        /// <param name="uow">The <see cref="IUnitOfWork"/> to be used</param>
+        /// <param name="toExecute">The code to be executed inside the scope</param>
+        /// <param name="ct">The cancellation token</param>
+        /// <typeparam name="TUoW">The <see cref="IUnitOfWork"/> type</typeparam>
+        /// <typeparam name="T">The return type</typeparam>
+        /// <returns>A task to be awaited</returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ConcurrencyException"/>
+        /// <exception cref="CommitException"/>
+        public static Task<T> ExecuteAndCommitAsync<TUoW,T>(this TUoW uow, Func<TUoW, CancellationToken, Task<T>> toExecute, CancellationToken ct)
+            where TUoW : IUnitOfWork
         {
             if (uow == null) throw new ArgumentNullException("uow");
             if (toExecute == null) throw new ArgumentNullException("toExecute");
@@ -188,6 +225,7 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="CommitException"/>
         public static Task ExecuteAndCommitAsync(this IUnitOfWork uow, Func<IUnitOfWork, CancellationToken, Task> toExecute)
         {
+            //  bug fix https://github.com/gravity00/SimplePersistence/issues/5
             return uow.ExecuteAndCommitAsync(toExecute, CancellationToken.None);
         }
 
@@ -204,10 +242,45 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="CommitException"/>
         public static Task ExecuteAndCommitAsync(this IUnitOfWork uow, Func<IUnitOfWork, CancellationToken, Task> toExecute, CancellationToken ct)
         {
+            //  bug fix https://github.com/gravity00/SimplePersistence/issues/5
+            return ExecuteAndCommitAsync<IUnitOfWork>(uow, toExecute, ct);
+        }
+
+        /// <summary>
+        /// Executes the given asynchronous function inside an <see cref="IUnitOfWork.BeginAsync"/> 
+        /// and <see cref="IUnitOfWork.CommitAsync"/> scope
+        /// </summary>
+        /// <param name="uow">The <see cref="IUnitOfWork"/> to be used</param>
+        /// <param name="toExecute">The code to be executed inside the scope</param>
+        /// <typeparam name="TUoW">The <see cref="IUnitOfWork"/> type</typeparam>
+        /// <returns>A task to be awaited</returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ConcurrencyException"/>
+        /// <exception cref="CommitException"/>
+        public static Task ExecuteAndCommitAsync<TUoW>(this TUoW uow, Func<TUoW, CancellationToken, Task> toExecute)
+            where TUoW : IUnitOfWork
+        {
+            return uow.ExecuteAndCommitAsync(toExecute, CancellationToken.None);
+        }
+
+        /// <summary>
+        /// Executes the given asynchronous function inside an <see cref="IUnitOfWork.BeginAsync"/> 
+        /// and <see cref="IUnitOfWork.CommitAsync"/> scope
+        /// </summary>
+        /// <param name="uow">The <see cref="IUnitOfWork"/> to be used</param>
+        /// <param name="toExecute">The code to be executed inside the scope</param>
+        /// <param name="ct">The cancellation token</param>
+        /// <typeparam name="TUoW">The <see cref="IUnitOfWork"/> type</typeparam>
+        /// <returns>A task to be awaited</returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ConcurrencyException"/>
+        /// <exception cref="CommitException"/>
+        public static Task ExecuteAndCommitAsync<TUoW>(this TUoW uow, Func<TUoW, CancellationToken, Task> toExecute, CancellationToken ct)
+            where TUoW : IUnitOfWork
+        {
             if (uow == null) throw new ArgumentNullException("uow");
             if (toExecute == null) throw new ArgumentNullException("toExecute");
 
-            //*
             var tcs = new TaskCompletionSource<bool>();
             uow.BeginAsync(ct).ContinueWith(t01 =>
             {
@@ -254,7 +327,6 @@ namespace SimplePersistence.UoW.Helper
             }, ct);
 
             return tcs.Task;
-            //*/
         }
 
         #endregion
@@ -293,6 +365,25 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
         public static T ExecuteAndCommit<T>(this IUnitOfWork uow, Func<IUnitOfWork, T> toExecute)
+        {
+            //  bug fix https://github.com/gravity00/SimplePersistence/issues/5
+            return ExecuteAndCommit<IUnitOfWork, T>(uow, toExecute);
+        }
+
+        /// <summary>
+        /// Executes the given lambda inside an <see cref="IUnitOfWork.Begin"/> 
+        /// and <see cref="IUnitOfWork.Commit"/> scope
+        /// </summary>
+        /// <param name="uow">The <see cref="IUnitOfWork"/> to be used</param>
+        /// <param name="toExecute">The code to be executed inside the scope</param>
+        /// <typeparam name="TUoW">The <see cref="IUnitOfWork"/> type</typeparam>
+        /// <typeparam name="T">The return type</typeparam>
+        /// <returns>A task to be awaited</returns>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ConcurrencyException"/>
+        /// <exception cref="CommitException"/>
+        public static T ExecuteAndCommit<TUoW,T>(this TUoW uow, Func<TUoW, T> toExecute)
+            where TUoW : IUnitOfWork
         {
             if (uow == null) throw new ArgumentNullException("uow");
             if (toExecute == null) throw new ArgumentNullException("toExecute");
@@ -333,6 +424,23 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
         public static void ExecuteAndCommit(this IUnitOfWork uow, Action<IUnitOfWork> toExecute)
+        {
+            //  bug fix https://github.com/gravity00/SimplePersistence/issues/5
+            ExecuteAndCommit<IUnitOfWork>(uow, toExecute);
+        }
+
+        /// <summary>
+        /// Executes the given lambda inside an <see cref="IUnitOfWork.Begin"/> 
+        /// and <see cref="IUnitOfWork.Commit"/> scope
+        /// </summary>
+        /// <param name="uow">The <see cref="IUnitOfWork"/> to be used</param>
+        /// <param name="toExecute">The code to be executed inside the scope</param>
+        /// <typeparam name="TUoW">The <see cref="IUnitOfWork"/> type</typeparam>
+        /// <exception cref="ArgumentNullException"/>
+        /// <exception cref="ConcurrencyException"/>
+        /// <exception cref="CommitException"/>
+        public static void ExecuteAndCommit<TUoW>(this TUoW uow, Action<TUoW> toExecute)
+            where TUoW : IUnitOfWork
         {
             if (uow == null) throw new ArgumentNullException("uow");
             if (toExecute == null) throw new ArgumentNullException("toExecute");
