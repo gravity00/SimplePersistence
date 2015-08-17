@@ -60,6 +60,7 @@
     <Compile Include="IHaveCreatedMeta.cs" />
     <Compile Include="IHaveDeletedMeta.cs" />
     <Compile Include="IHaveLocalCreatedMeta.cs" />
+    <Compile Include="IHaveLocalUpdatedMeta.cs" />
     <Compile Include="IHaveSoftDelete.cs" />
     <Compile Include="IHaveUpdatedMeta.cs" />
     <Compile Include="IHaveVersion.cs" />
