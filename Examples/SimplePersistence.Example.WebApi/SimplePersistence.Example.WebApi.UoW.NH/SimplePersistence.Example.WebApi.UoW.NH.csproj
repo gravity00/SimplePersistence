@@ -71,6 +71,10 @@
     </Compile>
     <Compile Include="ApiUnitOfWork.cs" />
     <Compile Include="Area\LoggingWorkArea.cs" />
+    <Compile Include="Mapping\Logging\ApplicationMapping.cs" />
+    <Compile Include="Mapping\Logging\LevelMapping.cs" />
+    <Compile Include="Mapping\Logging\LogMapping.cs" />
+    <Compile Include="Mapping\MappingExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\ApplicationRepository.cs" />
     <Compile Include="Repository\LevelRepository.cs" />
@@ -86,9 +90,7 @@
       <Name>SimplePersistence.Example.WebApi.UoW</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Mapping\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
