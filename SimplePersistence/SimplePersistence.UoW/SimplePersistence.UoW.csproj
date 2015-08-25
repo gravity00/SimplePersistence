@@ -46,6 +46,7 @@
     <Compile Include="Exceptions\UnitOfWorkException.cs" />
     <Compile Include="Helper\UnitOfWorkExtensions.cs" />
     <Compile Include="Helper\UnitOfWorkFactoryExtensions.cs" />
+    <Compile Include="Helper\UtilityExtensions.cs" />
     <Compile Include="IAsyncQueryable.cs" />
     <Compile Include="IAsyncRepository.cs" />
     <Compile Include="IExposeQueryable.cs" />
