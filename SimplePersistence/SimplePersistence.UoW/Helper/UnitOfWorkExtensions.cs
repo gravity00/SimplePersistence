@@ -13,7 +13,6 @@ namespace SimplePersistence.UoW.Helper
     using System;
     using System.Threading;
     using System.Threading.Tasks;
-    using Properties;
     using Exceptions;
 
     /// <summary>
@@ -453,31 +452,6 @@ namespace SimplePersistence.UoW.Helper
         }
 
         #endregion
-
-        #endregion
-
-        #region Private
-
-        private static Exception NewDefaultException()
-        {
-            return new Exception(Resources.TaskInFaultedStateExceptionMessage);
-        }
-
-        private static void SetExceptionFromTask<T>(this TaskCompletionSource<T> tcs, Task task)
-        {
-            if (!task.IsFaulted) return;
-
-            if (task.Exception == null) //  It should never happen
-                tcs.SetException(NewDefaultException());
-            else
-            {
-                task.Exception.Flatten().Handle(ex =>
-                {
-                    tcs.SetException(ex ?? NewDefaultException());
-                    return true;
-                });
-            }
-        }
 
         #endregion
     }
