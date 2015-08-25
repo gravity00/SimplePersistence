@@ -45,6 +45,7 @@
     <Compile Include="Exceptions\UndefinedScopeException.cs" />
     <Compile Include="Exceptions\UnitOfWorkException.cs" />
     <Compile Include="Helper\UnitOfWorkExtensions.cs" />
+    <Compile Include="Helper\UnitOfWorkFactoryExtensions.cs" />
     <Compile Include="IAsyncQueryable.cs" />
     <Compile Include="IAsyncRepository.cs" />
     <Compile Include="IExposeQueryable.cs" />
