@@ -14,6 +14,7 @@ namespace SimplePersistence.UoW.Helper
     using System.Threading;
     using System.Threading.Tasks;
     using Exceptions;
+    using JetBrains.Annotations;
 
     /// <summary>
     /// Extension classes for the Unit of Work pattern
@@ -35,7 +36,7 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
-        public static Task<T> ExecuteAndCommitAsync<T>(this IUnitOfWork uow, Func<Task<T>> toExecute)
+        public static Task<T> ExecuteAndCommitAsync<T>([NotNull] this IUnitOfWork uow, [NotNull] Func<Task<T>> toExecute)
         {
             return uow.ExecuteAndCommitAsync(toExecute, CancellationToken.None);
         }
@@ -52,8 +53,11 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
-        public static Task<T> ExecuteAndCommitAsync<T>(this IUnitOfWork uow, Func<Task<T>> toExecute, CancellationToken ct)
+        public static Task<T> ExecuteAndCommitAsync<T>(
+            [NotNull] this IUnitOfWork uow, [NotNull] Func<Task<T>> toExecute, CancellationToken ct)
         {
+            if (toExecute == null) throw new ArgumentNullException("toExecute");
+
             return uow.ExecuteAndCommitAsync((w, c) => toExecute(), ct);
         }
 
@@ -68,7 +72,8 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
-        public static Task<T> ExecuteAndCommitAsync<T>(this IUnitOfWork uow, Func<IUnitOfWork, CancellationToken, Task<T>> toExecute)
+        public static Task<T> ExecuteAndCommitAsync<T>(
+            [NotNull] this IUnitOfWork uow, [NotNull] Func<IUnitOfWork, CancellationToken, Task<T>> toExecute)
         {
             //  bug fix https://github.com/gravity00/SimplePersistence/issues/5
             return uow.ExecuteAndCommitAsync(toExecute, CancellationToken.None);
@@ -86,7 +91,8 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
-        public static Task<T> ExecuteAndCommitAsync<T>(this IUnitOfWork uow, Func<IUnitOfWork, CancellationToken, Task<T>> toExecute, CancellationToken ct)
+        public static Task<T> ExecuteAndCommitAsync<T>(
+            [NotNull] this IUnitOfWork uow, [NotNull] Func<IUnitOfWork, CancellationToken, Task<T>> toExecute, CancellationToken ct)
         {
             //  bug fix https://github.com/gravity00/SimplePersistence/issues/5
             return ExecuteAndCommitAsync<IUnitOfWork, T>(uow, toExecute, ct);
@@ -104,7 +110,8 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
-        public static Task<T> ExecuteAndCommitAsync<TUoW, T>(this TUoW uow, Func<TUoW, CancellationToken, Task<T>> toExecute)
+        public static Task<T> ExecuteAndCommitAsync<TUoW, T>(
+            [NotNull] this TUoW uow, [NotNull] Func<TUoW, CancellationToken, Task<T>> toExecute)
             where TUoW : IUnitOfWork
         {
             return uow.ExecuteAndCommitAsync(toExecute, CancellationToken.None);
@@ -123,7 +130,8 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
-        public static Task<T> ExecuteAndCommitAsync<TUoW,T>(this TUoW uow, Func<TUoW, CancellationToken, Task<T>> toExecute, CancellationToken ct)
+        public static Task<T> ExecuteAndCommitAsync<TUoW,T>(
+            [NotNull] this TUoW uow, [NotNull] Func<TUoW, CancellationToken, Task<T>> toExecute, CancellationToken ct)
             where TUoW : IUnitOfWork
         {
             if (uow == null) throw new ArgumentNullException("uow");
@@ -191,9 +199,9 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
-        public static Task ExecuteAndCommitAsync(this IUnitOfWork uow, Func<Task> toExecute)
+        public static Task ExecuteAndCommitAsync([NotNull] this IUnitOfWork uow, [NotNull] Func<Task> toExecute)
         {
-            return uow.ExecuteAndCommitAsync((u, c) => toExecute(), CancellationToken.None);
+            return uow.ExecuteAndCommitAsync(toExecute, CancellationToken.None);
         }
 
         /// <summary>
@@ -207,8 +215,10 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
-        public static Task ExecuteAndCommitAsync(this IUnitOfWork uow, Func<Task> toExecute, CancellationToken ct)
+        public static Task ExecuteAndCommitAsync([NotNull] this IUnitOfWork uow, [NotNull] Func<Task> toExecute, CancellationToken ct)
         {
+            if (toExecute == null) throw new ArgumentNullException("toExecute");
+
             return uow.ExecuteAndCommitAsync((u, c) => toExecute(), ct);
         }
 
@@ -222,7 +232,8 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
-        public static Task ExecuteAndCommitAsync(this IUnitOfWork uow, Func<IUnitOfWork, CancellationToken, Task> toExecute)
+        public static Task ExecuteAndCommitAsync(
+            [NotNull] this IUnitOfWork uow, [NotNull] Func<IUnitOfWork, CancellationToken, Task> toExecute)
         {
             //  bug fix https://github.com/gravity00/SimplePersistence/issues/5
             return uow.ExecuteAndCommitAsync(toExecute, CancellationToken.None);
@@ -239,7 +250,8 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
-        public static Task ExecuteAndCommitAsync(this IUnitOfWork uow, Func<IUnitOfWork, CancellationToken, Task> toExecute, CancellationToken ct)
+        public static Task ExecuteAndCommitAsync(
+            [NotNull] this IUnitOfWork uow, [NotNull] Func<IUnitOfWork, CancellationToken, Task> toExecute, CancellationToken ct)
         {
             //  bug fix https://github.com/gravity00/SimplePersistence/issues/5
             return ExecuteAndCommitAsync<IUnitOfWork>(uow, toExecute, ct);
@@ -256,7 +268,8 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
-        public static Task ExecuteAndCommitAsync<TUoW>(this TUoW uow, Func<TUoW, CancellationToken, Task> toExecute)
+        public static Task ExecuteAndCommitAsync<TUoW>(
+            [NotNull] this TUoW uow, [NotNull] Func<TUoW, CancellationToken, Task> toExecute)
             where TUoW : IUnitOfWork
         {
             return uow.ExecuteAndCommitAsync(toExecute, CancellationToken.None);
@@ -274,7 +287,8 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
-        public static Task ExecuteAndCommitAsync<TUoW>(this TUoW uow, Func<TUoW, CancellationToken, Task> toExecute, CancellationToken ct)
+        public static Task ExecuteAndCommitAsync<TUoW>(
+            [NotNull] this TUoW uow, [NotNull] Func<TUoW, CancellationToken, Task> toExecute, CancellationToken ct)
             where TUoW : IUnitOfWork
         {
             if (uow == null) throw new ArgumentNullException("uow");
@@ -347,8 +361,10 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
-        public static T ExecuteAndCommit<T>(this IUnitOfWork uow, Func<T> toExecute)
+        public static T ExecuteAndCommit<T>([NotNull] this IUnitOfWork uow, [NotNull] Func<T> toExecute)
         {
+            if (toExecute == null) throw new ArgumentNullException("toExecute");
+
             return uow.ExecuteAndCommit(u => toExecute());
         }
 
@@ -363,7 +379,7 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
-        public static T ExecuteAndCommit<T>(this IUnitOfWork uow, Func<IUnitOfWork, T> toExecute)
+        public static T ExecuteAndCommit<T>([NotNull] this IUnitOfWork uow, [NotNull] Func<IUnitOfWork, T> toExecute)
         {
             //  bug fix https://github.com/gravity00/SimplePersistence/issues/5
             return ExecuteAndCommit<IUnitOfWork, T>(uow, toExecute);
@@ -381,7 +397,7 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
-        public static T ExecuteAndCommit<TUoW,T>(this TUoW uow, Func<TUoW, T> toExecute)
+        public static T ExecuteAndCommit<TUoW,T>([NotNull] this TUoW uow, [NotNull] Func<TUoW, T> toExecute)
             where TUoW : IUnitOfWork
         {
             if (uow == null) throw new ArgumentNullException("uow");
@@ -408,8 +424,10 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
-        public static void ExecuteAndCommit(this IUnitOfWork uow, Action toExecute)
+        public static void ExecuteAndCommit([NotNull] this IUnitOfWork uow, [NotNull] Action toExecute)
         {
+            if (toExecute == null) throw new ArgumentNullException("toExecute");
+
             uow.ExecuteAndCommit(u => toExecute());
         }
 
@@ -422,7 +440,7 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
-        public static void ExecuteAndCommit(this IUnitOfWork uow, Action<IUnitOfWork> toExecute)
+        public static void ExecuteAndCommit([NotNull] this IUnitOfWork uow, [NotNull] Action<IUnitOfWork> toExecute)
         {
             //  bug fix https://github.com/gravity00/SimplePersistence/issues/5
             ExecuteAndCommit<IUnitOfWork>(uow, toExecute);
@@ -438,7 +456,7 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
-        public static void ExecuteAndCommit<TUoW>(this TUoW uow, Action<TUoW> toExecute)
+        public static void ExecuteAndCommit<TUoW>([NotNull] this TUoW uow, [NotNull] Action<TUoW> toExecute)
             where TUoW : IUnitOfWork
         {
             if (uow == null) throw new ArgumentNullException("uow");
