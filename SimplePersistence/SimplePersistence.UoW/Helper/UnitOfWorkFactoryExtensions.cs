@@ -13,6 +13,7 @@ namespace SimplePersistence.UoW.Helper
     using System;
     using System.Threading;
     using System.Threading.Tasks;
+    using JetBrains.Annotations;
     using Exceptions;
 
     /// <summary>
@@ -35,10 +36,13 @@ namespace SimplePersistence.UoW.Helper
         /// <typeparam name="T">The return type</typeparam>
         /// <returns>A task that can be awaited for the result</returns>
         /// <exception cref="ArgumentNullException"/>
-        public static Task<T> GetAndReleaseAsync<TFactory, TUoW, T>(this TFactory factory, Func<TUoW, Task<T>> toExecute)
+        public static Task<T> GetAndReleaseAsync<TFactory, TUoW, T>(
+            [NotNull] this TFactory factory, [NotNull] Func<TUoW, Task<T>> toExecute)
             where TFactory : IUnitOfWorkFactory
             where TUoW : IUnitOfWork
         {
+            if (toExecute == null) throw new ArgumentNullException("toExecute");
+
             return GetAndReleaseAsync<TFactory, TUoW, T>(
                 factory, (uow, ct) => toExecute(uow), CancellationToken.None);
         }
@@ -56,7 +60,7 @@ namespace SimplePersistence.UoW.Helper
         /// <returns>A task that can be awaited for the result</returns>
         /// <exception cref="ArgumentNullException"/>
         public static Task<T> GetAndReleaseAsync<TFactory, TUoW, T>(
-            this TFactory factory, Func<TUoW, CancellationToken, Task<T>> toExecute, CancellationToken ct)
+            [NotNull] this TFactory factory, [NotNull] Func<TUoW, CancellationToken, Task<T>> toExecute, CancellationToken ct)
             where TFactory : IUnitOfWorkFactory
             where TUoW : IUnitOfWork
         {
@@ -85,10 +89,13 @@ namespace SimplePersistence.UoW.Helper
         /// <typeparam name="TUoW">The <see cref="IUnitOfWork"/> type</typeparam>
         /// <returns>A task that can be awaited</returns>
         /// <exception cref="ArgumentNullException"/>
-        public static Task GetAndReleaseAsync<TFactory, TUoW>(this TFactory factory, Func<TUoW, Task> toExecute)
+        public static Task GetAndReleaseAsync<TFactory, TUoW>(
+            [NotNull] this TFactory factory, [NotNull] Func<TUoW, Task> toExecute)
             where TFactory : IUnitOfWorkFactory
             where TUoW : IUnitOfWork
         {
+            if (toExecute == null) throw new ArgumentNullException("toExecute");
+
             return GetAndReleaseAsync<TFactory, TUoW>(
                 factory, (uow, ct) => toExecute(uow), CancellationToken.None);
         }
@@ -105,7 +112,7 @@ namespace SimplePersistence.UoW.Helper
         /// <returns>A task that can be awaited</returns>
         /// <exception cref="ArgumentNullException"/>
         public static Task GetAndReleaseAsync<TFactory, TUoW>(
-            this TFactory factory, Func<TUoW, CancellationToken, Task> toExecute, CancellationToken ct)
+            [NotNull] this TFactory factory, [NotNull] Func<TUoW, CancellationToken, Task> toExecute, CancellationToken ct)
             where TFactory : IUnitOfWorkFactory
             where TUoW : IUnitOfWork
         {
@@ -139,7 +146,7 @@ namespace SimplePersistence.UoW.Helper
         /// <typeparam name="T">The return type</typeparam>
         /// <returns>The function result</returns>
         /// <exception cref="ArgumentNullException"/>
-        public static T GetAndRelease<TFactory, TUoW, T>(this TFactory factory, Func<TUoW, T> toExecute)
+        public static T GetAndRelease<TFactory, TUoW, T>([NotNull] this TFactory factory, [NotNull] Func<TUoW, T> toExecute)
             where TFactory : IUnitOfWorkFactory
             where TUoW : IUnitOfWork
         {
@@ -170,7 +177,7 @@ namespace SimplePersistence.UoW.Helper
         /// <typeparam name="TFactory">The <see cref="IUnitOfWorkFactory"/> type</typeparam>
         /// <typeparam name="TUoW">The <see cref="IUnitOfWork"/> type</typeparam>
         /// <exception cref="ArgumentNullException"/>
-        public static void GetAndRelease<TFactory, TUoW>(this TFactory factory, Action<TUoW> toExecute)
+        public static void GetAndRelease<TFactory, TUoW>([NotNull] this TFactory factory, [NotNull] Action<TUoW> toExecute)
             where TFactory : IUnitOfWorkFactory
             where TUoW : IUnitOfWork
         {
@@ -211,10 +218,13 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
-        public static Task<T> GetAndReleaseAfterExecuteAndCommitAsync<TFactory, TUoW, T>(this TFactory factory, Func<TUoW, Task<T>> toExecute)
+        public static Task<T> GetAndReleaseAfterExecuteAndCommitAsync<TFactory, TUoW, T>(
+            [NotNull] this TFactory factory, [NotNull] Func<TUoW, Task<T>> toExecute)
             where TFactory : IUnitOfWorkFactory
             where TUoW : IUnitOfWork
         {
+            if (toExecute == null) throw new ArgumentNullException("toExecute");
+
             return GetAndReleaseAfterExecuteAndCommitAsync<TFactory, TUoW, T>(
                 factory, (uow, ct) => toExecute(uow), CancellationToken.None);
         }
@@ -236,7 +246,7 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
         public static Task<T> GetAndReleaseAfterExecuteAndCommitAsync<TFactory, TUoW, T>(
-            this TFactory factory, Func<TUoW, CancellationToken, Task<T>> toExecute, CancellationToken ct)
+            [NotNull] this TFactory factory, [NotNull] Func<TUoW, CancellationToken, Task<T>> toExecute, CancellationToken ct)
             where TFactory : IUnitOfWorkFactory
             where TUoW : IUnitOfWork
         {
@@ -269,10 +279,13 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
-        public static Task GetAndReleaseAfterExecuteAndCommitAsync<TFactory, TUoW>(this TFactory factory, Func<TUoW, Task> toExecute)
+        public static Task GetAndReleaseAfterExecuteAndCommitAsync<TFactory, TUoW>(
+            [NotNull] this TFactory factory, [NotNull] Func<TUoW, Task> toExecute)
             where TFactory : IUnitOfWorkFactory
             where TUoW : IUnitOfWork
         {
+            if (toExecute == null) throw new ArgumentNullException("toExecute");
+
             return GetAndReleaseAfterExecuteAndCommitAsync<TFactory, TUoW>(
                 factory, (uow, ct) => toExecute(uow), CancellationToken.None);
         }
@@ -293,7 +306,7 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
         public static Task GetAndReleaseAfterExecuteAndCommitAsync<TFactory, TUoW>(
-            this TFactory factory, Func<TUoW, CancellationToken, Task> toExecute, CancellationToken ct)
+            [NotNull] this TFactory factory, [NotNull] Func<TUoW, CancellationToken, Task> toExecute, CancellationToken ct)
             where TFactory : IUnitOfWorkFactory
             where TUoW : IUnitOfWork
         {
@@ -329,7 +342,8 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
-        public static T GetAndReleaseAfterExecuteAndCommit<TFactory, TUoW, T>(this TFactory factory, Func<TUoW, T> toExecute)
+        public static T GetAndReleaseAfterExecuteAndCommit<TFactory, TUoW, T>(
+            [NotNull] this TFactory factory, [NotNull] Func<TUoW, T> toExecute)
             where TFactory : IUnitOfWorkFactory
             where TUoW : IUnitOfWork
         {
@@ -363,7 +377,8 @@ namespace SimplePersistence.UoW.Helper
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="ConcurrencyException"/>
         /// <exception cref="CommitException"/>
-        public static void GetAndReleaseAfterExecuteAndCommit<TFactory, TUoW>(this TFactory factory, Action<TUoW> toExecute)
+        public static void GetAndReleaseAfterExecuteAndCommit<TFactory, TUoW>(
+            [NotNull] this TFactory factory, [NotNull] Action<TUoW> toExecute)
             where TFactory : IUnitOfWorkFactory
             where TUoW : IUnitOfWork
         {

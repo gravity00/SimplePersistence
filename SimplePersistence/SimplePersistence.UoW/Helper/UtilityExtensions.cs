@@ -12,6 +12,7 @@ namespace SimplePersistence.UoW.Helper
 {
     using System;
     using System.Threading.Tasks;
+    using JetBrains.Annotations;
     using Properties;
 
     internal static class UtilityExtensions
@@ -21,8 +22,11 @@ namespace SimplePersistence.UoW.Helper
             return new Exception(Resources.TaskInFaultedStateExceptionMessage);
         }
 
-        public static void SetExceptionFromTask<T>(this TaskCompletionSource<T> tcs, Task task)
+        public static void SetExceptionFromTask<T>([NotNull] this TaskCompletionSource<T> tcs, [NotNull] Task task)
         {
+            if (tcs == null) throw new ArgumentNullException("tcs");
+            if (task == null) throw new ArgumentNullException("task");
+
             if (!task.IsFaulted) return;
 
             if (task.Exception == null) //  It should never happen
@@ -37,16 +41,20 @@ namespace SimplePersistence.UoW.Helper
             }
         }
 
-        public static T ThrowIfFaultedOrGetResult<T>(this Task<T> task)
+        public static T ThrowIfFaultedOrGetResult<T>([NotNull] this Task<T> task)
         {
+            if (task == null) throw new ArgumentNullException("task");
+
             if (!task.IsFaulted) return task.Result;
             if (task.Exception == null) //  It should never happen
                 throw NewDefaultException();
             throw task.Exception.Flatten().InnerException;
         }
 
-        public static void ThrowIfFaulted(this Task task)
+        public static void ThrowIfFaulted([NotNull] this Task task)
         {
+            if (task == null) throw new ArgumentNullException("task");
+
             if (!task.IsFaulted) return;
             if (task.Exception == null) //  It should never happen
                 throw NewDefaultException();
