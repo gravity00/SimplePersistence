@@ -13,28 +13,34 @@ namespace SimplePersistence.Model
     using System;
 
     /// <summary>
-    /// Metadata information about the entity soft deleted
+    /// Represents an entity that has an unique identifier and local deleted metadata
     /// </summary>
-    /// <typeparam name="TDeletedBy">The identifier or entity type</typeparam>
-    public interface IHaveLocalDeletedMeta<TDeletedBy>
+    /// <typeparam name="TIdentity">The identifier type</typeparam>
+    /// <typeparam name="TUpdatedBy">The created by type</typeparam>
+    public abstract class EntityWithLocalDeletedMeta<TIdentity, TUpdatedBy>
+        : Entity<TIdentity>, IHaveLocalDeletedMeta<TUpdatedBy>
+        where TIdentity : IEquatable<TIdentity>
     {
         /// <summary>
-        /// The <see cref="DateTimeOffset"/> when it was soft deleted
+        /// The <see cref="DateTime"/> when it was deleted
         /// </summary>
-        DateTime? DeletedOn { get; set; }
+        public virtual DateTime? DeletedOn { get; set; }
 
         /// <summary>
-        /// The identifier (or entity) which soft deleted this entity
+        /// The identifier (or entity) which deleted this entity
         /// </summary>
-        TDeletedBy DeletedBy { get; set; }
+        public virtual TUpdatedBy DeletedBy { get; set; }
     }
 
     /// <summary>
-    /// Metadata information about the entity deletition, using a <see cref="string"/>
-    /// as an identifier for the <see cref="IHaveLocalDeletedMeta{T}.DeletedBy"/>
+    /// Represents an entity that has an unique identifier and local deleted metadata, 
+    /// using a <see cref="string"/> as an identifier for the <see cref="IHaveLocalDeletedMeta{T}.DeletedBy"/>
     /// </summary>
-    public interface IHaveLocalDeletedMeta : IHaveLocalDeletedMeta<string>
+    /// <typeparam name="TIdentity">The identifier type</typeparam>
+    public abstract class EntityWithLocalDeletedMeta<TIdentity>
+        : EntityWithLocalDeletedMeta<TIdentity, string>, IHaveLocalDeletedMeta
+        where TIdentity : IEquatable<TIdentity>
     {
-
+        
     }
 }
