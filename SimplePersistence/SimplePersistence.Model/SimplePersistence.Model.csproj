@@ -51,6 +51,7 @@
     <Compile Include="EntityWithCreatedMetaAndVersionAsByteArray.cs" />
     <Compile Include="EntityWithCreatedMetaAndVersionAsLong.cs" />
     <Compile Include="EntityWithDeletedMeta.cs" />
+    <Compile Include="EntityWithLocalCreatedMeta.cs" />
     <Compile Include="EntityWithSoftDelete.cs" />
     <Compile Include="EntityWithSoftDeleteAndVersionAsByteArray.cs" />
     <Compile Include="EntityWithSoftDeleteAndVersionAsLong.cs" />

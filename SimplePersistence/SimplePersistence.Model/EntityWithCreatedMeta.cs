@@ -49,7 +49,7 @@ namespace SimplePersistence.Model
 
     /// <summary>
     /// Represents an entity that has an unique identifier and created metadata, 
-    /// using a <see cref="string"/> as an identifier for the <see cref="IHaveUpdatedMeta{T}.UpdatedBy"/>
+    /// using a <see cref="string"/> as an identifier for the <see cref="IHaveCreatedMeta{T}.CreatedBy"/>
     /// </summary>
     /// <typeparam name="TIdentity">The identifier type</typeparam>
     public abstract class EntityWithCreatedMeta<TIdentity>
