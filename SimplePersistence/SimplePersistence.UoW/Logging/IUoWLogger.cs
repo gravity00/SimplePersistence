@@ -19,6 +19,28 @@ namespace SimplePersistence.UoW.Logging
     /// </summary>
     internal interface IUoWLogger
     {
+        #region Trace
+
+        /// <summary>
+        /// Writes a trace message
+        /// </summary>
+        /// <param name="msg">The message to write</param>
+        /// <param name="e">The exception or null if none</param>
+        void Trace(string msg, Exception e = null);
+
+        /// <summary>
+        /// Writes a trace message
+        /// </summary>
+        /// <param name="msg">The message to write</param>
+        /// <param name="e">The exception or null if none</param>
+        /// <param name="ct">The cancellation token</param>
+        /// <returns>The task to be awaited</returns>
+        Task TraceAsync(string msg, Exception e = null, CancellationToken ct = default(CancellationToken));
+
+        #endregion
+
+        #region Debug
+
         /// <summary>
         /// Writes a debug message
         /// </summary>
@@ -34,6 +56,10 @@ namespace SimplePersistence.UoW.Logging
         /// <param name="ct">The cancellation token</param>
         /// <returns>The task to be awaited</returns>
         Task DebugAsync(string msg, Exception e = null, CancellationToken ct = default (CancellationToken));
+
+        #endregion
+
+        #region Info
 
         /// <summary>
         /// Writes an information message
@@ -51,6 +77,10 @@ namespace SimplePersistence.UoW.Logging
         /// <returns>The task to be awaited</returns>
         Task InfoAsync(string msg, Exception e = null, CancellationToken ct = default (CancellationToken));
 
+        #endregion
+
+        #region Warn
+
         /// <summary>
         /// Writes a warning message
         /// </summary>
@@ -66,6 +96,10 @@ namespace SimplePersistence.UoW.Logging
         /// <param name="ct">The cancellation token</param>
         /// <returns>The task to be awaited</returns>
         Task WarnAsync(string msg, Exception e = null, CancellationToken ct = default (CancellationToken));
+
+        #endregion
+
+        #region Error
 
         /// <summary>
         /// Writes an error message
@@ -83,6 +117,10 @@ namespace SimplePersistence.UoW.Logging
         /// <returns>The task to be awaited</returns>
         Task ErrorAsync(string msg, Exception e = null, CancellationToken ct = default (CancellationToken));
 
+        #endregion
+
+        #region Fatal
+
         /// <summary>
         /// Writes a fatal message
         /// </summary>
@@ -98,5 +136,7 @@ namespace SimplePersistence.UoW.Logging
         /// <param name="ct">The cancellation token</param>
         /// <returns>The task to be awaited</returns>
         Task FatalAsync(string msg, Exception e = null, CancellationToken ct = default (CancellationToken));
+
+        #endregion
     }
 }

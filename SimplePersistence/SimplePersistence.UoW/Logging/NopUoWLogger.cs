@@ -25,6 +25,28 @@ namespace SimplePersistence.UoW.Logging
         public static readonly IUoWLogger Default = new NopUoWLogger();
 
         /// <summary>
+        /// Writes a trace message
+        /// </summary>
+        /// <param name="msg">The message to write</param>
+        /// <param name="e">The exception or null if none</param>
+        public void Trace(string msg, Exception e = null)
+        {
+
+        }
+
+        /// <summary>
+        /// Writes a trace message
+        /// </summary>
+        /// <param name="msg">The message to write</param>
+        /// <param name="e">The exception or null if none</param>
+        /// <param name="ct">The cancellation token</param>
+        /// <returns>The task to be awaited</returns>
+        public Task TraceAsync(string msg, Exception e = null, CancellationToken ct = new CancellationToken())
+        {
+            return GetNewTask(ct);
+        }
+
+        /// <summary>
         /// Writes a debug message
         /// </summary>
         /// <param name="msg">The message to write</param>
