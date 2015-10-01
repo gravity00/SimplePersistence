@@ -24,6 +24,8 @@ namespace SimplePersistence.UoW.Logging
         /// </summary>
         public static readonly IUoWLogger Default = new NopUoWLogger();
 
+        #region Trace
+
         /// <summary>
         /// Writes a trace message
         /// </summary>
@@ -45,6 +47,10 @@ namespace SimplePersistence.UoW.Logging
         {
             return GetNewTask(ct);
         }
+
+        #endregion
+
+        #region Debug
 
         /// <summary>
         /// Writes a debug message
@@ -68,6 +74,10 @@ namespace SimplePersistence.UoW.Logging
             return GetNewTask(ct);
         }
 
+        #endregion
+
+        #region Info
+
         /// <summary>
         /// Writes an information message
         /// </summary>
@@ -89,6 +99,10 @@ namespace SimplePersistence.UoW.Logging
         {
             return GetNewTask(ct);
         }
+
+        #endregion
+
+        #region Warn
 
         /// <summary>
         /// Writes a warning message
@@ -112,6 +126,10 @@ namespace SimplePersistence.UoW.Logging
             return GetNewTask(ct);
         }
 
+        #endregion
+
+        #region Error
+
         /// <summary>
         /// Writes an error message
         /// </summary>
@@ -134,6 +152,10 @@ namespace SimplePersistence.UoW.Logging
             return GetNewTask(ct);
         }
 
+        #endregion
+
+        #region Fatal
+
         /// <summary>
         /// Writes a fatal message
         /// </summary>
@@ -155,6 +177,8 @@ namespace SimplePersistence.UoW.Logging
         {
             return GetNewTask(ct);
         }
+
+        #endregion
 
         private static Task GetNewTask(CancellationToken ct)
         {
