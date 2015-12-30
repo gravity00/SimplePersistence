@@ -35,6 +35,9 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\SimplePersistence\Properties\CodeAnnotations.cs">
+      <Link>Properties\CodeAnnotations.cs</Link>
+    </Compile>
     <Compile Include="..\SimplePersistence\Properties\ProductAssemblyInfo.cs">
       <Link>Properties\ProductAssemblyInfo.cs</Link>
     </Compile>
@@ -48,6 +51,9 @@
     <Compile Include="EntityWithCreatedMetaAndVersionAsByteArray.cs" />
     <Compile Include="EntityWithCreatedMetaAndVersionAsLong.cs" />
     <Compile Include="EntityWithDeletedMeta.cs" />
+    <Compile Include="EntityWithLocalDeletedMeta.cs" />
+    <Compile Include="EntityWithLocalUpdatedMeta.cs" />
+    <Compile Include="EntityWithLocalCreatedMeta.cs" />
     <Compile Include="EntityWithSoftDelete.cs" />
     <Compile Include="EntityWithSoftDeleteAndVersionAsByteArray.cs" />
     <Compile Include="EntityWithSoftDeleteAndVersionAsLong.cs" />
@@ -59,6 +65,9 @@
     <Compile Include="IEntity.cs" />
     <Compile Include="IHaveCreatedMeta.cs" />
     <Compile Include="IHaveDeletedMeta.cs" />
+    <Compile Include="IHaveLocalCreatedMeta.cs" />
+    <Compile Include="IHaveLocalDeletedMeta.cs" />
+    <Compile Include="IHaveLocalUpdatedMeta.cs" />
     <Compile Include="IHaveSoftDelete.cs" />
     <Compile Include="IHaveUpdatedMeta.cs" />
     <Compile Include="IHaveVersion.cs" />

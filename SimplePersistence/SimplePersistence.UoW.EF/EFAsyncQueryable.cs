@@ -18,6 +18,7 @@ namespace SimplePersistence.UoW.EF
 	using System.Linq.Expressions;
 	using System.Threading;
 	using System.Threading.Tasks;
+    using JetBrains.Annotations;
 
     /// <summary>
     /// Specialized <see cref="IQueryable{T}"/> for async executions.
@@ -33,7 +34,7 @@ namespace SimplePersistence.UoW.EF
 		/// </summary>
         /// <param name="queryable">The <see cref="IQueryable{T}"/> to be wrapped</param>
         /// <exception cref="ArgumentNullException"/>
-		public EFAsyncQueryable(IQueryable<T> queryable)
+		public EFAsyncQueryable([NotNull] IQueryable<T> queryable)
 		{
 		    if (queryable == null) throw new ArgumentNullException("queryable");
 		    _queryable = queryable;

@@ -13,6 +13,7 @@ namespace SimplePersistence.Model.Helper
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using JetBrains.Annotations;
 
     /// <summary>
     /// Extension methods that can be used to filter models
@@ -30,7 +31,7 @@ namespace SimplePersistence.Model.Helper
         /// <typeparam name="TId">The updatedAfter type</typeparam>
         /// <returns>The entities with the filter applied</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static IQueryable<TEntity> WithId<TEntity, TId>(this IQueryable<TEntity> entities, TId id)
+        public static IQueryable<TEntity> WithId<TEntity, TId>([NotNull] this IQueryable<TEntity> entities, TId id)
             where TEntity : IEntity<TId> 
             where TId : IEquatable<TId>
         {
@@ -47,7 +48,7 @@ namespace SimplePersistence.Model.Helper
         /// <typeparam name="TId">The updatedAfter type</typeparam>
         /// <returns>The entities with the filter applied</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static IEnumerable<TEntity> WithId<TEntity, TId>(this IEnumerable<TEntity> entities, TId id)
+        public static IEnumerable<TEntity> WithId<TEntity, TId>([NotNull] this IEnumerable<TEntity> entities, TId id)
             where TEntity : IEntity<TId>
             where TId : IEquatable<TId>
         {
@@ -69,7 +70,8 @@ namespace SimplePersistence.Model.Helper
         /// <typeparam name="TCreatedBy">The created by type</typeparam>
         /// <returns>The filtered collection</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static IQueryable<TEntity> CreatedAfter<TEntity, TCreatedBy>(this IQueryable<TEntity> entities, DateTimeOffset createdAfter)
+        public static IQueryable<TEntity> CreatedAfter<TEntity, TCreatedBy>(
+            [NotNull] this IQueryable<TEntity> entities, DateTimeOffset createdAfter)
             where TEntity : IHaveCreatedMeta<TCreatedBy>
         {
             if (entities == null) throw new ArgumentNullException("entities");
@@ -86,7 +88,8 @@ namespace SimplePersistence.Model.Helper
         /// <typeparam name="TCreatedBy">The created by type</typeparam>
         /// <returns>The filtered collection</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static IEnumerable<TEntity> CreatedAfter<TEntity, TCreatedBy>(this IEnumerable<TEntity> entities, DateTimeOffset createdAfter)
+        public static IEnumerable<TEntity> CreatedAfter<TEntity, TCreatedBy>(
+            [NotNull] this IEnumerable<TEntity> entities, DateTimeOffset createdAfter)
             where TEntity : IHaveCreatedMeta<TCreatedBy>
         {
             if (entities == null) throw new ArgumentNullException("entities");
@@ -107,7 +110,8 @@ namespace SimplePersistence.Model.Helper
         /// <typeparam name="TUpdatedBy">The updated by type</typeparam>
         /// <returns>The filtered collection</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static IQueryable<TEntity> UpdatedAfter<TEntity, TUpdatedBy>(this IQueryable<TEntity> entities, DateTimeOffset updatedAfter)
+        public static IQueryable<TEntity> UpdatedAfter<TEntity, TUpdatedBy>(
+            [NotNull] this IQueryable<TEntity> entities, DateTimeOffset updatedAfter)
             where TEntity : IHaveUpdatedMeta<TUpdatedBy>
         {
             if (entities == null) throw new ArgumentNullException("entities");
@@ -124,7 +128,8 @@ namespace SimplePersistence.Model.Helper
         /// <typeparam name="TCreatedBy">The created by type</typeparam>
         /// <returns>The filtered collection</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static IEnumerable<TEntity> UpdatedAfter<TEntity, TCreatedBy>(this IEnumerable<TEntity> entities, DateTimeOffset updatedAfter)
+        public static IEnumerable<TEntity> UpdatedAfter<TEntity, TCreatedBy>(
+            [NotNull] this IEnumerable<TEntity> entities, DateTimeOffset updatedAfter)
             where TEntity : IHaveUpdatedMeta<TCreatedBy>
         {
             if (entities == null) throw new ArgumentNullException("entities");
@@ -144,7 +149,7 @@ namespace SimplePersistence.Model.Helper
         /// <typeparam name="TDeletedBy">The deleted by type</typeparam>
         /// <returns>The filtered collection</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static IQueryable<TEntity> Deleted<TEntity, TDeletedBy>(this IQueryable<TEntity> entities, bool deleted = false)
+        public static IQueryable<TEntity> Deleted<TEntity, TDeletedBy>([NotNull] this IQueryable<TEntity> entities, bool deleted = false)
             where TEntity : IHaveDeletedMeta<TDeletedBy>
         {
             if (entities == null) throw new ArgumentNullException("entities");
@@ -160,7 +165,7 @@ namespace SimplePersistence.Model.Helper
         /// <typeparam name="TDeletedBy">The deleted by type</typeparam>
         /// <returns>The filtered collection</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static IEnumerable<TEntity> Deleted<TEntity, TDeletedBy>(this IEnumerable<TEntity> entities, bool deleted = false)
+        public static IEnumerable<TEntity> Deleted<TEntity, TDeletedBy>([NotNull] this IEnumerable<TEntity> entities, bool deleted = false)
             where TEntity : IHaveDeletedMeta<TDeletedBy>
         {
             if (entities == null) throw new ArgumentNullException("entities");
@@ -175,7 +180,7 @@ namespace SimplePersistence.Model.Helper
         /// <typeparam name="TEntity">The entity type</typeparam>
         /// <returns>The filtered collection</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static IQueryable<TEntity> Deleted<TEntity>(this IQueryable<TEntity> entities, bool deleted = false)
+        public static IQueryable<TEntity> Deleted<TEntity>([NotNull] this IQueryable<TEntity> entities, bool deleted = false)
             where TEntity : IHaveSoftDelete
         {
             if (entities == null) throw new ArgumentNullException("entities");
@@ -190,7 +195,7 @@ namespace SimplePersistence.Model.Helper
         /// <typeparam name="TEntity">The entity type</typeparam>
         /// <returns>The filtered collection</returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static IEnumerable<TEntity> Deleted<TEntity>(this IEnumerable<TEntity> entities, bool deleted = false)
+        public static IEnumerable<TEntity> Deleted<TEntity>([NotNull] this IEnumerable<TEntity> entities, bool deleted = false)
             where TEntity : IHaveSoftDelete
         {
             if (entities == null) throw new ArgumentNullException("entities");

@@ -16,6 +16,7 @@ namespace SimplePersistence.UoW.EF
     using System.Data.Entity.Infrastructure;
 	using System.Threading;
     using System.Threading.Tasks;
+    using JetBrains.Annotations;
     using Exceptions;
 
     /// <summary>
@@ -32,8 +33,10 @@ namespace SimplePersistence.UoW.EF
         /// Creates a new object associated with the given database context
         /// </summary>
         /// <param name="context">The EF database context</param>
-        protected EFUnitOfWork(TDbContext context)
+        /// <exception cref="ArgumentNullException">Thrown if the context is null</exception>
+        protected EFUnitOfWork([NotNull] TDbContext context)
         {
+            if (context == null) throw new ArgumentNullException("context");
             _context = context;
 
             var tcs = new TaskCompletionSource<int>();
@@ -163,7 +166,8 @@ namespace SimplePersistence.UoW.EF
         /// Creates a new object associated with the given database context
         /// </summary>
         /// <param name="context">The EF database context</param>
-        protected EFUnitOfWork(DbContext context) : base(context)
+        /// <exception cref="ArgumentNullException">Thrown if the context is null</exception>
+        protected EFUnitOfWork([NotNull] DbContext context) : base(context)
         {
         }
     }

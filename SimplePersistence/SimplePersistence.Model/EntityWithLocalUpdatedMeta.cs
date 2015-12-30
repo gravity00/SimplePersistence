@@ -13,47 +13,47 @@ namespace SimplePersistence.Model
     using System;
 
     /// <summary>
-    /// Represents an entity that has an unique identifier and created metadata
+    /// Represents an entity that has an unique identifier and local updated metadata
     /// </summary>
     /// <typeparam name="TIdentity">The identifier type</typeparam>
-    /// <typeparam name="TCreatedBy">The created by type</typeparam>
-    public abstract class EntityWithCreatedMeta<TIdentity, TCreatedBy> 
-        : Entity<TIdentity>, IHaveCreatedMeta<TCreatedBy> 
+    /// <typeparam name="TUpdatedBy">The created by type</typeparam>
+    public abstract class EntityWithLocalUpdatedMeta<TIdentity, TUpdatedBy>
+        : Entity<TIdentity>, IHaveLocalUpdatedMeta<TUpdatedBy>
         where TIdentity : IEquatable<TIdentity>
     {
-        private DateTimeOffset _createdOn;
+        private DateTime _updatedOn;
 
         /// <summary>
-        /// The <see cref="DateTimeOffset"/> when it was created
+        /// The <see cref="DateTime"/> when it was created
         /// </summary>
-        public virtual DateTimeOffset CreatedOn
+        public virtual DateTime UpdatedOn
         {
-            get { return _createdOn; }
-            set { _createdOn = value; }
+            get { return _updatedOn; }
+            set { _updatedOn = value; }
         }
 
         /// <summary>
-        /// The identifier (or entity) which first created this entity
+        /// The identifier (or entity) which last updated this entity
         /// </summary>
-        public virtual TCreatedBy CreatedBy { get; set; }
-
+        public virtual TUpdatedBy UpdatedBy { get; set; }
+        
         /// <summary>
-        /// Creates a new instance and sets the <see cref="CreatedOn"/>
-        /// to <see cref="DateTimeOffset.Now"/>
+        /// Creates a new instance and sets the <see cref="UpdatedOn"/>
+        /// to <see cref="DateTime.Now"/>
         /// </summary>
-        protected EntityWithCreatedMeta()
+        protected EntityWithLocalUpdatedMeta()
         {
-            _createdOn = DateTimeOffset.Now;
+            _updatedOn = DateTime.Now;
         }
     }
 
     /// <summary>
-    /// Represents an entity that has an unique identifier and created metadata, 
-    /// using a <see cref="string"/> as an identifier for the <see cref="IHaveCreatedMeta{T}.CreatedBy"/>
+    /// Represents an entity that has an unique identifier and updated metadata, 
+    /// using a <see cref="string"/> as an identifier for the <see cref="IHaveLocalUpdatedMeta{T}.UpdatedBy"/>
     /// </summary>
     /// <typeparam name="TIdentity">The identifier type</typeparam>
-    public abstract class EntityWithCreatedMeta<TIdentity>
-        : EntityWithCreatedMeta<TIdentity, string>, IHaveCreatedMeta 
+    public abstract class EntityWithLocalUpdatedMeta<TIdentity>
+        : EntityWithLocalUpdatedMeta<TIdentity, string>, IHaveLocalUpdatedMeta
         where TIdentity : IEquatable<TIdentity>
     {
         

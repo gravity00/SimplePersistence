@@ -38,15 +38,13 @@ namespace SimplePersistence.UnitTests.Model
             var entity01 = new MockEntity<long>();
 
             Assert.AreEqual(0, entity01.Id);
-            Assert.AreEqual(default(DateTime), entity01.UpdatedOn);
+            Assert.AreNotEqual(default(DateTimeOffset), entity01.UpdatedOn);
+            Assert.IsTrue(entity01.UpdatedOn <= DateTimeOffset.Now);
             Assert.AreEqual(default(string), entity01.UpdatedBy);
 
-            entity01 = new MockEntity<long>
-            {
-                Id = TestId,
-                UpdatedOn = TestUpdatedOn,
-                UpdatedBy = TestUpdatedBy01
-            };
+            entity01.Id = TestId;
+            entity01.UpdatedOn = TestUpdatedOn;
+            entity01.UpdatedBy = TestUpdatedBy01;
             Assert.AreEqual(TestId, entity01.Id);
             Assert.AreEqual(TestUpdatedOn, entity01.UpdatedOn);
             Assert.AreEqual(TestUpdatedBy01, entity01.UpdatedBy);
@@ -54,15 +52,13 @@ namespace SimplePersistence.UnitTests.Model
             var entity02 = new MockEntity<long, object>();
 
             Assert.AreEqual(0, entity02.Id);
-            Assert.AreEqual(default(DateTime), entity02.UpdatedOn);
-            Assert.AreEqual(default(string), entity02.UpdatedBy);
+            Assert.AreNotEqual(default(DateTimeOffset), entity02.UpdatedOn);
+            Assert.IsTrue(entity02.UpdatedOn <= DateTimeOffset.Now);
+            Assert.AreEqual(default(object), entity02.UpdatedBy);
 
-            entity02 = new MockEntity<long, object>
-                     {
-                         Id = TestId,
-                         UpdatedOn = TestUpdatedOn,
-                         UpdatedBy = TestUpdatedBy02
-                     };
+            entity02.Id = TestId;
+            entity02.UpdatedOn = TestUpdatedOn;
+            entity02.UpdatedBy = TestUpdatedBy02;
             Assert.AreEqual(TestId, entity02.Id);
             Assert.AreEqual(TestUpdatedOn, entity02.UpdatedOn);
             Assert.AreEqual(TestUpdatedBy02, entity02.UpdatedBy);
@@ -76,9 +72,11 @@ namespace SimplePersistence.UnitTests.Model
             
         }
 
-        private class MockEntity<TIdentity, TUpdatedBy> : EntityWithUpdatedMeta<TIdentity, TUpdatedBy> 
+        private class MockEntity<TIdentity, TUpdatedBy> : EntityWithUpdatedMeta<TIdentity, TUpdatedBy>
             where TIdentity : IEquatable<TIdentity>
-        { }
+        {
+            
+        }
 
         #endregion
 

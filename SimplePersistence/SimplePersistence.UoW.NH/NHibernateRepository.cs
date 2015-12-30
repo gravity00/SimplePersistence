@@ -16,6 +16,7 @@ namespace SimplePersistence.UoW.NH
     using System.Linq.Expressions;
     using System.Threading;
     using System.Threading.Tasks;
+    using JetBrains.Annotations;
     using NHibernate;
     using NHibernate.Linq;
 
@@ -45,8 +46,8 @@ namespace SimplePersistence.UoW.NH
         /// </summary>
         /// <param name="session">The database session</param>
         /// <param name="filterById">The filter by the entity if expression</param>
-        /// <exception cref="ArgumentNullException"></exception>
-        protected NHibernateRepository(ISession session, Func<TEntity, TKey, bool> filterById)
+        /// <exception cref="ArgumentNullException"/>
+        protected NHibernateRepository([NotNull] ISession session, [NotNull] Func<TEntity, TKey, bool> filterById)
         {
             if (session == null) throw new ArgumentNullException("session");
             if (filterById == null) throw new ArgumentNullException("filterById");

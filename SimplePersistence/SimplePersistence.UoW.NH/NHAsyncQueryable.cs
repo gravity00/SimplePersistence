@@ -17,6 +17,7 @@ namespace SimplePersistence.UoW.NH
 	using System.Linq.Expressions;
 	using System.Threading;
 	using System.Threading.Tasks;
+    using JetBrains.Annotations;
     using NHibernate.Util;
 
     /// <summary>
@@ -33,7 +34,7 @@ namespace SimplePersistence.UoW.NH
 		/// </summary>
         /// <param name="queryable">The <see cref="IQueryable{T}"/> to be wrapped</param>
         /// <exception cref="ArgumentNullException"/>
-		public NHAsyncQueryable(IQueryable<T> queryable)
+		public NHAsyncQueryable([NotNull] IQueryable<T> queryable)
 		{
 		    if (queryable == null) throw new ArgumentNullException("queryable");
 		    _queryable = queryable;

@@ -13,47 +13,32 @@ namespace SimplePersistence.Model
     using System;
 
     /// <summary>
-    /// Represents an entity that has an unique identifier and created metadata
+    /// Represents an entity that has an unique identifier and local deleted metadata
     /// </summary>
     /// <typeparam name="TIdentity">The identifier type</typeparam>
-    /// <typeparam name="TCreatedBy">The created by type</typeparam>
-    public abstract class EntityWithCreatedMeta<TIdentity, TCreatedBy> 
-        : Entity<TIdentity>, IHaveCreatedMeta<TCreatedBy> 
+    /// <typeparam name="TUpdatedBy">The created by type</typeparam>
+    public abstract class EntityWithLocalDeletedMeta<TIdentity, TUpdatedBy>
+        : Entity<TIdentity>, IHaveLocalDeletedMeta<TUpdatedBy>
         where TIdentity : IEquatable<TIdentity>
     {
-        private DateTimeOffset _createdOn;
+        /// <summary>
+        /// The <see cref="DateTime"/> when it was deleted
+        /// </summary>
+        public virtual DateTime? DeletedOn { get; set; }
 
         /// <summary>
-        /// The <see cref="DateTimeOffset"/> when it was created
+        /// The identifier (or entity) which deleted this entity
         /// </summary>
-        public virtual DateTimeOffset CreatedOn
-        {
-            get { return _createdOn; }
-            set { _createdOn = value; }
-        }
-
-        /// <summary>
-        /// The identifier (or entity) which first created this entity
-        /// </summary>
-        public virtual TCreatedBy CreatedBy { get; set; }
-
-        /// <summary>
-        /// Creates a new instance and sets the <see cref="CreatedOn"/>
-        /// to <see cref="DateTimeOffset.Now"/>
-        /// </summary>
-        protected EntityWithCreatedMeta()
-        {
-            _createdOn = DateTimeOffset.Now;
-        }
+        public virtual TUpdatedBy DeletedBy { get; set; }
     }
 
     /// <summary>
-    /// Represents an entity that has an unique identifier and created metadata, 
-    /// using a <see cref="string"/> as an identifier for the <see cref="IHaveCreatedMeta{T}.CreatedBy"/>
+    /// Represents an entity that has an unique identifier and local deleted metadata, 
+    /// using a <see cref="string"/> as an identifier for the <see cref="IHaveLocalDeletedMeta{T}.DeletedBy"/>
     /// </summary>
     /// <typeparam name="TIdentity">The identifier type</typeparam>
-    public abstract class EntityWithCreatedMeta<TIdentity>
-        : EntityWithCreatedMeta<TIdentity, string>, IHaveCreatedMeta 
+    public abstract class EntityWithLocalDeletedMeta<TIdentity>
+        : EntityWithLocalDeletedMeta<TIdentity, string>, IHaveLocalDeletedMeta
         where TIdentity : IEquatable<TIdentity>
     {
         

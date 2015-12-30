@@ -51,6 +51,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="..\SimplePersistence\Properties\CodeAnnotations.cs">
+      <Link>Properties\CodeAnnotations.cs</Link>
+    </Compile>
     <Compile Include="..\SimplePersistence\Properties\ProductAssemblyInfo.cs">
       <Link>Properties\ProductAssemblyInfo.cs</Link>
     </Compile>
