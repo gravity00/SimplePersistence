@@ -593,7 +593,7 @@ namespace SimplePersistence.UoW.EF
         public Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
         {
             if (predicate == null) throw new ArgumentNullException("predicate");
-            return _queryable.AnyAsync();
+            return _queryable.AnyAsync(predicate);
         }
 
         /// <summary>
@@ -609,7 +609,7 @@ namespace SimplePersistence.UoW.EF
         public Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken ct)
         {
             if (predicate == null) throw new ArgumentNullException("predicate");
-            return _queryable.AnyAsync(ct);
+            return _queryable.AnyAsync(predicate, ct);
         }
 
         #endregion
@@ -956,7 +956,7 @@ namespace SimplePersistence.UoW.EF
         public Task<T> SingleAsync(Expression<Func<T, bool>> predicate)
         {
             if (predicate == null) throw new ArgumentNullException("predicate");
-            return _queryable.SingleAsync();
+            return _queryable.SingleAsync(predicate);
         }
 
         /// <summary>
