@@ -18,8 +18,23 @@ namespace SimplePersistence.UnitTests.Model
     [TestClass]
     public class EntityUnitTest
     {
+        #region Entity
+
         [TestMethod, TestCategory("Model"), TestCategory("ObjectType")]
         public void ObjectType()
+        {
+            var entity01 = new MockEntity();
+
+            Assert.IsInstanceOfType(entity01, typeof (Entity));
+            Assert.IsInstanceOfType(entity01, typeof (IEntity));
+        }
+
+        #endregion
+
+        #region Entity<T>
+
+        [TestMethod, TestCategory("Model"), TestCategory("ObjectType")]
+        public void ObjectGenericType()
         {
             var entity01 = new MockEntity<long>();
 
@@ -32,7 +47,7 @@ namespace SimplePersistence.UnitTests.Model
         }
 
         [TestMethod, TestCategory("Model"), TestCategory("Constructor")]
-        public void ConstructorObjectInitializer()
+        public void ConstructorObjectGenericInitializer()
         {
             var entity = new MockEntity<long>();
 
@@ -46,12 +61,19 @@ namespace SimplePersistence.UnitTests.Model
             Assert.AreEqual(id, entity.Id);
         }
 
+        #endregion
+
         #region Mock
 
-        private class MockEntity<TIdentity> : Entity<TIdentity>
+        private sealed class MockEntity<TIdentity> : Entity<TIdentity>
             where TIdentity : IEquatable<TIdentity>
         {
             
+        }
+
+        private sealed class MockEntity : Entity
+        {
+             
         }
 
         #endregion

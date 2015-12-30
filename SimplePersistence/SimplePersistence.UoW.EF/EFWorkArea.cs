@@ -12,6 +12,7 @@ namespace SimplePersistence.UoW.EF
 {
     using System;
     using System.Data.Entity;
+    using JetBrains.Annotations;
 
     /// <summary>
     /// Represents a work area that can be used for aggregating
@@ -27,7 +28,7 @@ namespace SimplePersistence.UoW.EF
         /// </summary>
         /// <param name="context">The database context</param>
         /// <exception cref="ArgumentNullException">Thrown if the context is null</exception>
-        protected EFWorkArea(TDbContext context)
+        protected EFWorkArea([NotNull] TDbContext context)
         {
             if (context == null) throw new ArgumentNullException("context");
 
@@ -50,7 +51,7 @@ namespace SimplePersistence.UoW.EF
         /// Creates a new work area that will use the given database context
         /// </summary>
         /// <param name="context">The database context</param>
-        protected EFWorkArea(DbContext context)
+        protected EFWorkArea([NotNull] DbContext context)
             : base(context)
         {
         }

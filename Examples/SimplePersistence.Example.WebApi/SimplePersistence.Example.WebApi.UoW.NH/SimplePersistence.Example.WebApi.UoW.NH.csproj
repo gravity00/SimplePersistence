@@ -33,6 +33,30 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FluentNHibernate, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentNHibernate.2.0.1.0\lib\net40\FluentNHibernate.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Iesi.Collections, Version=4.0.0.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Iesi.Collections.4.0.1.4000\lib\net40\Iesi.Collections.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NHibernate, Version=4.0.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <HintPath>..\packages\NHibernate.4.0.4.4000\lib\net40\NHibernate.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SimplePersistence.Model">
+      <HintPath>..\packages\SimplePersistence.Model.2.0.0\lib\SimplePersistence.Model.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SimplePersistence.UoW, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimplePersistence.UoW.2.0.1\lib\SimplePersistence.UoW.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SimplePersistence.UoW.NH, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SimplePersistence.UoW.NH.2.0.0\lib\SimplePersistence.UoW.NH.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -45,7 +69,16 @@
     <Compile Include="..\SimplePersistence.Example.WebApi\Properties\ProductAssemblyInfo.cs">
       <Link>Properties\ProductAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="ApiUnitOfWork.cs" />
+    <Compile Include="Area\LoggingWorkArea.cs" />
+    <Compile Include="Mapping\Logging\ApplicationMapping.cs" />
+    <Compile Include="Mapping\Logging\LevelMapping.cs" />
+    <Compile Include="Mapping\Logging\LogMapping.cs" />
+    <Compile Include="Mapping\MappingExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\ApplicationRepository.cs" />
+    <Compile Include="Repository\LevelRepository.cs" />
+    <Compile Include="Repository\LogRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SimplePersistence.Example.WebApi.Models\SimplePersistence.Example.WebApi.Models.csproj">
@@ -56,6 +89,10 @@
       <Project>{419d9ed5-a1ba-40b7-a497-1e96c727bb8a}</Project>
       <Name>SimplePersistence.Example.WebApi.UoW</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

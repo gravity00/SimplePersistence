@@ -34,6 +34,7 @@ namespace SimplePersistence.UoW
 	/// </code>
     /// </example>
     /// </summary>
+    [System.Diagnostics.DebuggerDisplay("Id = {_privateId}, CurrentScope = {_currentScope}")]
     public abstract class ScopeEnabledUnitOfWork : IUnitOfWork
     {
         private int _currentScope;
@@ -163,7 +164,8 @@ namespace SimplePersistence.UoW
         /// </returns>
         public override string ToString()
         {
-            return string.Concat("{ UoW : '", GetType().FullName, "', Id : '", _privateId, "' }");
+            return string.Concat(
+                "{ UoW : '", GetType().FullName, "', Id : '", _privateId, "', CurrentScope : '", _currentScope, "' }");
         }
 
         #endregion

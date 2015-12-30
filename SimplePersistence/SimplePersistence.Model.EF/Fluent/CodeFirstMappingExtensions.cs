@@ -16,6 +16,7 @@ namespace SimplePersistence.Model.EF.Fluent
     using System.Data.Entity.Infrastructure.Annotations;
     using System.Data.Entity.ModelConfiguration;
     using System.Data.Entity.ModelConfiguration.Configuration;
+    using JetBrains.Annotations;
 
     /// <summary>
     /// Extension methods for Entity Framework code first mappings
@@ -41,9 +42,9 @@ namespace SimplePersistence.Model.EF.Fluent
         /// <param name="configurations">The lambda which applies the configuration</param>
         /// <typeparam name="TEntityType"></typeparam>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentNullException"/>
         public static EntityTypeConfiguration<TEntityType> Entity<TEntityType>(
-            this DbModelBuilder modelBuilder, Action<EntityTypeConfiguration<TEntityType>> configurations)
+            [NotNull] this DbModelBuilder modelBuilder, [NotNull] Action<EntityTypeConfiguration<TEntityType>> configurations)
             where TEntityType : class
         {
             if (modelBuilder == null) throw new ArgumentNullException("modelBuilder");
@@ -63,10 +64,10 @@ namespace SimplePersistence.Model.EF.Fluent
         /// <param name="schemaName">If specified, the schema name</param>
         /// <typeparam name="TEntityType"></typeparam>
         /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentNullException"/>
         public static EntityTypeConfiguration<TEntityType> Entity<TEntityType>(
-            this DbModelBuilder modelBuilder, Action<EntityTypeConfiguration<TEntityType>> configurations,
-            string tableName, string schemaName = null)
+            [NotNull] this DbModelBuilder modelBuilder, [NotNull] Action<EntityTypeConfiguration<TEntityType>> configurations,
+            [NotNull] string tableName, string schemaName = null)
             where TEntityType : class
         {
             if (tableName == null) throw new ArgumentNullException("tableName");
@@ -98,10 +99,12 @@ namespace SimplePersistence.Model.EF.Fluent
         /// </param>
         /// <typeparam name="T">The entity type</typeparam>
         /// <returns>The entity configuration after changes</returns>
-        public static EntityTypeConfiguration<T> MapCreatedMeta<T>(
-            this EntityTypeConfiguration<T> cfg, int maxLength = DefaultMaxLength, bool propertyCreatedOnNeedsIndex = DefaultPropertyNeedsIndex) 
+        /// <exception cref="ArgumentNullException"/>
+        public static EntityTypeConfiguration<T> MapCreatedMeta<T>([NotNull] this EntityTypeConfiguration<T> cfg, int maxLength = DefaultMaxLength, bool propertyCreatedOnNeedsIndex = DefaultPropertyNeedsIndex) 
             where T : class, IHaveCreatedMeta<string>
         {
+            if (cfg == null) throw new ArgumentNullException("cfg");
+
             var propertyConfiguration = cfg.Property(e => e.CreatedOn).IsRequired();
             if (propertyCreatedOnNeedsIndex)
                 propertyConfiguration.AddIndex();
@@ -124,11 +127,14 @@ namespace SimplePersistence.Model.EF.Fluent
         /// <typeparam name="T">The entity type</typeparam>
         /// <typeparam name="TCreatedBy">The type of the <see cref="IHaveCreatedMeta{TCreatedBy}.CreatedBy"/> property</typeparam>
         /// <returns>The entity configuration after changes</returns>
+        /// <exception cref="ArgumentNullException"/>
         public static EntityTypeConfiguration<T> MapCreatedMeta<T,TCreatedBy>(
-            this EntityTypeConfiguration<T> cfg, Action<RequiredNavigationPropertyConfiguration<T, TCreatedBy>> mapping = null, bool propertyCreatedOnNeedsIndex = DefaultPropertyNeedsIndex)
+            [NotNull] this EntityTypeConfiguration<T> cfg, Action<RequiredNavigationPropertyConfiguration<T, TCreatedBy>> mapping = null, bool propertyCreatedOnNeedsIndex = DefaultPropertyNeedsIndex)
             where T : class, IHaveCreatedMeta<TCreatedBy>
             where TCreatedBy : class 
         {
+            if (cfg == null) throw new ArgumentNullException("cfg");
+
             var propertyCreatedOnConfiguration = cfg.Property(e => e.CreatedOn).IsRequired();
             if (propertyCreatedOnNeedsIndex)
                 propertyCreatedOnConfiguration.AddIndex();
@@ -155,10 +161,12 @@ namespace SimplePersistence.Model.EF.Fluent
         /// </param>
         /// <typeparam name="T">The entity type</typeparam>
         /// <returns>The entity configuration after changes</returns>
-        public static EntityTypeConfiguration<T> MapUpdatedMeta<T>(
-            this EntityTypeConfiguration<T> cfg, int maxLength = DefaultMaxLength, bool propertyUpdatedOnNeedsIndex = DefaultPropertyNeedsIndex) 
+        /// <exception cref="ArgumentNullException"/>
+        public static EntityTypeConfiguration<T> MapUpdatedMeta<T>([NotNull] this EntityTypeConfiguration<T> cfg, int maxLength = DefaultMaxLength, bool propertyUpdatedOnNeedsIndex = DefaultPropertyNeedsIndex) 
             where T : class, IHaveUpdatedMeta<string>
         {
+            if (cfg == null) throw new ArgumentNullException("cfg");
+
             var propertyConfiguration = cfg.Property(e => e.UpdatedOn).IsRequired();
             if (propertyUpdatedOnNeedsIndex)
                 propertyConfiguration.AddIndex();
@@ -181,11 +189,13 @@ namespace SimplePersistence.Model.EF.Fluent
         /// <typeparam name="T">The entity type</typeparam>
         /// <typeparam name="TUpdatedBy">The type for the <see cref="IHaveUpdatedMeta{TUpdatedBy}.UpdatedBy"/> property.</typeparam>
         /// <returns>The entity configuration after changes</returns>
+        /// <exception cref="ArgumentNullException"/>
         public static EntityTypeConfiguration<T> MapUpdatedMeta<T, TUpdatedBy>(
-            this EntityTypeConfiguration<T> cfg, Action<RequiredNavigationPropertyConfiguration<T, TUpdatedBy>> mapping = null, bool propertyUpdatedOnNeedsIndex = DefaultPropertyNeedsIndex)
+            [NotNull] this EntityTypeConfiguration<T> cfg, Action<RequiredNavigationPropertyConfiguration<T, TUpdatedBy>> mapping = null, bool propertyUpdatedOnNeedsIndex = DefaultPropertyNeedsIndex)
             where T : class, IHaveUpdatedMeta<TUpdatedBy>
             where TUpdatedBy : class
         {
+            if (cfg == null) throw new ArgumentNullException("cfg");
             var propertyUpdatedOnConfiguration = cfg.Property(e => e.UpdatedOn).IsRequired();
             if (propertyUpdatedOnNeedsIndex)
                 propertyUpdatedOnConfiguration.AddIndex();
@@ -212,10 +222,11 @@ namespace SimplePersistence.Model.EF.Fluent
         /// </param>
         /// <typeparam name="T">The entity type</typeparam>
         /// <returns>The entity configuration after changes</returns>
-        public static EntityTypeConfiguration<T> MapDeletedMeta<T>(
-            this EntityTypeConfiguration<T> cfg, int maxLength = DefaultMaxLength, bool propertyDeletedOnNeedsIndex = DefaultPropertyNeedsIndex) 
+        /// <exception cref="ArgumentNullException"/>
+        public static EntityTypeConfiguration<T> MapDeletedMeta<T>([NotNull] this EntityTypeConfiguration<T> cfg, int maxLength = DefaultMaxLength, bool propertyDeletedOnNeedsIndex = DefaultPropertyNeedsIndex) 
             where T : class, IHaveDeletedMeta<string>
         {
+            if (cfg == null) throw new ArgumentNullException("cfg");
             var propertyConfiguration = cfg.Property(e => e.DeletedOn).IsOptional();
             if (propertyDeletedOnNeedsIndex)
                 propertyConfiguration.AddIndex();
@@ -238,11 +249,13 @@ namespace SimplePersistence.Model.EF.Fluent
         /// <typeparam name="T">The entity type</typeparam>
         /// <typeparam name="TDeletedBy">The type for the <see cref="IHaveDeletedMeta{TDeletedBy}.DeletedBy"/> property.</typeparam>
         /// <returns>The entity configuration after changes</returns>
+        /// <exception cref="ArgumentNullException"/>
         public static EntityTypeConfiguration<T> MapDeletedMeta<T, TDeletedBy>(
-            this EntityTypeConfiguration<T> cfg, Action<OptionalNavigationPropertyConfiguration<T, TDeletedBy>> mapping = null, bool propertyDeletedOnNeedsIndex = DefaultPropertyNeedsIndex)
+            [NotNull] this EntityTypeConfiguration<T> cfg, Action<OptionalNavigationPropertyConfiguration<T, TDeletedBy>> mapping = null, bool propertyDeletedOnNeedsIndex = DefaultPropertyNeedsIndex)
             where T : class, IHaveDeletedMeta<TDeletedBy>
             where TDeletedBy : class
         {
+            if (cfg == null) throw new ArgumentNullException("cfg");
             var propertyDeletedOnConfiguration = cfg.Property(e => e.DeletedOn).IsOptional();
             if (propertyDeletedOnNeedsIndex)
                 propertyDeletedOnConfiguration.AddIndex();
@@ -262,9 +275,12 @@ namespace SimplePersistence.Model.EF.Fluent
         /// </param>
         /// <typeparam name="T">The entity type</typeparam>
         /// <returns>The entity configuration after changes</returns>
-        public static EntityTypeConfiguration<T> MapSoftDeleteMeta<T>(this EntityTypeConfiguration<T> cfg, bool propertyDeletedOnNeedsIndex = DefaultPropertyNeedsIndex)
+        /// <exception cref="ArgumentNullException"/>
+        public static EntityTypeConfiguration<T> MapSoftDeleteMeta<T>([NotNull] this EntityTypeConfiguration<T> cfg, bool propertyDeletedOnNeedsIndex = DefaultPropertyNeedsIndex)
             where T : class, IHaveSoftDelete
         {
+            if (cfg == null) throw new ArgumentNullException("cfg");
+
             var propertyConfiguration = cfg.Property(e => e.Deleted).IsRequired();
             if (propertyDeletedOnNeedsIndex)
                 propertyConfiguration.AddIndex();
@@ -282,9 +298,12 @@ namespace SimplePersistence.Model.EF.Fluent
         /// <param name="cfg">The entity configuration</param>
         /// <typeparam name="T">The entity type</typeparam>
         /// <returns>The entity configuration after changes</returns>
-        public static EntityTypeConfiguration<T> HasIdentityKeyAsLong<T>(this EntityTypeConfiguration<T> cfg)
+        /// <exception cref="ArgumentNullException"/>
+        public static EntityTypeConfiguration<T> HasIdentityKeyAsLong<T>([NotNull] this EntityTypeConfiguration<T> cfg)
             where T : class, IEntity<long>
         {
+            if (cfg == null) throw new ArgumentNullException("cfg");
+
             cfg.HasKey(e => e.Id)
                 .Property(e => e.Id).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
 
@@ -297,9 +316,12 @@ namespace SimplePersistence.Model.EF.Fluent
         /// <param name="cfg">The entity configuration</param>
         /// <typeparam name="T">The entity type</typeparam>
         /// <returns>The entity configuration after changes</returns>
-        public static EntityTypeConfiguration<T> HasIdentityKeyAsInt<T>(this EntityTypeConfiguration<T> cfg)
+        /// <exception cref="ArgumentNullException"/>
+        public static EntityTypeConfiguration<T> HasIdentityKeyAsInt<T>([NotNull] this EntityTypeConfiguration<T> cfg)
             where T : class, IEntity<int>
         {
+            if (cfg == null) throw new ArgumentNullException("cfg");
+
             cfg.HasKey(e => e.Id)
                 .Property(e => e.Id).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
 
@@ -314,9 +336,11 @@ namespace SimplePersistence.Model.EF.Fluent
         /// <param name="cfg">The entity configuration</param>
         /// <typeparam name="T">The entity type</typeparam>
         /// <returns>The entity configuration after changes</returns>
-        public static EntityTypeConfiguration<T> MapByteArrayVersion<T>(this EntityTypeConfiguration<T> cfg) 
+        /// <exception cref="ArgumentNullException"/>
+        public static EntityTypeConfiguration<T> MapByteArrayVersion<T>([NotNull] this EntityTypeConfiguration<T> cfg) 
             where T : class, IHaveVersionAsByteArray
         {
+            if (cfg == null) throw new ArgumentNullException("cfg");
             cfg.Property(e => e.Version).IsRequired().IsRowVersion();
 
             return cfg;
@@ -334,7 +358,7 @@ namespace SimplePersistence.Model.EF.Fluent
         /// <param name="order">The index order</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static DateTimePropertyConfiguration AddIndex(this DateTimePropertyConfiguration cfg, string name = null, int? order = null)
+        public static DateTimePropertyConfiguration AddIndex([NotNull] this DateTimePropertyConfiguration cfg, string name = null, int? order = null)
         {
             if (cfg == null) throw new ArgumentNullException("cfg");
 
@@ -354,7 +378,7 @@ namespace SimplePersistence.Model.EF.Fluent
         /// <param name="order">The index order</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static PrimitivePropertyConfiguration AddIndex(this PrimitivePropertyConfiguration cfg, string name = null, int? order = null)
+        public static PrimitivePropertyConfiguration AddIndex([NotNull] this PrimitivePropertyConfiguration cfg, string name = null, int? order = null)
         {
             if (cfg == null) throw new ArgumentNullException("cfg");
 

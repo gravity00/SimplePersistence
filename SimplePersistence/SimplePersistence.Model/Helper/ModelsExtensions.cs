@@ -11,6 +11,7 @@
 namespace SimplePersistence.Model.Helper
 {
     using System;
+    using JetBrains.Annotations;
 
     /// <summary>
     /// Models extension methods
@@ -29,7 +30,7 @@ namespace SimplePersistence.Model.Helper
         /// <typeparam name="TBy">The created by type</typeparam>
         /// <returns>The received entity after changes</returns>
         /// <exception cref="ArgumentNullException"/>
-        public static T InitializedBy<T, TBy>(this T entity, TBy @by = default(TBy), DateTimeOffset? @on = null)
+        public static T InitializedBy<T, TBy>([NotNull] this T entity, TBy @by = default(TBy), DateTimeOffset? @on = null)
             where T : IHaveCreatedMeta<TBy>, IHaveUpdatedMeta<TBy>
         {
             if (entity == null) throw new ArgumentNullException("entity");
@@ -49,7 +50,7 @@ namespace SimplePersistence.Model.Helper
         /// <typeparam name="TBy">The created by type</typeparam>
         /// <returns>The received entity after changes</returns>
         /// <exception cref="ArgumentNullException"/>
-        public static T InitializedBy<T, TBy>(this T entity, TBy @by = default(TBy), DateTime? @on = null)
+        public static T InitializedBy<T, TBy>([NotNull] this T entity, TBy @by = default(TBy), DateTime? @on = null)
             where T : IHaveLocalCreatedMeta<TBy>, IHaveLocalUpdatedMeta<TBy>
         {
             if (entity == null) throw new ArgumentNullException("entity");
@@ -73,7 +74,7 @@ namespace SimplePersistence.Model.Helper
         /// <typeparam name="TBy">The created by type</typeparam>
         /// <returns>The received entity after changes</returns>
         /// <exception cref="ArgumentNullException"/>
-        public static T CreatedBy<T, TBy>(this T entity, TBy @by = default(TBy), DateTimeOffset? @on = null)
+        public static T CreatedBy<T, TBy>([NotNull] this T entity, TBy @by = default(TBy), DateTimeOffset? @on = null)
             where T : IHaveCreatedMeta<TBy>
         {
             if (entity == null) throw new ArgumentNullException("entity");
@@ -93,7 +94,7 @@ namespace SimplePersistence.Model.Helper
         /// <typeparam name="TBy">The created by type</typeparam>
         /// <returns>The received entity after changes</returns>
         /// <exception cref="ArgumentNullException"/>
-        public static T CreatedBy<T, TBy>(this T entity, TBy @by = default(TBy), DateTime? @on = null)
+        public static T CreatedBy<T, TBy>([NotNull] this T entity, TBy @by = default(TBy), DateTime? @on = null)
             where T : IHaveLocalCreatedMeta<TBy>
         {
             if (entity == null) throw new ArgumentNullException("entity");
@@ -117,7 +118,7 @@ namespace SimplePersistence.Model.Helper
         /// <typeparam name="TBy">The updated by type</typeparam>
         /// <returns>The received entity after changes</returns>
         /// <exception cref="ArgumentNullException"/>
-        public static T UpdatedBy<T, TBy>(this T entity, TBy @by = default(TBy), DateTimeOffset? @on = null) 
+        public static T UpdatedBy<T, TBy>([NotNull] this T entity, TBy @by = default(TBy), DateTimeOffset? @on = null) 
             where T : IHaveUpdatedMeta<TBy>
         {
             if (entity == null) throw new ArgumentNullException("entity");
@@ -137,7 +138,7 @@ namespace SimplePersistence.Model.Helper
         /// <typeparam name="TBy">The updated by type</typeparam>
         /// <returns>The received entity after changes</returns>
         /// <exception cref="ArgumentNullException"/>
-        public static T UpdatedBy<T, TBy>(this T entity, TBy @by = default(TBy), DateTime? @on = null)
+        public static T UpdatedBy<T, TBy>([NotNull] this T entity, TBy @by = default(TBy), DateTime? @on = null)
             where T : IHaveLocalUpdatedMeta<TBy>
         {
             if (entity == null) throw new ArgumentNullException("entity");
@@ -162,7 +163,7 @@ namespace SimplePersistence.Model.Helper
         /// <typeparam name="TBy">The deleted by type</typeparam>
         /// <returns>The received entity after changes</returns>
         /// <exception cref="ArgumentNullException"/>
-        public static T UpdatedAndDeletedBy<T, TBy>(this T entity, TBy @by = default(TBy), DateTimeOffset? @on = null)
+        public static T UpdatedAndDeletedBy<T, TBy>([NotNull] this T entity, TBy @by = default(TBy), DateTimeOffset? @on = null)
             where T : IHaveDeletedMeta<TBy>, IHaveUpdatedMeta<TBy>
         {
             if (entity == null) throw new ArgumentNullException("entity");
@@ -183,7 +184,7 @@ namespace SimplePersistence.Model.Helper
         /// <typeparam name="TBy">The deleted by type</typeparam>
         /// <returns>The received entity after changes</returns>
         /// <exception cref="ArgumentNullException"/>
-        public static T UpdatedAndDeletedBy<T, TBy>(this T entity, TBy @by = default(TBy), DateTime? @on = null)
+        public static T UpdatedAndDeletedBy<T, TBy>([NotNull] this T entity, TBy @by = default(TBy), DateTime? @on = null)
             where T : IHaveLocalDeletedMeta<TBy>, IHaveLocalUpdatedMeta<TBy>
         {
             if (entity == null) throw new ArgumentNullException("entity");
@@ -207,7 +208,7 @@ namespace SimplePersistence.Model.Helper
         /// <typeparam name="TBy">The deleted by type</typeparam>
         /// <returns>The received entity after changes</returns>
         /// <exception cref="ArgumentNullException"/>
-        public static T DeletedBy<T, TBy>(this T entity, TBy @by = default(TBy), DateTimeOffset? @on = null)
+        public static T DeletedBy<T, TBy>([NotNull] this T entity, TBy @by = default(TBy), DateTimeOffset? @on = null)
             where T : IHaveDeletedMeta<TBy>
         {
             if (entity == null) throw new ArgumentNullException("entity");
@@ -247,7 +248,7 @@ namespace SimplePersistence.Model.Helper
         /// <typeparam name="T">The entity type</typeparam>
         /// <returns>The received entity after changes</returns>
         /// <exception cref="ArgumentNullException"/>
-        public static T Deleted<T>(this T entity, bool delete = true)
+        public static T Deleted<T>([NotNull] this T entity, bool delete = true)
             where T : IHaveSoftDelete
         {
             if (entity == null) throw new ArgumentNullException("entity");

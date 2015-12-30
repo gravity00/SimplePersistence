@@ -8,15 +8,14 @@
 // 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endregion
-
-using System.Linq;
-
 namespace SimplePersistence.UoW.NH
 {
     using System;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using NHibernate;
+    using JetBrains.Annotations;
     using Exceptions;
 
     /// <summary>
@@ -26,21 +25,27 @@ namespace SimplePersistence.UoW.NH
     public abstract class NHibernateUnitOfWork : ScopeEnabledUnitOfWork, INHibernateUnitOfWork
     {
         private volatile ISession _session;
-        private ITransaction _transaction;
+        private volatile ITransaction _transaction;
 
         /// <summary>
         /// Creates a new unit of work that will extract the current <see cref="ISession"/> using <see cref="ISessionFactory.OpenSession()"/>
         /// </summary>
         /// <param name="sessionFactory">The session factory</param>
-        protected NHibernateUnitOfWork(ISessionFactory sessionFactory)
-            : this(sessionFactory.OpenSession()) { }
+        /// <exception cref="ArgumentException"/>
+        protected NHibernateUnitOfWork([NotNull] ISessionFactory sessionFactory)
+        {
+            if (sessionFactory == null) throw new ArgumentNullException("sessionFactory");
+            _session = sessionFactory.OpenSession();
+        }
 
         /// <summary>
         /// Creates a new unit of work that will use the given <see cref="ISession"/>
         /// </summary>
         /// <param name="session">The database session</param>
-        protected NHibernateUnitOfWork(ISession session)
+        /// <exception cref="ArgumentException"/>
+        protected NHibernateUnitOfWork([NotNull] ISession session)
         {
+            if (session == null) throw new ArgumentNullException("session");
             _session = session;
         }
 
@@ -116,8 +121,11 @@ namespace SimplePersistence.UoW.NH
         /// <param name="queryable">The query to wrap</param>
         /// <typeparam name="T">The query item type</typeparam>
         /// <returns>An <see cref="IAsyncQueryable{T}"/> instance, wrapping the given query</returns>
-        public override IAsyncQueryable<T> PrepareAsyncQueryable<T>(IQueryable<T> queryable)
+        /// <exception cref="ArgumentException"/>
+        public override IAsyncQueryable<T> PrepareAsyncQueryable<T>([NotNull] IQueryable<T> queryable)
         {
+            if (queryable == null) throw new ArgumentNullException("queryable");
+
             return new NHAsyncQueryable<T>(queryable);
         }
 
@@ -144,6 +152,7 @@ namespace SimplePersistence.UoW.NH
 
             _session.Dispose();
             _session = null;
+            _transaction = null;
         }
 
         #endregion

@@ -12,6 +12,7 @@ namespace SimplePersistence.UoW.Aspects
 {
     using System;
     using Properties;
+    using JetBrains.Annotations;
 
     /// <summary>
     /// Indicates that this method or class should be executed inside a transaction
@@ -45,7 +46,7 @@ namespace SimplePersistence.UoW.Aspects
         /// <param name="unitOfWorkType"></param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public TransactionalAttribute(Type unitOfWorkType)
+        public TransactionalAttribute([NotNull] Type unitOfWorkType)
         {
             if (unitOfWorkType == null)
                 throw new ArgumentNullException("unitOfWorkType");

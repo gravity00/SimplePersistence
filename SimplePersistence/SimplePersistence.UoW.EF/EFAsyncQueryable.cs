@@ -18,6 +18,7 @@ namespace SimplePersistence.UoW.EF
 	using System.Linq.Expressions;
 	using System.Threading;
 	using System.Threading.Tasks;
+    using JetBrains.Annotations;
 
     /// <summary>
     /// Specialized <see cref="IQueryable{T}"/> for async executions.
@@ -33,7 +34,7 @@ namespace SimplePersistence.UoW.EF
 		/// </summary>
         /// <param name="queryable">The <see cref="IQueryable{T}"/> to be wrapped</param>
         /// <exception cref="ArgumentNullException"/>
-		public EFAsyncQueryable(IQueryable<T> queryable)
+		public EFAsyncQueryable([NotNull] IQueryable<T> queryable)
 		{
 		    if (queryable == null) throw new ArgumentNullException("queryable");
 		    _queryable = queryable;
@@ -593,7 +594,7 @@ namespace SimplePersistence.UoW.EF
         public Task<bool> AnyAsync(Expression<Func<T, bool>> predicate)
         {
             if (predicate == null) throw new ArgumentNullException("predicate");
-            return _queryable.AnyAsync();
+            return _queryable.AnyAsync(predicate);
         }
 
         /// <summary>
@@ -609,7 +610,7 @@ namespace SimplePersistence.UoW.EF
         public Task<bool> AnyAsync(Expression<Func<T, bool>> predicate, CancellationToken ct)
         {
             if (predicate == null) throw new ArgumentNullException("predicate");
-            return _queryable.AnyAsync(ct);
+            return _queryable.AnyAsync(predicate, ct);
         }
 
         #endregion
@@ -956,7 +957,7 @@ namespace SimplePersistence.UoW.EF
         public Task<T> SingleAsync(Expression<Func<T, bool>> predicate)
         {
             if (predicate == null) throw new ArgumentNullException("predicate");
-            return _queryable.SingleAsync();
+            return _queryable.SingleAsync(predicate);
         }
 
         /// <summary>
