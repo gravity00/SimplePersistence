@@ -3,6 +3,7 @@ using System.Data.Entity;
 using System.IO;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
+using NLog;
 using SimplePersistence.Example.Console.Models.Logging;
 using SimplePersistence.Example.Console.UoW.EF;
 using SimplePersistence.Example.Console.UoW.EF.Mapping;
@@ -12,21 +13,26 @@ namespace SimplePersistence.Example.Console
 {
     public class Program
     {
+        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+
         #region Application startup
 
         public static void Main(string[] args)
         {
-            System.Console.WriteLine("Application started...");
+            Logger.Info("Application started...");
             try
             {
                 var dataDirectory =
                     Path.Combine(
                         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                        "SimplePersistence\\SimplePersistence.Example.Console\\data");
+                        "SimplePersistence\\Example\\Console\\Data");
                 if (!Directory.Exists(dataDirectory))
+                {
+                    Logger.Debug("Creating data directory: {0}", dataDirectory);
                     Directory.CreateDirectory(dataDirectory);
+                }
                 AppDomain.CurrentDomain.SetData("DataDirectory", dataDirectory);
-                System.Console.WriteLine("All data files will be stored in " + dataDirectory);
+                Logger.Info("All data files will be stored in " + dataDirectory);
 
                 Database.SetInitializer(new Configuration());
 
@@ -38,10 +44,9 @@ namespace SimplePersistence.Example.Console
             }
             catch (Exception e)
             {
-                System.Console.WriteLine("An unhandled exception has occured");
-                System.Console.WriteLine(e);
+                Logger.Fatal(e, "A fatal exception has occured");
             }
-            System.Console.WriteLine("Application ended. Press <enter> to exit...");
+            Logger.Info("Application ended. Press <enter> to exit...");
             System.Console.ReadLine();
         }
 
@@ -54,6 +59,8 @@ namespace SimplePersistence.Example.Console
 
         private void ExampleWithoutIoC()
         {
+            Logger.Trace("Running ExampleWithoutIoC...");
+
             using (var uow = new ConsoleUnitOfWork(new ConsoleDbContext()))
             {
                 uow.Begin();
@@ -100,7 +107,6 @@ namespace SimplePersistence.Example.Console
 
                 uow.Commit();
             }
-            System.Console.WriteLine();
         }
 
         private void ExampleWithIoC()
