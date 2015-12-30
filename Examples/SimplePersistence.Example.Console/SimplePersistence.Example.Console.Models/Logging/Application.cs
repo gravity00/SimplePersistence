@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using SimplePersistence.Model;
 
 namespace SimplePersistence.Example.Console.Models.Logging
 {
-    public class Application : EntityWithCreatedMeta<string>
+    public class Application : Entity<string>
     {
         private ICollection<Log> _logs;
 
@@ -15,9 +16,14 @@ namespace SimplePersistence.Example.Console.Models.Logging
             protected set { _logs = value; }
         }
 
+        public DateTime CreatedOn { get; set; }
+        public string CreatedBy { get; set; }
+
         public Application()
         {
             _logs = new HashSet<Log>();
+
+            CreatedOn = DateTime.Now;
         }
     }
 }

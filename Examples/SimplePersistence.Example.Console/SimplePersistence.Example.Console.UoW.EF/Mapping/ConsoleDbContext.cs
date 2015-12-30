@@ -34,7 +34,9 @@ namespace SimplePersistence.Example.Console.UoW.EF.Mapping
 
                 cfg.Property(e => e.Description).IsRequired().HasMaxLength(512);
                 cfg.HasMany(e => e.Logs).WithRequired(e => e.Application);
-                cfg.MapCreatedMeta();
+
+                cfg.Property(e => e.CreatedOn).IsRequired();
+                cfg.Property(e => e.CreatedBy).IsRequired().HasMaxLength(128);
             }, "Applications");
 
             modelBuilder.Entity<Level>(cfg =>
@@ -44,7 +46,9 @@ namespace SimplePersistence.Example.Console.UoW.EF.Mapping
 
                 cfg.Property(e => e.Description).IsRequired().HasMaxLength(512);
                 cfg.HasMany(e => e.Logs).WithRequired(e => e.Level);
-                cfg.MapCreatedMeta();
+
+                cfg.Property(e => e.CreatedOn).IsRequired();
+                cfg.Property(e => e.CreatedBy).IsRequired().HasMaxLength(128);
             }, "Levels");
 
             modelBuilder.Entity<Log>(cfg =>
@@ -58,7 +62,9 @@ namespace SimplePersistence.Example.Console.UoW.EF.Mapping
                 cfg.Property(e => e.Thread).IsRequired().HasMaxLength(64);
                 cfg.Property(e => e.Message).IsRequired();
                 cfg.Property(e => e.Exception).IsOptional();
-                cfg.MapCreatedMeta();
+
+                cfg.Property(e => e.CreatedOn).IsRequired();
+                cfg.Property(e => e.CreatedBy).IsRequired().HasMaxLength(128);
             }, "Logs");
         }
     }

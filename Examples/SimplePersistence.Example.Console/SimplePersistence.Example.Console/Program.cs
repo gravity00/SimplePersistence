@@ -24,7 +24,7 @@ namespace SimplePersistence.Example.Console
             {
                 var dataDirectory =
                     Path.Combine(
-                        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                        Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                         "SimplePersistence\\Example\\Console\\Data");
                 if (!Directory.Exists(dataDirectory))
                 {
@@ -94,7 +94,7 @@ namespace SimplePersistence.Example.Console
                         {
                             Level = level,
                             Application = application,
-                            CreatedOn = DateTimeOffset.Now,
+                            CreatedOn = DateTime.Now,
                             CreatedBy = "some-user",
                             Logger = "SimplePersistence.Example.Console.Program",
                             Exception = levelIdx == 0 || levelIdx == 1 ? exception.ToString() : null,

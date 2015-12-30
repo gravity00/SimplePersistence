@@ -21,7 +21,7 @@ namespace SimplePersistence.Example.Console.UoW.EF.Migrations
                 {
                     Id = "SimplePersistence.Example.Console",
                     Description = "The SimplePersistence.Example.Console application",
-                    CreatedOn = DateTimeOffset.Now,
+                    CreatedOn = DateTime.Now,
                     CreatedBy = "seed.migration"
                 });
 
@@ -31,35 +31,35 @@ namespace SimplePersistence.Example.Console.UoW.EF.Migrations
                 {
                     Id = "DEBUG",
                     Description = "Debug",
-                    CreatedOn = DateTimeOffset.Now,
+                    CreatedOn = DateTime.Now,
                     CreatedBy = "seed.migration"
                 },
                 new Level
                 {
                     Id = "Info",
                     Description = "Information",
-                    CreatedOn = DateTimeOffset.Now,
+                    CreatedOn = DateTime.Now,
                     CreatedBy = "seed.migration"
                 },
                 new Level
                 {
                     Id = "WARN",
                     Description = "Warning",
-                    CreatedOn = DateTimeOffset.Now,
+                    CreatedOn = DateTime.Now,
                     CreatedBy = "seed.migration"
                 },
                 new Level
                 {
                     Id = "ERROR",
                     Description = "Error",
-                    CreatedOn = DateTimeOffset.Now,
+                    CreatedOn = DateTime.Now,
                     CreatedBy = "seed.migration"
                 },
                 new Level
                 {
                     Id = "FATAL",
                     Description = "Fatal",
-                    CreatedOn = DateTimeOffset.Now,
+                    CreatedOn = DateTime.Now,
                     CreatedBy = "seed.migration"
                 });
         }
