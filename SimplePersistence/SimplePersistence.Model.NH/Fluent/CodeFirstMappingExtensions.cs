@@ -1,11 +1,23 @@
-﻿using System;
-using FluentNHibernate.Mapping;
-using SimplePersistence.Model;
+﻿#region License
+// The MIT License (MIT)
+// Copyright (c) 2015 João Simões
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#endregion
 
-namespace SimplePersistence.Example.WebApi.UoW.NH.Mapping
+using System;
+using FluentNHibernate.Mapping;
+
+namespace SimplePersistence.Model.NH.Fluent
 {
-    [CLSCompliant(false)]
-    public static class MappingExtensions
+    /// <summary>
+    /// Extension methods for NHibernate code first mappings
+    /// </summary>
+    public static class CodeFirstMappingExtensions
     {
         /// <summary>
         /// The default (128) max length used in metadata fields
@@ -14,7 +26,7 @@ namespace SimplePersistence.Example.WebApi.UoW.NH.Mapping
 
 
         public static ClassMap<T> MapCreatedMeta<T>(
-            this ClassMap<T> classMap, int maxLength = DefaultMaxLength, string propertyCreatedOnIndex = null, 
+            this ClassMap<T> classMap, int maxLength = DefaultMaxLength, string propertyCreatedOnIndex = null,
             Action<PropertyPart, PropertyPart> extraConfiguration = null)
             where T : IHaveCreatedMeta<string>
         {
@@ -40,8 +52,7 @@ namespace SimplePersistence.Example.WebApi.UoW.NH.Mapping
 
             var updatedByMap = classMap.Map(e => e.UpdatedBy).Nullable().Length(maxLength);
 
-            if (extraConfiguration != null)
-                extraConfiguration(updatedOnMap, updatedByMap);
+            extraConfiguration?.Invoke(updatedOnMap, updatedByMap);
 
             return classMap;
         }

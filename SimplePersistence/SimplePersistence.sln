@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimplePersistence", "SimplePersistence\SimplePersistence.csproj", "{1AE8B92C-5E88-48A4-909D-F845DDDDB360}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimplePersistence.Model.Security", "SimplePersistence.Model.Security\SimplePersistence.Model.Security.csproj", "{09641648-4657-4892-945B-780B2B8ABEDA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimplePersistence.Model.EF", "SimplePersistence.Model.EF\SimplePersistence.Model.EF.csproj", "{6DD1CFBC-7BA5-4DC4-890A-60BF67AB2883}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimplePersistence.Model.NH", "SimplePersistence.Model.NH\SimplePersistence.Model.NH.csproj", "{057B72CF-5823-4418-87CA-84C4ADDC4397}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{6DD1CFBC-7BA5-4DC4-890A-60BF67AB2883}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6DD1CFBC-7BA5-4DC4-890A-60BF67AB2883}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6DD1CFBC-7BA5-4DC4-890A-60BF67AB2883}.Release|Any CPU.Build.0 = Release|Any CPU
+		{057B72CF-5823-4418-87CA-84C4ADDC4397}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{057B72CF-5823-4418-87CA-84C4ADDC4397}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{057B72CF-5823-4418-87CA-84C4ADDC4397}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{057B72CF-5823-4418-87CA-84C4ADDC4397}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
